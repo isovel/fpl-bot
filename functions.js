@@ -1,0 +1,68 @@
+const chalk = require('chalk');
+const config = require('./config.js');
+
+let client;
+
+/**
+ * Logs a message with optional styling.
+ *
+ * @param {string} string - The message to log.
+ * @param {'info' | 'err' | 'warn' | 'done' | undefined} style - The style of the log.
+ */
+const log = (string, style) => {
+    const styles = {
+        info: { prefix: chalk.blue('[INFO]'), logFunction: console.log },
+        err: { prefix: chalk.red('[ERROR]'), logFunction: console.error },
+        warn: { prefix: chalk.yellow('[WARNING]'), logFunction: console.warn },
+        done: { prefix: chalk.green('[SUCCESS]'), logFunction: console.log },
+    };
+
+    const selectedStyle = styles[style] || { logFunction: console.log };
+    selectedStyle.logFunction(`${selectedStyle.prefix || ''} ${string}`);
+    if (style === 'err') {
+        //write dm to config.users.ownerId
+        switch (config.handler.errors) {
+            case 'owner':
+                client.users.send(config.users.ownerId, `Error: ${string}`);
+                break;
+            case 'developers':
+                config.users.developers.forEach((developer) => {
+                    client.users.send(developer, `Error: ${string}`);
+                });
+                break;
+            default:
+                client.users.send(config.users.ownerId, `Error: ${string}`);
+                break;
+        }
+    }
+};
+
+/**
+ * Formats a timestamp.
+ *
+ * @param {number} time - The timestamp in milliseconds.
+ * @param {import('discord.js').TimestampStylesString} style - The timestamp style.
+ * @returns {string} - The formatted timestamp.
+ */
+const time = (time, style) => {
+    return `<t:${Math.floor(time / 1000)}${style ? `:${style}` : ''}>`;
+};
+
+/**
+ * Whenever a string is a valid snowflake (for Discord).
+
+ * @param {string} id 
+ * @returns {boolean}
+ */
+const isSnowflake = (id) => {
+    return /^\d+$/.test(id);
+};
+
+module.exports = {
+    log,
+    time,
+    isSnowflake,
+    setupFunctions: (clientInstance) => {
+        client = clientInstance;
+    },
+};
