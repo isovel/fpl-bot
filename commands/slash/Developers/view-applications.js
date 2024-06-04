@@ -5,10 +5,11 @@ const {
     ButtonStyle,
     ActionRowBuilder,
     ButtonBuilder,
-    EmbedFooterOptions,
+    StringSelectMenuBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
+const components = require('../../../handlers/components');
 
 module.exports = {
     structure: new SlashCommandBuilder()
@@ -21,13 +22,14 @@ module.exports = {
      * @param {ExtendedClient} client
      * @param {ChatInputCommandInteraction} interaction
      */
-    run: async (client, interaction) => {
+    run: async (client, interaction, skipIds = []) => {
         const c_users = client.runtimeVariables.db.collection('users');
         let users;
         try {
             users = await c_users
                 .find({
                     applicationStatus: 1,
+                    discordId: { $nin: skipIds },
                 })
                 .toArray();
 
@@ -41,6 +43,14 @@ module.exports = {
         }
 
         if (users.length === 0) {
+            if (skipIds.length > 0) {
+                return interaction.update({
+                    content: 'There are no more pending applications.',
+                    components: [],
+                    embeds: [],
+                    ephemeral: true,
+                });
+            }
             return interaction.reply({
                 content: 'There are no pending applications.',
                 ephemeral: true,
@@ -86,10 +96,14 @@ module.exports = {
             `**Last Recorded Rank:** ${user.lastRecordedRank}`,
             `**Highest Recorded Rank:** ${
                 user.highestRecordedRank.split('-')[0]
-            } ${seasonTranslate[user.highestRecordedRank.split('-')[1]]}`,
+            } in ${
+                seasonTranslate[
+                    user.highestRecordedRank.split('-')[1].toLowerCase()
+                ]
+            }`,
             `**Seasons Played:** ${user.seasonsPlayed
                 .split(',')
-                .map((season) => seasonTranslate[season])
+                .map((season) => seasonTranslate[season].toLowerCase())
                 .join(', ')}`,
             `**Platform:** ${user.platform}`,
             `**Playtime:** ${user.playtime} hours`,
@@ -103,41 +117,45 @@ module.exports = {
         ];
 
         let embed = new EmbedBuilder()
-            .setTitle(
-                'Application - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
-            )
+            .setTitle(`**${member.user.displayName}**'s Application`)
             .setThumbnail(member.displayAvatarURL())
             .setDescription(embedData.join('\n'))
-            .setColor('Blurple');
+            .setColor('Purple');
 
-        await interaction.reply({
+        let divisionOptions = client.config.divisions.map((division) => ({
+            label: `Accept into ${division.name}`,
+            value: division.id,
+        }));
+
+        let viewApplicationMessage = {
+            content: '',
             embeds: [embed],
             components: [
                 new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('view-applications-previous')
-                        .setLabel('Previous')
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(true),
-                    new ButtonBuilder()
-                        .setCustomId('view-applications-decline')
-                        .setLabel('Decline')
-                        .setStyle(ButtonStyle.Danger),
-                    new ButtonBuilder()
-                        .setCustomId('view-applications-accept_a')
-                        .setLabel('Accept Division A')
-                        .setStyle(ButtonStyle.Success),
-                    new ButtonBuilder()
-                        .setCustomId('view-applications-accept_b')
-                        .setLabel('Accept Division B')
-                        .setStyle(ButtonStyle.Success),
-                    new ButtonBuilder()
-                        .setCustomId('view-applications-next')
-                        .setLabel('Next')
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(users.length === 1 ? true : false)
+                    new StringSelectMenuBuilder()
+                        .setCustomId(
+                            `application-action_${
+                                user.discordId
+                            }_${skipIds.join(',')}`
+                        )
+                        .setPlaceholder('Action')
+                        .addOptions(
+                            {
+                                label: 'Skip',
+                                value: 'skip',
+                            },
+                            ...divisionOptions,
+                            {
+                                label: 'Decline',
+                                value: 'decline',
+                            }
+                        )
                 ),
             ],
-        });
+            ephemeral: true,
+        };
+
+        if (skipIds.length > 0) interaction.update(viewApplicationMessage);
+        else await interaction.reply(viewApplicationMessage);
     },
 };

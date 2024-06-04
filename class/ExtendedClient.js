@@ -8,6 +8,7 @@ const { setupFunctions } = require('../functions');
 const deploy = require('../handlers/deploy');
 const mongodb = require('../handlers/mongodb');
 const components = require('../handlers/components');
+const schedule = require('../handlers/schedule');
 
 console.log('Handlers loaded!');
 
@@ -25,6 +26,7 @@ module.exports = class extends Client {
     };
     applicationcommandsArray = [];
     runtimeVariables = {};
+    config = config;
 
     constructor() {
         super({
@@ -54,6 +56,7 @@ module.exports = class extends Client {
         events(this);
         components(this);
         setupFunctions(this);
+        schedule.run(this);
 
         if (config.handler.mongodb.enabled)
             this.runtimeVariables.db = (await mongodb()).db('FFL-Bot');
