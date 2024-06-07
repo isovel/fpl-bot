@@ -10,7 +10,7 @@ module.exports = {
         .setName('testerror')
         .setDescription('Test what happens if an error occurs!'),
     options: {
-        cooldown: 5000,
+        developers: true,
     },
     /**
      * @param {ExtendedClient} client

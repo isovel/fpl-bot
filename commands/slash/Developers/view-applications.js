@@ -36,8 +36,10 @@ module.exports = {
             console.dir(users);
         } catch (error) {
             log(error, 'err');
-            return interaction.reply({
+            return interaction.update({
                 content: 'An error occurred while fetching the applications.',
+                components: [],
+                embeds: [],
                 ephemeral: true,
             });
         }
@@ -51,8 +53,10 @@ module.exports = {
                     ephemeral: true,
                 });
             }
-            return interaction.reply({
+            return interaction.update({
                 content: 'There are no pending applications.',
+                components: [],
+                embeds: [],
                 ephemeral: true,
             });
         }
@@ -124,7 +128,7 @@ module.exports = {
 
         let divisionOptions = client.config.divisions.map((division) => ({
             label: `Accept into ${division.name}`,
-            value: division.id,
+            value: division.shortName,
         }));
 
         let viewApplicationMessage = {

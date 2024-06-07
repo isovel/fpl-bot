@@ -38,7 +38,9 @@ module.exports = {
         if (!customId) customId = interaction.customId;
 
         log(
-            `Interaction detected: ${customId} with Type ${
+            `Interaction detected: ${
+                customId ?? interaction.commandName
+            } with Type ${
                 interaction.isButton()
                     ? 'Button'
                     : interaction.isAnySelectMenu()

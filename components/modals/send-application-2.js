@@ -159,6 +159,7 @@ module.exports = {
                 100
             ).toFixed(2),
             isMember: isMember,
+            weight: isMember ? 2 : 1,
             applicationStatus: 1, // 0 = rejected, 1 = pending, 2 = accepted
         };
 

@@ -15,9 +15,21 @@ const log = (string, style) => {
         err: { prefix: chalk.red('[ERROR]'), logFunction: console.error },
         warn: { prefix: chalk.yellow('[WARNING]'), logFunction: console.warn },
         done: { prefix: chalk.green('[SUCCESS]'), logFunction: console.log },
+        debug: { prefix: chalk.magenta('[DEBUG]'), logFunction: console.log },
     };
 
     const selectedStyle = styles[style] || { logFunction: console.log };
+    switch (typeof string) {
+        case 'object':
+            string = JSON.stringify(string, null, 2);
+            break;
+        case 'undefined':
+            string = 'Empty log message.';
+            break;
+    }
+    if (string.constructor.name) {
+        string = `${string.constructor.name}: ${string}`;
+    }
     selectedStyle.logFunction(`${selectedStyle.prefix || ''} ${string}`);
     if (style === 'err') {
         //write dm to config.users.ownerId

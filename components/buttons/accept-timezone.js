@@ -24,9 +24,16 @@ module.exports = {
                     $addToSet: {
                         timezones: timezone,
                     },
-                },
-                { upsert: true }
+                }
             );
+
+        if (result.matchedCount == 0) {
+            await interaction.reply({
+                content: `You have not yet submitted an application to join the league. Please submit an application before accepting a timezone.`,
+                ephemeral: true,
+            });
+            return;
+        }
 
         if (result.modifiedCount == 0) {
             await interaction.reply({
