@@ -25,12 +25,12 @@ module.exports = {
             config.channels.modLogs.channel
         );
 
-        log(`modLogsChannel: ${modLogsChannel}`, 'info');
+        log(`modLogsChannel: ${modLogsChannel}`, 'debug');
 
         if (!modLogsChannel || modLogsChannel.guildId !== message.guild.id)
             return;
 
-        log(`message ${JSON.stringify(message)}`, 'info');
+        log(`message ${JSON.stringify(message)}`, 'debug');
 
         if (!message.author) return;
         if (message.author.bot) return;

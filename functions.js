@@ -21,14 +21,20 @@ const log = (string, style) => {
     const selectedStyle = styles[style] || { logFunction: console.log };
     switch (typeof string) {
         case 'object':
-            string = JSON.stringify(string, null, 2);
+            string =
+                string.constructor.name +
+                ': ' +
+                JSON.stringify(string, null, 2);
+            break;
+        case 'number':
+            string = string.constructor.name + ': ' + string;
+            break;
+        case 'boolean':
+            string = string.constructor.name + ': ' + string;
             break;
         case 'undefined':
             string = 'Empty log message.';
             break;
-    }
-    if (string.constructor.name) {
-        string = `${string.constructor.name}: ${string}`;
     }
     selectedStyle.logFunction(`${selectedStyle.prefix || ''} ${string}`);
     if (style === 'err') {

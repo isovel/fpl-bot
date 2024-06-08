@@ -1,9 +1,6 @@
 const {
     SlashCommandBuilder,
     ChatInputCommandInteraction,
-    ButtonBuilder,
-    ActionRowBuilder,
-    Routes,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const config = require('../../../config');
@@ -57,19 +54,19 @@ module.exports = {
                 if (result.matchedCount == 0) {
                     return interaction.reply({
                         content: `Queue for division ${division} does not exist.`,
-                        ephemeral: true,
+                        ephemeral: client.config.development.ephemeral,
                     });
                 }
                 if (result.modifiedCount == 0) {
                     return interaction.reply({
                         content: `Queue for division ${division} is already closed.`,
-                        ephemeral: true,
+                        ephemeral: client.config.development.ephemeral,
                     });
                 }
 
                 interaction.reply({
                     content: `Queue for division ${division} has been closed.`,
-                    ephemeral: true,
+                    ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
@@ -77,7 +74,7 @@ module.exports = {
                 interaction.reply({
                     content:
                         'A Database error occurred while closing the queue.',
-                    ephemeral: true,
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

@@ -111,7 +111,7 @@ function generateTestUsers(matchId) {
             }
         )
         .then((result) => {
-            log(JSON.stringify(result, null, 2), 'info');
+            log(result, 'debug');
         })
         .catch((err) => {
             log(err, 'err');

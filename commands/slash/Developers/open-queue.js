@@ -59,7 +59,7 @@ module.exports = {
                 if (result.modifiedCount === 0 && result.upsertedCount === 0) {
                     return interaction.reply({
                         content: `Queue for division ${division} is already open.`,
-                        ephemeral: true,
+                        ephemeral: client.config.development.ephemeral,
                     });
                 }
                 //reset queue array
@@ -98,7 +98,7 @@ module.exports = {
 
                         interaction.reply({
                             content: `Queue for division ${division} has been opened.`,
-                            ephemeral: true,
+                            ephemeral: client.config.development.ephemeral,
                         });
                     });
             })
@@ -107,7 +107,7 @@ module.exports = {
                 interaction.reply({
                     content:
                         'A Database error occurred while opening the queue.',
-                    ephemeral: true,
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

@@ -1,9 +1,6 @@
 const {
     SlashCommandBuilder,
     ChatInputCommandInteraction,
-    ButtonBuilder,
-    ActionRowBuilder,
-    Routes,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
@@ -47,19 +44,19 @@ module.exports = {
                 if (result.matchedCount == 0) {
                     return interaction.reply({
                         content: `${user.displayName} does not have an application.`,
-                        ephemeral: true,
+                        ephemeral: client.config.development.ephemeral,
                     });
                 }
                 if (result.modifiedCount == 0) {
                     return interaction.reply({
                         content: `${user.displayName}'s application is already in pending status`,
-                        ephemeral: true,
+                        ephemeral: client.config.development.ephemeral,
                     });
                 }
 
                 interaction.reply({
                     content: 'The application has been revoked.',
-                    ephemeral: true,
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

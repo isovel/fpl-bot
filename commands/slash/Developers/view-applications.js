@@ -2,9 +2,7 @@ const {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
     EmbedBuilder,
-    ButtonStyle,
     ActionRowBuilder,
-    ButtonBuilder,
     StringSelectMenuBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
@@ -40,7 +38,7 @@ module.exports = {
                 content: 'An error occurred while fetching the applications.',
                 components: [],
                 embeds: [],
-                ephemeral: true,
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -50,14 +48,14 @@ module.exports = {
                     content: 'There are no more pending applications.',
                     components: [],
                     embeds: [],
-                    ephemeral: true,
+                    ephemeral: client.config.development.ephemeral,
                 });
             }
             return interaction.update({
                 content: 'There are no pending applications.',
                 components: [],
                 embeds: [],
-                ephemeral: true,
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -156,7 +154,7 @@ module.exports = {
                         )
                 ),
             ],
-            ephemeral: true,
+            ephemeral: client.config.development.ephemeral,
         };
 
         if (skipIds.length > 0) interaction.update(viewApplicationMessage);

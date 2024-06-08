@@ -167,7 +167,7 @@ module.exports = {
             `userData for ${interaction.user.displayName}: ${JSON.stringify(
                 userData
             )}`,
-            'info'
+            'debug'
         );
 
         //upload with mongodb (client.runtimeVariables.db)

@@ -81,7 +81,7 @@ module.exports = {
         const prevData = interaction.customId.split('_');
         prevData.shift();
 
-        log('prevData ' + prevData, 'info');
+        log('prevData ' + prevData, 'debug');
 
         const modal = new ModalBuilder()
             .setTitle('Application Form Nr. 2')

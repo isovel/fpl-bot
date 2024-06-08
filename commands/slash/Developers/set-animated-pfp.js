@@ -1,9 +1,6 @@
 const {
     SlashCommandBuilder,
-    EmbedBuilder,
     ChatInputCommandInteraction,
-    AttachmentBuilder,
-    Routes,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 

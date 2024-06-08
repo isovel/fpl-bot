@@ -3,7 +3,6 @@ const {
     ChatInputCommandInteraction,
     ButtonBuilder,
     ActionRowBuilder,
-    Routes,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');

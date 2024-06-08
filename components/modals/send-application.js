@@ -164,7 +164,7 @@ module.exports = {
         let seasons = seasonsPlayed.split(',');
         let validSeasons = ['cb1', 'cb2', 'ob1', 's1', 's2'];
         seasons = seasons.map((season) => season.trim().toLowerCase());
-        log(seasons, 'info');
+        log(seasons, 'debug');
         for (let season of seasons) {
             if (!validSeasons.includes(season)) {
                 console.log(season);
