@@ -12,7 +12,7 @@ let client;
 const log = (string, style) => {
     const styles = {
         info: { prefix: chalk.blue('[INFO]'), logFunction: console.log },
-        err: { prefix: chalk.red('[ERROR]'), logFunction: console.dir },
+        err: { prefix: chalk.red('[ERROR]'), logFunction: console.error },
         warn: { prefix: chalk.yellow('[WARNING]'), logFunction: console.warn },
         done: { prefix: chalk.green('[SUCCESS]'), logFunction: console.log },
         debug: { prefix: chalk.magenta('[DEBUG]'), logFunction: console.log },
