@@ -38,9 +38,7 @@ module.exports = {
         if (!customId) customId = interaction.customId;
 
         log(
-            `Interaction detected: ${
-                customId ?? interaction.commandName
-            } with Type ${
+            `${interaction.user.displayName}: ${
                 interaction.isButton()
                     ? 'Button'
                     : interaction.isAnySelectMenu()
@@ -52,8 +50,8 @@ module.exports = {
                     : interaction.isAutocomplete()
                     ? 'Autocomplete'
                     : 'Unknown'
-            }`,
-            'info'
+            } - ${customId ?? interaction.commandName}`,
+            'interaction'
         );
 
         if (interaction.isButton()) {

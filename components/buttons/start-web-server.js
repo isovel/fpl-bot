@@ -15,7 +15,17 @@ module.exports = {
     run: async (client, interaction) => {
         const users = interaction.customId.split('_').slice(1);
 
-        let url = await userReveal.startWebServer(users);
+        //check if web server is already running
+        if (userReveal.isWebServerRunning()) {
+            return interaction.reply({
+                content: 'Web server is already running.',
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        let url = await userReveal.startWebServer(
+            users.map((u) => u.replaceAll('~', '_'))
+        );
 
         interaction.reply({
             content: `Server started on ${url}`,

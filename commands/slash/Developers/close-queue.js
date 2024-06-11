@@ -36,20 +36,26 @@ module.exports = {
         const divisionConfig = config.divisions.find(
             (d) => d.shortName === division
         );
+        const c_queues = client.runtimeVariables.db.collection('queues');
+
+        let queueData = await c_queues.findOne({
+            division: division,
+        });
 
         //upsert queue in db for division
-        client.runtimeVariables.db
-            .collection('queues')
+
+        c_queues
             .updateOne(
                 { division: division },
                 {
                     $set: {
                         division: division,
                         open: false,
+                        msgId: null,
                     },
                 }
             )
-            .then((result) => {
+            .then(async (result) => {
                 log(result, 'debug');
                 if (result.matchedCount == 0) {
                     return interaction.reply({
@@ -64,6 +70,22 @@ module.exports = {
                     });
                 }
 
+                //remove queueData.msgId message
+                if (queueData.msgId) {
+                    let queueChannel = await client.channels.cache.get(
+                        client.config.channels.queue
+                    );
+                    log(queueChannel, 'debug');
+                    queueChannel.messages
+                        .fetch(queueData.msgId)
+                        .then((msg) => {
+                            msg.delete();
+                        })
+                        .catch((err) => {
+                            log(err, 'err');
+                        });
+                }
+
                 interaction.reply({
                     content: `Queue for division ${division} has been closed.`,
                     ephemeral: client.config.development.ephemeral,
@@ -72,8 +94,7 @@ module.exports = {
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
-                    content:
-                        'A Database error occurred while closing the queue.',
+                    content: 'An error occurred while closing the queue.',
                     ephemeral: client.config.development.ephemeral,
                 });
             });

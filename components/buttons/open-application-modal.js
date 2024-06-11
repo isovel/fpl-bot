@@ -80,6 +80,31 @@ module.exports = {
      * @param {ButtonInteraction} interaction
      */
     run: async (client, interaction) => {
+        //check if user is already in the database
+        let user = await client.runtimeVariables.db
+            .collection('users')
+            .findOne({ discordId: interaction.user.id })
+            .catch((error) => {
+                log(error, 'err');
+                return interaction.reply({
+                    content: 'A database error occurred while checking you in.',
+                    ephemeral: true,
+                });
+            });
+
+        if (user) {
+            return interaction.reply({
+                content: `You have already submitted an application that ${
+                    user.applicationStatus === 1
+                        ? 'is currently pending'
+                        : user.applicationStatus == 2
+                        ? 'has been accepted'
+                        : 'has been denied'
+                }.`,
+                ephemeral: true,
+            });
+        }
+
         const modal = new ModalBuilder()
             .setTitle('Application Form')
             .setCustomId('send-application')
@@ -115,18 +140,16 @@ module.exports = {
                         .setLabel('Last Recorded Rank')
                         .setCustomId('last-recorded-rank')
                         .setPlaceholder(
-                            'Unranked, Bronze, Silver, Gold, Platinum, Diamond'
+                            'e.g. Gold 3 (Unranked, Bronze, Silver, Gold, Platinum, Diamond)'
                         )
                         .setRequired(true)
                         .setStyle(TextInputStyle.Short)
                 ),
                 new ActionRowBuilder().addComponents(
                     new TextInputBuilder()
-                        .setLabel('Highest Recorded Rank')
+                        .setLabel('Highest Recorded Rank+Season')
                         .setCustomId('highest-recorded-rank')
-                        .setPlaceholder(
-                            'Your Highest Recorded Rank and Season (Gold-CB1)'
-                        )
+                        .setPlaceholder('Diamond 2 Closed beta 2')
                         .setRequired(true)
                         .setStyle(TextInputStyle.Short)
                 )

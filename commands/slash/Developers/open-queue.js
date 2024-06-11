@@ -36,10 +36,6 @@ module.exports = {
 
         log(`Opening queue for division ${division}`, 'info');
 
-        const divisionConfig = config.divisions.find(
-            (d) => d.shortName === division
-        );
-
         let c_queues = client.runtimeVariables.db.collection('queues');
 
         //upsert queue in db for division
@@ -48,13 +44,12 @@ module.exports = {
                 { division: division },
                 {
                     $set: {
-                        division: division,
                         open: true,
                     },
                 },
                 { upsert: true }
             )
-            .then((result) => {
+            .then(async (result) => {
                 log(result, 'debug');
                 if (result.modifiedCount === 0 && result.upsertedCount === 0) {
                     return interaction.reply({
@@ -62,51 +57,48 @@ module.exports = {
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
-                //reset queue array
-                c_queues
-                    .updateOne(
-                        { division: division },
-                        {
-                            $set: {
-                                queue: [],
-                            },
-                        }
+
+                log(result, 'debug');
+
+                //send message
+                let embed = new EmbedBuilder()
+                    .setTitle('Check In Division ' + division)
+                    .setDescription(
+                        `Check in for Division ${division} is now open. \nPress the Button to enter or leave the Queue.` // \n||<@&${client.config.roles.divisions[division]}>||`
                     )
-                    .then((result) => {
-                        log(result, 'debug');
-
-                        //send message
-                        let embed = new EmbedBuilder()
-                            .setTitle('Check In')
-                            .setDescription(
-                                `Check in for Division ${division} is now open. \nPress the Button to enter the Queue. \n||<@&${client.config.roles.divisions[division]}>||`
-                            )
-                            .setColor('Purple');
-                        client.channels.cache
-                            .get(client.config.channels.queue)
-                            .send({
-                                embeds: [embed],
-                                components: [
-                                    new ActionRowBuilder().addComponents(
-                                        new ButtonBuilder()
-                                            .setCustomId(`checkin_${division}`)
-                                            .setLabel('Check In')
-                                            .setStyle('Primary')
-                                    ),
-                                ],
-                            });
-
-                        interaction.reply({
-                            content: `Queue for division ${division} has been opened.`,
-                            ephemeral: client.config.development.ephemeral,
-                        });
+                    .setColor('Purple');
+                let msg = await client.channels.cache
+                    .get(client.config.channels.queue)
+                    .send({
+                        embeds: [embed],
+                        components: [
+                            new ActionRowBuilder().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`checkin_${division}`)
+                                    .setLabel('Check In')
+                                    .setStyle('Primary'),
+                                new ButtonBuilder()
+                                    .setCustomId(`checkout_${division}`)
+                                    .setLabel('Check Out')
+                                    .setStyle('Primary')
+                            ),
+                        ],
                     });
+
+                interaction.reply({
+                    content: `Queue for division ${division} has been opened.`,
+                    ephemeral: client.config.development.ephemeral,
+                });
+                //write msg channel to db
+                c_queues.updateOne(
+                    { division: division },
+                    { $set: { msgId: msg.id } }
+                );
             })
             .catch((err) => {
                 log(err, 'err');
-                interaction.reply({
-                    content:
-                        'A Database error occurred while opening the queue.',
+                interaction.channel.send({
+                    content: 'An error occurred while opening the queue.',
                     ephemeral: client.config.development.ephemeral,
                 });
             });

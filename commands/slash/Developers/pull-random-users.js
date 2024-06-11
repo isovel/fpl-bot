@@ -42,21 +42,36 @@ module.exports = {
         const division = interaction.options.getString('division');
         const amount = interaction.options.getInteger('amount') || 1;
 
+        const c_queues = client.runtimeVariables.db.collection('queues');
+
+        let queueData = await c_queues.findOne({
+            division: division,
+        });
+        //check if users have already been pulled
+        if (queueData.randomUsers?.length > 0) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Random users have already been pulled for division ${division}.\n**Users**: ${queueData.randomUsers
+                                .map((user) => user.name)
+                                .join(', ')}`
+                        ),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
         log(`Pulling ${amount} users from division ${division}`, 'info');
 
         const divisionConfig = config.divisions.find(
             (d) => d.shortName === division
         );
 
-        const c_queues = client.runtimeVariables.db.collection('queues');
-
         //Get 10 random users(apply weight) from the queue
 
-        let userData = (
-            await c_queues.findOne({
-                division: division,
-            })
-        ).users;
+        let userData = queueData.users;
 
         if (userData.length < amount) {
             return interaction.reply({
@@ -68,7 +83,6 @@ module.exports = {
         let samples = [];
         let num_samples = amount;
 
-        const users = userData.map((obj) => obj.user);
         const weights = userData.map((obj) => obj.weight);
 
         for (let _ = 0; samples.length < num_samples; _++) {
@@ -81,7 +95,7 @@ module.exports = {
             for (let i = 0; i < weights.length; i++) {
                 random_weight -= weights[i];
                 if (random_weight <= 0) {
-                    samples.push(users[i]);
+                    samples.push(userData[i]);
                     weights[i] = 0;
                     break;
                 }
@@ -90,10 +104,47 @@ module.exports = {
 
         log(samples, 'debug');
 
+        //update queue data
+        await c_queues.updateOne(
+            {
+                division: division,
+            },
+            {
+                $set: {
+                    randomUsers: samples,
+                },
+            }
+        );
+
+        //give all users the pulled role
+        const pulledRole = interaction.guild.roles.cache.get(
+            client.config.roles['fpl-pulled']
+        );
+
+        for (user of samples) {
+            interaction.guild.members.cache
+                .get(user.id)
+                .roles.add(pulledRole)
+                .catch((err) => {
+                    log(err, 'err');
+                    return interaction.reply({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Error')
+                                .setDescription(
+                                    'An error occurred adding pulled role to user.'
+                                )
+                                .setColor('Red'),
+                        ],
+                        ephemeral: client.config.development.ephemeral,
+                    });
+                });
+        }
+
         //send embed with users
         let embed = new EmbedBuilder()
             .setTitle(`Pulled ${amount} users from division ${division}`)
-            .setDescription(samples.map((user) => `<@${user}>`).join('\n'));
+            .setDescription(samples.map((user) => `<@${user.id}>`).join('\n'));
 
         //with button to start web server
         interaction.reply({
@@ -101,8 +152,22 @@ module.exports = {
             components: [
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
-                        .setCustomId('start-web-server_' + samples.join('_'))
+                        .setCustomId(
+                            'start-web-server_' +
+                                samples
+                                    .map((u) => u.name.replaceAll('_', '~'))
+                                    .join('_')
+                        )
                         .setLabel('Start Web Server')
+                        .setStyle('Primary'),
+                    new ButtonBuilder()
+                        .setCustomId(
+                            'create-vc_' +
+                                division +
+                                '_' +
+                                samples.map((u) => u.id).join('_')
+                        )
+                        .setLabel('Create Vc')
                         .setStyle('Primary')
                 ),
             ],

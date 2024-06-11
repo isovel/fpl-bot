@@ -5,6 +5,9 @@ const { log } = require('../../functions');
 
 module.exports = {
     customId: 'application-action',
+    options: {
+        developers: true,
+    },
     /**
      *
      * @param {ExtendedClient} client

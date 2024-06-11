@@ -2,6 +2,7 @@ const {
     ModalSubmitInteraction,
     ActionRowBuilder,
     ButtonBuilder,
+    SharedSlashCommand,
 } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
@@ -96,57 +97,33 @@ module.exports = {
      */
     run: async (client, interaction) => {
         log('Application form submitted!', 'info');
-        const embarkId = interaction.fields.getTextInputValue('embark-id');
-        const lastRecordedRank =
+        const embarkId = interaction.fields
+            .getTextInputValue('embark-id')
+            .replaceAll('_', '~')
+            .replaceAll(' ', '');
+        let lastRecordedRank =
             interaction.fields.getTextInputValue('last-recorded-rank');
-        const highestRecordedRank = interaction.fields.getTextInputValue(
+        let highestRecordedRank = interaction.fields.getTextInputValue(
             'highest-recorded-rank'
         );
         const platform = interaction.fields.getTextInputValue('platform');
         const seasonsPlayed =
             interaction.fields.getTextInputValue('seasons-played');
         let isMember = false;
+        const seasonAbrs = {
+            'closed beta 1': 'cb1',
+            'closed beta 2': 'cb2',
+            'open beta 1': 'ob1',
+            'open beta': 'ob1',
+            'season 1': 's1',
+            'season 2': 's2',
+        };
 
         //validate embark id with regex (asd#1234)
-        if (!embarkId.match(/^[a-zA-Z0-9]+#[0-9]{4}$/)) {
+        if (!embarkId.match(/.{4,}#[0-9]{4}$/)) {
             await interaction.reply({
-                content: 'Please enter a valid Embark ID!',
-                ephemeral: true,
-            });
-            return;
-        }
-
-        //validate last recorded rank
-        if (
-            ![
-                'unranked',
-                'bronze',
-                'silver',
-                'gold',
-                'platinum',
-                'diamond',
-            ].includes(lastRecordedRank.toLowerCase())
-        ) {
-            await interaction.reply({
-                content:
-                    'Please enter a valid rank for your last recorded rank!',
-                ephemeral: true,
-            });
-            return;
-        }
-
-        //validate highest recorded rank with regex(Gold-CB1)
-        if (
-            !highestRecordedRank
-                .toLowerCase()
-                .match(
-                    /^(unranked|bronze|silver|gold|platinum|diamond)-(cb1|cb2|ob1|s1|s2)$/
-                )
-        ) {
-            await interaction.reply({
-                content:
-                    'Please enter a valid rank and season for your highest recorded rank!',
-                ephemeral: true,
+                content: `<@${interaction.user.id}>Please enter a valid Embark ID! You entered: ${embarkId}`,
+                ephemeral: false,
             });
             return;
         }
@@ -154,26 +131,77 @@ module.exports = {
         //validate Platform
         if (!['pc', 'playstation', 'xbox'].includes(platform.toLowerCase())) {
             await interaction.reply({
-                content: 'Please enter a valid platform!',
-                ephemeral: true,
+                content: `<@${interaction.user.id}>Please enter a valid platform! You entered: ${platform}`,
+                ephemeral: false,
             });
             return;
         }
 
         //validate seasons played ()
         let seasons = seasonsPlayed.split(',');
-        let validSeasons = ['cb1', 'cb2', 'ob1', 's1', 's2'];
-        seasons = seasons.map((season) => season.trim().toLowerCase());
-        log(seasons, 'debug');
+        let validSeasons = ['cb1', 'cb2', 'ob', 'ob1', 's1', 's2'];
+        seasons = seasons.map((season) => {
+            //replace all seasonabrs with full names
+            season = season.toLowerCase().trim();
+            if (seasonAbrs[season]) {
+                return seasonAbrs[season];
+            }
+            return season.trim().toLowerCase();
+        });
         for (let season of seasons) {
             if (!validSeasons.includes(season)) {
-                console.log(season);
                 await interaction.reply({
-                    content: 'Please only enter valid seasons!',
-                    ephemeral: true,
+                    content: `<@${
+                        interaction.user.id
+                    }>Please only enter valid seasons! You entered: ${seasons.join(
+                        ', '
+                    )}`,
+                    ephemeral: false,
                 });
                 return;
             }
+        }
+
+        //validate last recorded rank
+        lastRecordedRank = lastRecordedRank.toLowerCase().trim();
+        //if last char is not a number add 4
+        if (!lastRecordedRank[lastRecordedRank.length - 1].match(/[1-4]/)) {
+            lastRecordedRank += ' 4';
+        }
+        if (
+            !lastRecordedRank.match(
+                /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4)$/
+            ) &&
+            lastRecordedRank != 'unranked'
+        ) {
+            await interaction.reply({
+                content: `<@${interaction.user.id}>Please enter a valid rank for your last recorded rank! You entered: ${lastRecordedRank}`,
+                ephemeral: false,
+            });
+            return;
+        }
+
+        //validate highest recorded rank with regex(Gold-CB1)
+
+        //Replace all season abbrs with full names
+        highestRecordedRank = highestRecordedRank.toLowerCase().trim();
+        Object.keys(seasonAbrs).forEach((season) => {
+            highestRecordedRank = highestRecordedRank.replace(
+                season,
+                seasonAbrs[season]
+            );
+        });
+        if (
+            !highestRecordedRank.match(
+                /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (cb1|cb2|ob1|s1|s2)$/
+            ) &&
+            highestRecordedRank != 'unranked'
+        ) {
+            await interaction.reply({
+                content: `<@${interaction.user.id}>Please enter a valid rank and season for your highest recorded rank! You entered: ${highestRecordedRank}`,
+                ephemeral: false,
+            });
+            return;
         }
 
         //show application form 2

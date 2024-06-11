@@ -7,7 +7,6 @@ const {
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
-const components = require('../../../handlers/components');
 
 module.exports = {
     structure: new SlashCommandBuilder()
@@ -34,7 +33,7 @@ module.exports = {
             console.dir(users);
         } catch (error) {
             log(error, 'err');
-            return interaction.update({
+            return interaction.reply({
                 content: 'An error occurred while fetching the applications.',
                 components: [],
                 embeds: [],
@@ -51,7 +50,7 @@ module.exports = {
                     ephemeral: client.config.development.ephemeral,
                 });
             }
-            return interaction.update({
+            return interaction.reply({
                 content: 'There are no pending applications.',
                 components: [],
                 embeds: [],
@@ -88,7 +87,8 @@ module.exports = {
         let seasonTranslate = {
             cb1: 'Closed Beta 1',
             cb2: 'Closed Beta 2',
-            ob1: 'Open Beta 1',
+            ob1: 'Open Beta',
+            ob: 'Open Beta',
             s1: 'Season 1',
             s2: 'Season 2',
         };
@@ -96,13 +96,7 @@ module.exports = {
         let embedData = [
             `**Embark ID:** ${user.embarkId}`,
             `**Last Recorded Rank:** ${user.lastRecordedRank}`,
-            `**Highest Recorded Rank:** ${
-                user.highestRecordedRank.split('-')[0]
-            } in ${
-                seasonTranslate[
-                    user.highestRecordedRank.split('-')[1].toLowerCase()
-                ]
-            }`,
+            `**Highest Recorded Rank:** ${user.highestRecordedRank}`,
             `**Seasons Played:** ${user.seasonsPlayed
                 .split(',')
                 .map((season) => seasonTranslate[season].toLowerCase())
@@ -117,6 +111,8 @@ module.exports = {
             `**KD:** ${user.kd}`,
             `**Winrate:** ${user.winrate}%`,
         ];
+
+        log(embedData, 'debug');
 
         let embed = new EmbedBuilder()
             .setTitle(`**${member.user.displayName}**'s Application`)

@@ -142,7 +142,7 @@ module.exports = {
         const userData = {
             createdAt: new Date(),
             discordId: interaction.user.id,
-            embarkId: prevData[1],
+            embarkId: prevData[1].replaceAll('~', '_'),
             platform: prevData[4],
             lastRecordedRank: prevData[2],
             highestRecordedRank: prevData[3],

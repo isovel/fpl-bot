@@ -3,7 +3,7 @@ const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
 module.exports = {
-    customId: 'checkin',
+    customId: 'checkout',
     options: {
         public: true,
     },
@@ -22,12 +22,10 @@ module.exports = {
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you in.',
+                    content: 'An error occurred while checking you out.',
                     ephemeral: true,
                 });
             });
-        log(division, 'debug');
-        log(user.division, 'debug');
         if (
             !(user?.applicationStatus === 2) ||
             !(user?.division === division)
@@ -45,16 +43,9 @@ module.exports = {
             division: division,
         });
 
-        if (!queueData.open) {
+        if (!queueData.users?.find((u) => u.id === interaction.user.id)) {
             return interaction.reply({
-                content: `The queue for division ${division} is not open at the moment.`,
-                ephemeral: true,
-            });
-        }
-
-        if (queueData.users?.find((u) => u.id === interaction.user.id)) {
-            return interaction.reply({
-                content: 'You are already checked in.',
+                content: 'You are already checked out.',
                 ephemeral: true,
             });
         }
@@ -63,7 +54,7 @@ module.exports = {
             .updateOne(
                 { division: division },
                 {
-                    $addToSet: {
+                    $pull: {
                         users: {
                             id: interaction.user.id,
                             name: user.embarkId.slice(0, -5),
@@ -76,14 +67,14 @@ module.exports = {
                 log(result, 'debug');
 
                 return interaction.reply({
-                    content: 'You have been checked in.',
+                    content: 'You have been checked out.',
                     ephemeral: true,
                 });
             })
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you in.',
+                    content: 'An error occurred while checking you out.',
                     ephemeral: true,
                 });
             });
