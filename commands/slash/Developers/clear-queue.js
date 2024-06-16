@@ -20,17 +20,13 @@ module.exports = {
                 .setRequired(true)
                 .addChoices(
                     config.divisions.map((d) => {
-                        return { name: d.name, value: d.shortName };
+                        return { name: d.shortName, value: d.shortName };
                     })
                 )
         ),
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction<true>} interaction
-     */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
 

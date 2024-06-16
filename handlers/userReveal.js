@@ -2,7 +2,7 @@ const { log } = require('../functions');
 const express = require('express');
 const fs = require('fs');
 const ip = require('ip');
-let app;
+let app, appServer;
 
 /**
  *
@@ -29,12 +29,23 @@ module.exports = {
             });
 
             //serve
-            app.listen(4804, () => {
+            appServer = app.listen(4804, () => {
                 let url = `http://${ip.address()}:4804/${randomString}/`;
-                log('Server started on ' + url, 'info');
                 resolve(url);
+                log('Server started on ' + url, 'info');
             });
         });
+    },
+    stopWebServer: () => {
+        if (app) {
+            log('Stopping web server...', 'info');
+            appServer.close(() => {
+                app = null;
+                return true;
+            });
+        } else {
+            return false;
+        }
     },
     isWebServerRunning: () => {
         return app != null;

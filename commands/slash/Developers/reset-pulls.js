@@ -20,7 +20,7 @@ module.exports = {
                 .setRequired(true)
                 .addChoices(
                     config.divisions.map((d) => {
-                        return { name: d.name, value: d.shortName };
+                        return { name: d.shortName, value: d.shortName };
                     })
                 )
         ),

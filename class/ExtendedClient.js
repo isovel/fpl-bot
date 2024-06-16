@@ -28,6 +28,9 @@ module.exports = class extends Client {
     runtimeVariables = {};
     config = config;
 
+    /**
+     * / / object / list to be used in a call to any of the methods of the object
+     */
     constructor() {
         super({
             intents: 3276799, // Every intent
@@ -58,11 +61,13 @@ module.exports = class extends Client {
         setupFunctions(this);
         schedule.run(this);
 
+        // Set up the mongodb database.
         if (config.handler.mongodb.enabled)
             this.runtimeVariables.db = (await mongodb()).db('FFL-Bot');
 
         await this.login(process.env.DISCORD_LOGIN || config.client.token);
 
+        // deploy this config to the handler
         if (config.handler.deploy) deploy(this, config);
     };
 };

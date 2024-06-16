@@ -9,7 +9,7 @@ let client;
  * @param {string} string - The message to log.
  * @param {'info' | 'err' | 'warn' | 'done' | undefined} style - The style of the log.
  */
-const log = (string, style) => {
+const log = (string, style, dirLog) => {
     const styles = {
         info: { prefix: chalk.blue('[INFO]'), logFunction: console.log },
         err: { prefix: chalk.red('[ERROR]'), logFunction: console.error },
@@ -23,24 +23,37 @@ const log = (string, style) => {
     };
 
     const selectedStyle = styles[style] || { logFunction: console.log };
-    switch (typeof string) {
-        case 'object':
-            string =
-                string.constructor.name +
-                ': ' +
-                JSON.stringify(string, null, 2);
-            break;
-        case 'number':
-            string = string.constructor.name + ': ' + string;
-            break;
-        case 'boolean':
-            string = string.constructor.name + ': ' + string;
-            break;
-        case 'undefined':
-            string = 'Empty log message.';
-            break;
+    if (!dirLog) {
+        if (!style == 'err') {
+            switch (typeof string) {
+                case 'object':
+                    string =
+                        string.constructor.name +
+                        ': ' +
+                        JSON.stringify(string, null, 2);
+                    break;
+                case 'number':
+                    string = string.constructor.name + ': ' + string;
+                    break;
+                case 'boolean':
+                    string = string.constructor.name + ': ' + string;
+                    break;
+                case 'undefined':
+                    string = 'Empty log message.';
+                    break;
+            }
+            selectedStyle.logFunction(
+                `${selectedStyle.prefix || ''} ${string}`
+            );
+        } else {
+            selectedStyle.logFunction(
+                `${selectedStyle.prefix || ''} ${string}`
+            );
+        }
+    } else {
+        console.dir(string);
     }
-    selectedStyle.logFunction(`${selectedStyle.prefix || ''} ${string}`);
+
     if (style === 'err') {
         //write dm to config.users.ownerId
         switch (config.handler.errors) {

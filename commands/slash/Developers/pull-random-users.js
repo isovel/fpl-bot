@@ -20,7 +20,7 @@ module.exports = {
                 .setRequired(true)
                 .addChoices(
                     config.divisions.map((d) => {
-                        return { name: d.name, value: d.shortName };
+                        return { name: d.shortName, value: d.shortName };
                     })
                 )
         )
@@ -40,7 +40,7 @@ module.exports = {
      */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
-        const amount = interaction.options.getInteger('amount') || 1;
+        const amount = interaction.options.getInteger('amount') || 10;
 
         const c_queues = client.runtimeVariables.db.collection('queues');
 
@@ -57,7 +57,8 @@ module.exports = {
                             `Random users have already been pulled for division ${division}.\n**Users**: ${queueData.randomUsers
                                 .map((user) => user.name)
                                 .join(', ')}`
-                        ),
+                        )
+                        .setColor('Red'),
                 ],
                 ephemeral: client.config.development.ephemeral,
             });
@@ -147,31 +148,63 @@ module.exports = {
             .setDescription(samples.map((user) => `<@${user.id}>`).join('\n'));
 
         //with button to start web server
-        interaction.reply({
-            embeds: [embed],
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(
-                            'start-web-server_' +
-                                samples
-                                    .map((u) => u.name.replaceAll('_', '~'))
-                                    .join('_')
-                        )
-                        .setLabel('Start Web Server')
-                        .setStyle('Primary'),
-                    new ButtonBuilder()
-                        .setCustomId(
-                            'create-vc_' +
-                                division +
-                                '_' +
-                                samples.map((u) => u.id).join('_')
-                        )
-                        .setLabel('Create Vc')
-                        .setStyle('Primary')
-                ),
-            ],
-            ephemeral: client.config.development.ephemeral,
-        });
+        interaction.channel
+            .send({
+                reply: {
+                    messageReference: interaction.interaction,
+                },
+                embeds: [embed],
+                components: [
+                    new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(
+                                'start-web-server_' +
+                                    samples
+                                        .map((u) => u.name.replaceAll('_', '~'))
+                                        .join('_')
+                            )
+                            .setLabel('Start Web Server')
+                            .setStyle('Primary'),
+                        new ButtonBuilder()
+                            .setCustomId(
+                                'configure-vc_' +
+                                    division +
+                                    '_' +
+                                    samples.map((u) => u.id).join('_')
+                            )
+                            .setLabel('Configure Vcs')
+                            .setStyle('Primary'),
+                        new ButtonBuilder()
+                            .setCustomId('supply-match-code_' + division)
+                            .setLabel('Supply Match Code')
+                            .setStyle('Primary'),
+                        new ButtonBuilder()
+                            .setCustomId('start-match_' + division)
+                            .setLabel('Start Match')
+                            .setStyle('Primary'),
+                        new ButtonBuilder()
+                            .setCustomId('end-match_' + division)
+                            .setLabel('End Match')
+                            .setStyle('Primary')
+                    ),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            })
+            .then((msg) => {
+                interaction.reply({
+                    content: '',
+                    ephemeral: true,
+                });
+                c_queues.updateOne(
+                    {
+                        division: division,
+                    },
+                    {
+                        $set: {
+                            pulledMsgId: msg.id,
+                        },
+                    }
+                );
+            });
     },
 };

@@ -2,8 +2,11 @@ const {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
     EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
+const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
 
 module.exports = {
@@ -18,7 +21,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      */
     run: async (client, interaction) => {
-        const user = interaction.options.getUser('user');
+        const user = interaction.options.getMember('user');
 
         const c_users = client.runtimeVariables.db.collection('users');
 
@@ -41,6 +44,20 @@ module.exports = {
             });
         }
 
+        //check if there are more random users than pulled users
+        if (queueData.users.length <= queueData.randomUsers.length) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `There are no more users to repull. Queue length: ${queueData.users.length}, Pulled users length: ${queueData.randomUsers.length}`
+                        )
+                        .setColor('Red'),
+                ],
+            });
+        }
+
         if (
             !(queueData.randomUsers.filter((u) => u.id === user.id).length > 0)
         ) {
@@ -53,6 +70,14 @@ module.exports = {
                 ],
             });
         }
+
+        //remove pulled role from user
+        user.roles.remove(
+            interaction.guild.roles.cache.get(client.config.roles['fpl-pulled'])
+        );
+
+        //Remove permissions from user to access vc if exists
+        permHandler.reset(client, interaction, user, userData.division);
 
         //pull new random user from queue.users
         let randomUser;
@@ -70,6 +95,44 @@ module.exports = {
         }
 
         queueData.randomUsers.push(randomUser);
+
+        //add pulled role to random user
+        let pulledUser = await interaction.guild.members.fetch(randomUser.id);
+        pulledUser.roles.add(
+            interaction.guild.roles.cache.get(client.config.roles['fpl-pulled'])
+        );
+        //set permissions for random user
+        permHandler.setPulled(
+            client,
+            interaction,
+            pulledUser,
+            userData.division
+        );
+
+        const c_matches = client.runtimeVariables.db.collection('matches');
+
+        log('MSGID: ' + queueData.pulledMsgId, 'debug');
+
+        const match = await c_matches.findOne({
+            division: userData.division,
+            msgId: queueData.pulledMsgId,
+        });
+
+        log('MATCH: ' + match, 'debug');
+
+        if (match && match.matchCode && match.status == 1) {
+            //send dm
+            pulledUser.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Match')
+                        .setDescription(
+                            `The match code for the match in division ${userData.division} is **${match.matchCode}**`
+                        )
+                        .setColor('Green'),
+                ],
+            });
+        }
 
         c_queues
             .updateOne(
@@ -90,9 +153,23 @@ module.exports = {
                         new EmbedBuilder()
                             .setTitle('Success')
                             .setDescription(
-                                `User ${user.displayName} has been repulled to ${randomUser.name}.`
+                                `User ${user.displayName} has been repulled to ${pulledUser.displayName}.`
                             )
                             .setColor('Green'),
+                    ],
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId('stop-web-server')
+                                .setLabel('Stop Old Web Server')
+                                .setStyle('Primary'),
+                            new ButtonBuilder()
+                                .setCustomId(
+                                    'start-web-server_' + randomUser.name
+                                )
+                                .setLabel('Start Web Server')
+                                .setStyle('Primary')
+                        ),
                     ],
                 });
             })

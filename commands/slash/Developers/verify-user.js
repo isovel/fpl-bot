@@ -2,8 +2,12 @@ const {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
     EmbedBuilder,
+    PermissionFlagsBits,
+    ChannelType,
+    OverwriteType,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
+const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
 
 module.exports = {
@@ -18,7 +22,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      */
     run: async (client, interaction) => {
-        const user = interaction.options.getUser('user');
+        const user = interaction.options.getMember('user');
 
         const c_users = client.runtimeVariables.db.collection('users');
 
@@ -34,7 +38,6 @@ module.exports = {
                 ],
             });
         }
-
         if (userData.verified) {
             return interaction.reply({
                 embeds: [
@@ -52,17 +55,25 @@ module.exports = {
         );
 
         //give user the verified role
-        let fetchedUser = await interaction.guild.members.cache.get(user.id);
-        fetchedUser.roles
+        user.roles
             .add(client.config.roles['fpl-verified'])
             .then(async () => {
-                fetchedUser.voice.setMute(false);
+                user.voice.setMute(false);
+
+                //reset unverified channel permissions
+                permHandler.setVerified(
+                    client,
+                    interaction,
+                    user,
+                    userData.division
+                );
+
                 interaction.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Success')
                             .setDescription(
-                                `${user.username} has been verified.`
+                                `${user.displayName} has been verified.`
                             )
                             .setColor('Green'),
                     ],

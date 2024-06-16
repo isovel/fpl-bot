@@ -26,6 +26,13 @@ module.exports = {
         ],
         ownerId: '738346395416789022',
     },
+    rewards: {
+        Elimination: 3,
+        Assist: 1,
+        Win: 30,
+        'Highest-Combat': 10,
+        'Highest-Support': 10,
+    },
     channels: {
         modLogs: {
             enabled: false,

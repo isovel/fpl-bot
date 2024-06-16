@@ -4,6 +4,7 @@ const {
     EmbedBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
+const permHandler = require('../../../handlers/permissions')['div-vc'];
 
 module.exports = {
     structure: new SlashCommandBuilder()
@@ -17,7 +18,7 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      */
     run: async (client, interaction) => {
-        const user = interaction.options.getUser('user');
+        const user = interaction.options.getMember('user');
 
         const c_users = client.runtimeVariables.db.collection('users');
 
@@ -50,17 +51,24 @@ module.exports = {
             { $set: { verified: false } }
         );
 
-        //give user the verified role
-        interaction.guild.members.cache
-            .get(user.id)
-            .roles.remove(client.config.roles['fpl-verified'])
+        //Remove the verified role
+        user.roles
+            .remove(client.config.roles['fpl-verified'])
             .then(() => {
+                //reset vc permissions
+                permHandler.setUnverified(
+                    client,
+                    interaction,
+                    user,
+                    userData.division
+                );
+
                 interaction.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Success')
                             .setDescription(
-                                `The verificationg of ${user.username} has been removed.`
+                                `The verificationg of ${user.displayName} has been removed.`
                             )
                             .setColor('Green'),
                     ],
