@@ -68,6 +68,7 @@ module.exports = {
             {
                 $set: {
                     status: 1,
+                    users: users,
                 },
             }
         );

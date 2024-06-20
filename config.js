@@ -26,13 +26,80 @@ module.exports = {
         ],
         ownerId: '738346395416789022',
     },
-    rewards: {
-        Elimination: 3,
-        Assist: 1,
-        Win: 30,
-        'Highest-Combat': 10,
-        'Highest-Support': 10,
-    },
+    gamemodes: [
+        {
+            label: 'CASHOUT',
+            value: 'cashout',
+            rewards: [
+                //maximum of 5 options
+                {
+                    name: 'placement',
+                    label: 'Placement',
+                    description: 'Placement. Number between 1-4.',
+                    type: 'select',
+                    options: [
+                        { name: '1', value: 30 },
+                        { name: '2', value: 20 },
+                        { name: '3', value: 10 },
+                        { name: '4', value: 0 },
+                    ],
+                },
+                {
+                    name: 'kills',
+                    label: 'Kills',
+                    description: 'Number of kills. Number >= 0.',
+                    type: 'range',
+                    min: 0,
+                    max: Infinity,
+                    value: 3,
+                },
+                {
+                    name: 'assists',
+                    label: 'Assists',
+                    description: 'Number of assists. Number >= 0.',
+                    type: 'range',
+                    min: 0,
+                    max: Infinity,
+                    value: 1,
+                },
+                {
+                    name: 'highest-combat',
+                    label: 'Highest Combat',
+                    description: 'Highest Combat. Yes or No.',
+                    type: 'bool',
+                    value: 5,
+                },
+                {
+                    name: 'highest-support',
+                    label: 'Highest Support',
+                    description: 'Highest Support. Yes or No.',
+                    type: 'bool',
+                    value: 5,
+                },
+            ],
+        },
+        {
+            label: 'TERMINAL ATTACK',
+            value: 'terminal-attack',
+        },
+        {
+            label: 'POWER SHIFT',
+            value: 'power-shift',
+        },
+        {
+            label: 'QUICK CASH',
+            value: 'quick-cash',
+        },
+        {
+            label: 'SOLO BANK IT',
+            value: 'solo-bank-it',
+        },
+        {
+            label: 'BANK IT',
+            value: 'bank-it',
+        },
+    ],
+
     channels: {
         modLogs: {
             enabled: false,

@@ -1,4 +1,8 @@
-const { EmbedBuilder } = require('discord.js');
+const {
+    EmbedBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
+} = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
@@ -36,35 +40,42 @@ module.exports = {
             });
         }
 
+        //set the match status to 2 to indicate that the match has ended
+        await c_matches.updateOne(
+            {
+                division: division,
+                msgId: interaction.message.id,
+            },
+            {
+                $set: {
+                    status: 2,
+                },
+            }
+        );
+
         //send a message to the interaction channel to enter the match result for the first player. It should first have a message to ask how many teams played in the match, then ask for the result of each member of each team. The member result message should have a selection menu to select which team they were on. When the team they were on is selected a modal opens up to enter the data.
         await interaction.reply({
             embeds: [
                 new EmbedBuilder()
-                    .setTitle('Teams Played')
+                    .setTitle('Gamemode Selection')
                     .setDescription(
-                        'Please enter the number of teams that played in the match.'
+                        'Please enter the gamemode of the match. This will be used to calculate the points for the match.'
                     )
                     .setColor('Purple'),
             ],
             components: [
                 new ActionRowBuilder().addComponents(
-                    new SelectMenuBuilder()
-                        .setCustomId('match-teams-amount')
-                        .setPlaceholder('Select the number of teams')
-                        .addOptions([
-                            {
-                                label: '2',
-                                value: '2',
-                            },
-                            {
-                                label: '3',
-                                value: '3',
-                            },
-                            {
-                                label: '4',
-                                value: '4',
-                            },
-                        ])
+                    new StringSelectMenuBuilder()
+                        .setCustomId(
+                            `match-gamemode_${division}_${interaction.message.id}`
+                        )
+                        .setPlaceholder('Select the Gamemode')
+                        .addOptions(
+                            client.config.gamemodes.map((gm) => ({
+                                label: gm.label,
+                                value: gm.value,
+                            }))
+                        )
                 ),
             ],
         });

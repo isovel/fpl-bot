@@ -28,7 +28,7 @@ module.exports = {
             opt
                 .setName('amount')
                 .setDescription('The amount of users to pull.')
-                .setRequired(false)
+                .setRequired(true)
                 .setMinValue(1)
         ),
     options: {
@@ -40,7 +40,7 @@ module.exports = {
      */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
-        const amount = interaction.options.getInteger('amount') || 10;
+        const amount = interaction.options.getInteger('amount');
 
         const c_queues = client.runtimeVariables.db.collection('queues');
 
@@ -192,7 +192,7 @@ module.exports = {
             })
             .then((msg) => {
                 interaction.reply({
-                    content: '',
+                    content: 'Pulled random users and sent message.',
                     ephemeral: true,
                 });
                 c_queues.updateOne(
