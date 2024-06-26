@@ -193,13 +193,13 @@ pullUserButton.addEventListener('click', () => {
         userListWrapper.classList.remove('opacity-0');
         for (let i = 0; i < window.users.length; i++) {
             let li = document.createElement('li');
-            li.innerText = window.users[i];
+            li.innerText = window.userNames[i];
             userList.appendChild(li);
         }
         return;
     }
     let user = window.users[pulledUsers.length];
-    letterStopDelay = 20; // 40 / (user.length / 5);
+    letterStopDelay = 15; // 40 / (user.length / 5);
     revealText(window.users[pulledUsers.length].toUpperCase());
     if (pulledUsers.length == window.users.length - 1) {
         pullUserButton.innerText = 'Continue';

@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script>
             window.users = <%- JSON.stringify(users) %>
+            window.userNames = window.users
             window.users = window.users.map((user) => {
                 let dashes = "-".repeat(Math.floor((16-user.length)/2))
                 return `${dashes}${user}${dashes}`
