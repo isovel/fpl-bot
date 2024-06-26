@@ -16,7 +16,7 @@ module.exports = {
             app = express();
             app.set('view engine', 'ejs');
 
-            let randomString = Math.random().toString(36).substring(7);
+            let randomString = 'userReveal'; //Math.random().toString(36).substring(7);
             //set views folder to static
             app.set('views', './static');
 
