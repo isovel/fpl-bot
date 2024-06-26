@@ -54,9 +54,16 @@ module.exports = {
                     });
 
                 //if user doesnt have verified role
-                if (!u.roles.cache.has(client.config.roles['fpl-verified'])) {
+                if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
                     return interaction.reply({
-                        content: `${u.displayName} is not yet verified.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Error')
+                                .setColor('Red')
+                                .setDescription(
+                                    `${u.displayName} is not yet verified.`
+                                ),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
@@ -87,7 +94,12 @@ module.exports = {
         );
 
         interaction.reply({
-            content: 'Match started.',
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Match')
+                    .setDescription('Match started.')
+                    .setColor('Green'),
+            ],
             ephemeral: client.config.development.ephemeral,
         });
     },

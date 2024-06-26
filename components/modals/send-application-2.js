@@ -2,6 +2,7 @@ const {
     ModalSubmitInteraction,
     ActionRowBuilder,
     ButtonBuilder,
+    EmbedBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
