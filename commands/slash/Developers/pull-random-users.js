@@ -101,7 +101,7 @@ module.exports = {
         const c_users = client.runtimeVariables.db.collection('users');
         await userData.forEach(async (user) => {
             let discordUser;
-            setTimeout(async () => {
+            await setTimeout(async () => {
                 discordUser = await interaction.guild.members
                     .fetch(user.id)
                     .catch((err) => {

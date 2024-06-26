@@ -20,6 +20,12 @@ let volume = 0.5; // Volume of the sound
 let animationRunning = false;
 let pulledUsers = [];
 
+//get volume from local storage
+if (localStorage.getItem('volume')) {
+    volume = localStorage.getItem('volume');
+    volumeSlider.value = volume * 100;
+}
+
 const canvas = document.getElementById('textReveal');
 const ctx = canvas.getContext('2d');
 
@@ -193,7 +199,7 @@ pullUserButton.addEventListener('click', () => {
         return;
     }
     let user = window.users[pulledUsers.length];
-    letterStopDelay = 40 / (user.length / 5);
+    letterStopDelay = 20; // 40 / (user.length / 5);
     revealText(window.users[pulledUsers.length].toUpperCase());
     if (pulledUsers.length == window.users.length - 1) {
         pullUserButton.innerText = 'Continue';
@@ -203,4 +209,5 @@ pullUserButton.addEventListener('click', () => {
 
 volumeSlider.addEventListener('input', () => {
     volume = volumeSlider.value / 100;
+    localStorage.setItem('volume', volume);
 });
