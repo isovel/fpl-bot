@@ -241,21 +241,11 @@ module.exports = {
                 components: [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
-                            .setCustomId(
-                                'start-web-server_' +
-                                    samples
-                                        .map((u) => u.name.replaceAll('_', '~'))
-                                        .join('_')
-                            )
+                            .setCustomId('start-web-server_' + division)
                             .setLabel('Start Web Server')
                             .setStyle('Primary'),
                         new ButtonBuilder()
-                            .setCustomId(
-                                'configure-vc_' +
-                                    division +
-                                    '_' +
-                                    samples.map((u) => u.id).join('_')
-                            )
+                            .setCustomId('configure-vc_' + division)
                             .setLabel('Configure Vcs')
                             .setStyle('Primary'),
                         new ButtonBuilder()

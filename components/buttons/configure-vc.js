@@ -1,8 +1,4 @@
-const {
-    PermissionFlagsBits,
-    ChannelType,
-    OverwriteType,
-} = require('discord.js');
+const { PermissionFlagsBits, ChannelType } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
@@ -27,10 +23,30 @@ module.exports = {
      * @param {*} interaction
      */
     run: async (client, interaction) => {
-        const users = interaction.customId.split('_').slice(2);
         const division = interaction.customId.split('_')[1];
 
         log('Creating a VC for division ' + division, 'info');
+
+        const c_queues = client.runtimeVariables.db.collection('queues');
+
+        let queueData = await c_queues.findOne({
+            division: division,
+        });
+
+        if (!queueData?.randomUsers?.length) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription('Queue not found in the database.')
+                        .setColor('Red'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        const users = queueData.randomUsers.map((u) => u.id);
+
         log('Users: ' + users.join(', '), 'info');
 
         //create a vc in client.config.categories['fpl-vcs'] and give every user the right to see it and join it but not to talk
@@ -39,9 +55,6 @@ module.exports = {
         );
         //client.config.roles['fpl-pulled'] client.config.roles['fpl-approved']
         const everyoneRole = interaction.guild.roles.everyone;
-        const pulledRole = interaction.guild.roles.cache.get(
-            client.config.roles['fpl-pulled']
-        );
         const approvedRole = interaction.guild.roles.cache.get(
             client.config.roles['fpl-verified']
         );
