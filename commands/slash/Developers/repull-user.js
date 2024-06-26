@@ -1,11 +1,9 @@
 const {
-    ChatInputCommandInteraction,
     SlashCommandBuilder,
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
 } = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
 
@@ -16,10 +14,9 @@ module.exports = {
         .addUserOption((opt) =>
             opt.setName('user').setDescription('The user.').setRequired(true)
         ),
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
+    options: {
+        developers: true,
+    },
     run: async (client, interaction) => {
         const user = interaction.options.getMember('user');
 
@@ -41,6 +38,7 @@ module.exports = {
                         .setDescription('Queue not found in the database.')
                         .setColor('Red'),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -49,12 +47,13 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('Error')
+                        .setTitle('Warning')
                         .setDescription(
                             `There are no more users to repull. Queue length: ${queueData.users.length}, Pulled users length: ${queueData.randomUsers.length}`
                         )
-                        .setColor('Red'),
+                        .setColor('Yellow'),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -64,10 +63,11 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('Error')
+                        .setTitle('Warning')
                         .setDescription('User not found in the queue.')
-                        .setColor('Red'),
+                        .setColor('Yellow'),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -171,6 +171,7 @@ module.exports = {
                                 .setStyle('Primary')
                         ),
                     ],
+                    ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
@@ -184,6 +185,7 @@ module.exports = {
                             )
                             .setColor('Red'),
                     ],
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

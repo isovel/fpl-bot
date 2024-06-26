@@ -1,11 +1,9 @@
 const {
     SlashCommandBuilder,
-    ChatInputCommandInteraction,
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
 } = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
 const config = require('../../../config');
 const { log } = require('../../../functions');
 
@@ -34,10 +32,6 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction<true>} interaction
-     */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
         const amount = interaction.options.getInteger('amount');
@@ -47,18 +41,33 @@ module.exports = {
         let queueData = await c_queues.findOne({
             division: division,
         });
-        //check if users have already been pulled
-        if (queueData.randomUsers?.length > 0) {
+
+        if (!queueData) {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
+                            `Queue data for division ${division} not found.`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        //check if users have already been pulled
+        if (queueData.randomUsers?.length > 0) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription(
                             `Random users have already been pulled for division ${division}.\n**Users**: ${queueData.randomUsers
                                 .map((user) => user.name)
                                 .join(', ')}`
                         )
-                        .setColor('Red'),
+                        .setColor('Yellow'),
                 ],
                 ephemeral: client.config.development.ephemeral,
             });
@@ -76,13 +85,89 @@ module.exports = {
 
         if (userData.length < amount) {
             return interaction.reply({
-                content: `There are not enough users in the queue. Current queue length: ${userData.length}`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription(
+                            `There are not enough users in the queue. Current queue length: ${userData.length}`
+                        )
+                        .setColor('Yellow'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        //update user data with weight modifiers
+        const c_users = client.runtimeVariables.db.collection('users');
+        await userData.forEach(async (user) => {
+            let discordUser;
+            setTimeout(async () => {
+                discordUser = await interaction.guild.members
+                    .fetch(user.id)
+                    .catch((err) => {
+                        log(
+                            `User ${user.name} not found in guild. Removing from queue.`,
+                            'warn'
+                        );
+                        c_queues.updateOne(
+                            { division: division },
+                            {
+                                $pull: {
+                                    users: {
+                                        id: user.id,
+                                    },
+                                },
+                            }
+                        );
+
+                        //remove from userData
+                        userData = userData.filter((u) => u.id != user.id);
+                    });
+            }, 25);
+
+            let weight = 1;
+            let specialRoles = [];
+            client.config.roles.weightModify.forEach((role) => {
+                if (discordUser.roles.cache.has(role.id)) {
+                    weight += role.multiplier - 1;
+                    specialRoles.push(role.name);
+                }
+            });
+
+            if (user.weight != weight) {
+                c_users.updateOne(
+                    { discordId: discordUser.id },
+                    {
+                        $set: {
+                            weight: weight,
+                            defaultWeight: weight,
+                            specialRoles: specialRoles,
+                        },
+                    }
+                );
+
+                user.weight = weight;
+            }
+        });
+
+        if (userData.length < amount) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription(
+                            `There are not enough users in the queue. Current queue length: ${userData.length}`
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: client.config.development.ephemeral,
             });
         }
 
         let samples = [];
         let num_samples = amount;
+
+        log(userData, 'debug', true);
 
         const weights = userData.map((obj) => obj.weight);
 
@@ -123,23 +208,22 @@ module.exports = {
         );
 
         for (user of samples) {
-            interaction.guild.members.cache
-                .get(user.id)
-                .roles.add(pulledRole)
-                .catch((err) => {
-                    log(err, 'err');
-                    return interaction.reply({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle('Error')
-                                .setDescription(
-                                    'An error occurred adding pulled role to user.'
-                                )
-                                .setColor('Red'),
-                        ],
-                        ephemeral: client.config.development.ephemeral,
-                    });
+            let discordUser = await interaction.guild.members.fetch(user.id);
+
+            discordUser.roles.add(pulledRole).catch((err) => {
+                log(err, 'err');
+                return interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred adding pulled role to user.'
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
                 });
+            });
         }
 
         //send embed with users
@@ -192,6 +276,14 @@ module.exports = {
             })
             .then((msg) => {
                 interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                `Pulled ${amount} users from division ${division}.`
+                            )
+                            .setColor('Green'),
+                    ],
                     content: 'Pulled random users and sent message.',
                     ephemeral: true,
                 });

@@ -1,9 +1,4 @@
-const {
-    ChatInputCommandInteraction,
-    SlashCommandBuilder,
-    EmbedBuilder,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
 
 module.exports = {
@@ -13,10 +8,9 @@ module.exports = {
         .addUserOption((opt) =>
             opt.setName('user').setDescription('The user.').setRequired(true)
         ),
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
+    options: {
+        developers: true,
+    },
     run: async (client, interaction) => {
         const user = interaction.options.getMember('user');
 

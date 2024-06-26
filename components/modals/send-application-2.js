@@ -88,32 +88,76 @@ module.exports = {
 
         //validate wins, losses, eliminations, deaths, matches played
         if (!wins.match(/^[0-9]+$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid number of wins! ${wins}`,
+                'warn'
+            );
             await interaction.reply({
-                content: 'Please enter a valid number of wins!',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid number of wins! You entered: ${wins}`
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
             return;
         }
 
         if (!losses.match(/^[0-9]+$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid number of losses! ${losses}`,
+                'warn'
+            );
             await interaction.reply({
-                content: 'Please enter a valid number of losses!',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid number of losses! You entered: ${losses}`
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
             return;
         }
 
         if (!eliminations.match(/^[0-9]+$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid number of eliminations! ${eliminations}`,
+                'warn'
+            );
             await interaction.reply({
-                content: 'Please enter a valid number of eliminations!',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid number of eliminations! You entered: ${eliminations}`
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
             return;
         }
 
         if (!deaths.match(/^[0-9]+$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid number of deaths! ${deaths}`,
+                'warn'
+            );
             await interaction.reply({
-                content: 'Please enter a valid number of deaths!',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid number of deaths! You entered: ${deaths}`
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
             return;
@@ -121,23 +165,34 @@ module.exports = {
 
         //validate playtime (whole number)
         if (!playtime.match(/^[0-9]+$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid playtime! ${playtime}`,
+                'warn'
+            );
             await interaction.reply({
-                content: 'Please enter a valid playtime!',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid playtime! You entered: ${playtime}`
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
             return;
         }
 
-        //check if user has the "YouTube Member" role
-        if (
-            interaction.member.roles.cache.some((role) =>
-                role.name.toLowerCase().includes('youtube member')
-            )
-        ) {
-            isMember = true;
-        }
-
         const prevData = interaction.customId.split('_');
+
+        let weight = 1;
+        let specialRoles = [];
+        client.config.roles.weightModify.forEach((role) => {
+            if (interaction.member.roles.cache.has(role.id)) {
+                weight += role.multiplier - 1;
+                specialRoles.push(role.name);
+            }
+        });
 
         const userData = {
             createdAt: new Date(),
@@ -158,8 +213,9 @@ module.exports = {
                 (wins / (parseInt(wins) + parseInt(losses))) *
                 100
             ).toFixed(2),
-            isMember: isMember,
-            weight: isMember ? 2 : 1,
+            specialRoles: specialRoles,
+            weight: weight,
+            defaultWeight: weight,
             applicationStatus: 1, // 0 = rejected, 1 = pending, 2 = accepted
         };
 

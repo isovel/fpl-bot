@@ -4,7 +4,7 @@ module.exports = {
         id: process.env.DISCORD_CLIENT_ID,
     },
     handler: {
-        prefix: 'ff_',
+        prefix: 'fpl_',
         deploy: true,
         commands: {
             prefix: true,
@@ -22,7 +22,8 @@ module.exports = {
         developers: [
             '738346395416789022',
             '457236806853853185',
-            '912074676505812994',
+            '948229068363530260',
+            '290164002997272577',
         ],
         ownerId: '738346395416789022',
     },
@@ -30,73 +31,27 @@ module.exports = {
         {
             label: 'CASHOUT',
             value: 'cashout',
-            rewards: [
-                //maximum of 5 options
-                {
-                    name: 'placement',
-                    label: 'Placement',
-                    description: 'Placement. Number between 1-4.',
-                    type: 'select',
-                    options: [
-                        { name: '1', value: 30 },
-                        { name: '2', value: 20 },
-                        { name: '3', value: 10 },
-                        { name: '4', value: 0 },
-                    ],
-                },
-                {
-                    name: 'kills',
-                    label: 'Kills',
-                    description: 'Number of kills. Number >= 0.',
-                    type: 'range',
-                    min: 0,
-                    max: Infinity,
-                    value: 3,
-                },
-                {
-                    name: 'assists',
-                    label: 'Assists',
-                    description: 'Number of assists. Number >= 0.',
-                    type: 'range',
-                    min: 0,
-                    max: Infinity,
-                    value: 1,
-                },
-                {
-                    name: 'highest-combat',
-                    label: 'Highest Combat',
-                    description: 'Highest Combat. Yes or No.',
-                    type: 'bool',
-                    value: 5,
-                },
-                {
-                    name: 'highest-support',
-                    label: 'Highest Support',
-                    description: 'Highest Support. Yes or No.',
-                    type: 'bool',
-                    value: 5,
-                },
-            ],
+            teams: 4,
         },
         {
             label: 'TERMINAL ATTACK',
             value: 'terminal-attack',
+            teams: 2,
         },
         {
             label: 'POWER SHIFT',
             value: 'power-shift',
+            teams: 2,
         },
         {
             label: 'QUICK CASH',
             value: 'quick-cash',
-        },
-        {
-            label: 'SOLO BANK IT',
-            value: 'solo-bank-it',
+            teams: 3,
         },
         {
             label: 'BANK IT',
             value: 'bank-it',
+            teams: 4,
         },
     ],
 
@@ -105,7 +60,7 @@ module.exports = {
             enabled: false,
             channel: '1246810115479310427',
         },
-        queue: '1247568667550421092',
+        queue: '1254462088148029541',
         voice: {
             divisions: {
                 verified: {
@@ -126,7 +81,14 @@ module.exports = {
             'A': '1247986726060687492',
             'B': '1247986794390229152',
         },
-        weightModify: [{ id: '1247210839291990016', multiplier: 2 }],
+        //multipliers will be added to the user's weight (weight+=multiplier-1)
+        weightModify: [
+            {
+                id: '1247210839291990016',
+                multiplier: 100,
+                name: 'YouTube Member',
+            },
+        ],
         'fpl-admin': '1246807125930278952',
         'fpl-pulled': '1249764610739798066',
         'fpl-verified': '1249764674128449567',
@@ -164,76 +126,4 @@ module.exports = {
             shortName: 'B',
         },
     ],
-    times: {
-        timezones: [
-            {
-                name: 'EU',
-                description: 'Europe',
-                tz: 'Europe/Berlin',
-            },
-            {
-                name: 'NA',
-                description: 'North America',
-                tz: 'EST',
-            },
-        ],
-        /* Cron Time Format: 
-        0 0 0 0 0 0
-        ┬ ┬ ┬ ┬ ┬ ┬
-        │ │ │ │ │ └ day of week (0 - 7) (0 or 7 is Sun)
-        │ │ │ │ └───── month (1 - 12)
-        │ │ │ └────────── day of month (1 - 31)
-        │ │ └─────────────── hour (0 - 23)
-        │ └──────────────────── minute (0 - 59)
-        └───────────────────────── second (0 - 59, OPTIONAL) */
-        checkInTimeOffset: 30, //how long before the match to send the check in message
-        checkInEndOffset: 5,
-        checkin: [
-            {
-                division: 'A',
-                isEnd: false,
-                recurrenceData: {
-                    dayOfWeek: 3,
-                    hour: 22,
-                    minute: 15,
-                    tz: 'Europe/Berlin',
-                },
-            },
-        ],
-        matches: [
-            /*{
-                timezone: 'EU',
-                division: 'A',
-                nr: 1,
-                recurrenceData: {
-                    dayOfWeek: 3,
-                    hour: 22,
-                    minute: 45,
-                    tz: 'Europe/Berlin',
-                },
-            },
-            {
-                timezone: 'EU',
-                division: 'A',
-                nr: 1,
-                recurrenceData: {
-                    dayOfWeek: 4,
-                    hour: 21,
-                    minute: 30,
-                    tz: 'Europe/Berlin',
-                },
-            },
-            {
-                timezone: 'EU',
-                division: 'A',
-                nr: 2,
-                recurrenceData: {
-                    dayOfWeek: 4,
-                    hour: 22,
-                    minute: 0,
-                    tz: 'Europe/Berlin',
-                },
-            },*/
-        ],
-    },
 };

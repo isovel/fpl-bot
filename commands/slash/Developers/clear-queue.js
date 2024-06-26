@@ -1,11 +1,4 @@
-const {
-    SlashCommandBuilder,
-    ChatInputCommandInteraction,
-    ButtonBuilder,
-    ActionRowBuilder,
-    EmbedBuilder,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const config = require('../../../config');
 const { log } = require('../../../functions');
 
@@ -48,7 +41,14 @@ module.exports = {
                 log(result, 'debug');
                 if (result.modifiedCount === 0 && result.upsertedCount === 0) {
                     return interaction.reply({
-                        content: `Queue for division ${division} is already empty.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Warning')
+                                .setDescription(
+                                    `Queue for division ${division} is already empty.`
+                                )
+                                .setColor('Yellow'),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
@@ -56,15 +56,28 @@ module.exports = {
                 log(result, 'debug');
 
                 client.channels.cache.get(client.config.channels.queue).send({
-                    content: `Queue for division ${division} has been cleared.`,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                `Queue for division ${division} has been cleared.`
+                            )
+                            .setColor('Green'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
-                    content:
-                        'A Database error occurred while opening the queue.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'A Database error occurred while clearing the queue.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             });

@@ -1,11 +1,9 @@
 const {
     SlashCommandBuilder,
-    ChatInputCommandInteraction,
     ButtonBuilder,
     ActionRowBuilder,
     EmbedBuilder,
 } = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
 const config = require('../../../config');
 const { log } = require('../../../functions');
 
@@ -27,10 +25,6 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction<true>} interaction
-     */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
 
@@ -53,7 +47,14 @@ module.exports = {
                 log(result, 'debug');
                 if (result.modifiedCount === 0 && result.upsertedCount === 0) {
                     return interaction.reply({
-                        content: `Queue for division ${division} is already open.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Warning')
+                                .setDescription(
+                                    `Queue for division ${division} is already open.`
+                                )
+                                .setColor('Yellow'),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
@@ -86,7 +87,14 @@ module.exports = {
                     });
 
                 interaction.reply({
-                    content: `Queue for division ${division} has been opened.`,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                `Queue for division ${division} has been opened.`
+                            )
+                            .setColor('Green'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
                 //write msg channel to db
@@ -98,7 +106,14 @@ module.exports = {
             .catch((err) => {
                 log(err, 'err');
                 interaction.channel.send({
-                    content: 'An error occurred while opening the queue.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while opening the queue.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             });

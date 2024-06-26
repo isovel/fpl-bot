@@ -35,7 +35,6 @@ module.exports = {
                 ephemeral: true,
             });
         }
-        let weight = user.weight || 1;
 
         const c_queues = client.runtimeVariables.db.collection('queues');
 
@@ -57,8 +56,6 @@ module.exports = {
                     $pull: {
                         users: {
                             id: interaction.user.id,
-                            name: user.embarkId.slice(0, -5),
-                            weight,
                         },
                     },
                 }

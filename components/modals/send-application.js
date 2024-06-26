@@ -2,7 +2,7 @@ const {
     ModalSubmitInteraction,
     ActionRowBuilder,
     ButtonBuilder,
-    SharedSlashCommand,
+    EmbedBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
@@ -117,29 +117,52 @@ module.exports = {
             'open beta': 'ob1',
             'season 1': 's1',
             'season 2': 's2',
+            'season 3': 's3',
         };
 
         //validate embark id with regex (asd#1234)
-        if (!embarkId.match(/.{4,}#[0-9]{4}$/)) {
+        if (!embarkId.match(/.{2,}#[0-9]{4}$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid Embark ID! ${embarkId}`,
+                'warn'
+            );
             await interaction.reply({
-                content: `<@${interaction.user.id}>Please enter a valid Embark ID! You entered: ${embarkId}`,
-                ephemeral: false,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `<@${interaction.user.id}> Please enter a valid Embark ID! You entered: ${embarkId}`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
             });
             return;
         }
 
         //validate Platform
         if (!['pc', 'playstation', 'xbox'].includes(platform.toLowerCase())) {
+            log(
+                `${interaction.user.displayName} entered an invalid platform! ${platform}`,
+                'warn'
+            );
             await interaction.reply({
-                content: `<@${interaction.user.id}>Please enter a valid platform! You entered: ${platform}`,
-                ephemeral: false,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `<@${interaction.user.id}> Please enter a valid platform! You entered: ${platform}`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
             });
             return;
         }
 
         //validate seasons played ()
         let seasons = seasonsPlayed.split(',');
-        let validSeasons = ['cb1', 'cb2', 'ob', 'ob1', 's1', 's2'];
+        let validSeasons = ['cb1', 'cb2', 'ob', 'ob1', 's1', 's2', 's3'];
         seasons = seasons.map((season) => {
             //replace all seasonabrs with full names
             season = season.toLowerCase().trim();
@@ -150,13 +173,24 @@ module.exports = {
         });
         for (let season of seasons) {
             if (!validSeasons.includes(season)) {
+                log(
+                    `${interaction.user.displayName} entered an invalid season! ${season}`,
+                    'warn'
+                );
                 await interaction.reply({
-                    content: `<@${
-                        interaction.user.id
-                    }>Please only enter valid seasons! You entered: ${seasons.join(
-                        ', '
-                    )}`,
-                    ephemeral: false,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                `<@${
+                                    interaction.user.id
+                                }> Please only enter valid seasons! You entered: ${seasons.join(
+                                    ', '
+                                )}`
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: true,
                 });
                 return;
             }
@@ -164,9 +198,21 @@ module.exports = {
 
         //validate last recorded rank
         lastRecordedRank = lastRecordedRank.toLowerCase().trim();
+        if (lastRecordedRank.split(' ')[0] == 'plat') {
+            lastRecordedRank = lastRecordedRank.replace('plat', 'platinum');
+        }
         //if last char is not a number add 4
         if (!lastRecordedRank[lastRecordedRank.length - 1].match(/[1-4]/)) {
             lastRecordedRank += ' 4';
+        }
+        if (lastRecordedRank.startsWith('unranked')) {
+            lastRecordedRank = 'unranked';
+        }
+        if (lastRecordedRank.split(' ').length > 2) {
+            lastRecordedRank = lastRecordedRank
+                .split(' ')
+                .slice(0, 2)
+                .join(' ');
         }
         if (
             !lastRecordedRank.match(
@@ -174,9 +220,20 @@ module.exports = {
             ) &&
             lastRecordedRank != 'unranked'
         ) {
+            log(
+                `${interaction.user.displayName} entered an invalid last recorded rank! ${lastRecordedRank}`,
+                'warn'
+            );
             await interaction.reply({
-                content: `<@${interaction.user.id}>Please enter a valid rank for your last recorded rank! You entered: ${lastRecordedRank}`,
-                ephemeral: false,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `<@${interaction.user.id}> Please enter a valid rank for your last recorded rank! You entered: ${lastRecordedRank}`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
             });
             return;
         }
@@ -191,15 +248,34 @@ module.exports = {
                 seasonAbrs[season]
             );
         });
+        highestRecordedRank = highestRecordedRank.replace(',', '');
+        highestRecordedRank = highestRecordedRank.replace('  ', ' ');
+        if (highestRecordedRank.split(' ')[0] == 'plat') {
+            highestRecordedRank = highestRecordedRank.replace(
+                'plat',
+                'platinum'
+            );
+        }
         if (
             !highestRecordedRank.match(
                 /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (cb1|cb2|ob1|s1|s2)$/
             ) &&
             highestRecordedRank != 'unranked'
         ) {
+            log(
+                `${interaction.user.displayName} entered an invalid highest recorded rank! ${highestRecordedRank}`,
+                'warn'
+            );
             await interaction.reply({
-                content: `<@${interaction.user.id}>Please enter a valid rank and season for your highest recorded rank! You entered: ${highestRecordedRank}`,
-                ephemeral: false,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `<@${interaction.user.id}> Please enter a valid rank and season for your highest recorded rank! You entered: ${highestRecordedRank}`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
             });
             return;
         }

@@ -1,12 +1,4 @@
-const {
-    ChatInputCommandInteraction,
-    SlashCommandBuilder,
-    EmbedBuilder,
-    PermissionFlagsBits,
-    ChannelType,
-    OverwriteType,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
 
@@ -17,10 +9,9 @@ module.exports = {
         .addUserOption((opt) =>
             opt.setName('user').setDescription('The user.').setRequired(true)
         ),
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
+    options: {
+        developers: true,
+    },
     run: async (client, interaction) => {
         const user = interaction.options.getMember('user');
 
@@ -32,20 +23,22 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('Error')
+                        .setTitle('Warning')
                         .setDescription('User not found in the database.')
-                        .setColor('Red'),
+                        .setColor('Yellow'),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
         }
         if (userData.verified) {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('Error')
+                        .setTitle('Warning')
                         .setDescription('User is already verified.')
-                        .setColor('Red'),
+                        .setColor('Yellow'),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
         }
 
@@ -77,6 +70,7 @@ module.exports = {
                             )
                             .setColor('Green'),
                     ],
+                    ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
@@ -88,6 +82,7 @@ module.exports = {
                             .setDescription('An error occurred.')
                             .setColor('Red'),
                     ],
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

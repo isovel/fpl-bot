@@ -45,8 +45,21 @@ module.exports = {
 
         const users = queue.randomUsers;
 
-        users.forEach((user) => {
+        await users.forEach((user) => {
             client.users.fetch(user.id).then((u) => {
+                if (!u)
+                    return interaction.reply({
+                        content: 'User not found.',
+                        ephemeral: client.config.development.ephemeral,
+                    });
+
+                //if user doesnt have verified role
+                if (!u.roles.cache.has(client.config.roles['fpl-verified'])) {
+                    return interaction.reply({
+                        content: `${u.displayName} is not yet verified.`,
+                        ephemeral: client.config.development.ephemeral,
+                    });
+                }
                 u.send({
                     embeds: [
                         new EmbedBuilder()

@@ -1,8 +1,4 @@
-const {
-    SlashCommandBuilder,
-    ChatInputCommandInteraction,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const config = require('../../../config');
 const { log } = require('../../../functions');
 
@@ -24,10 +20,6 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction<true>} interaction
-     */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
 
@@ -59,13 +51,27 @@ module.exports = {
                 log(result, 'debug');
                 if (result.matchedCount == 0) {
                     return interaction.reply({
-                        content: `Queue for division ${division} does not exist.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Error')
+                                .setDescription(
+                                    `Queue for division ${division} does not exist.`
+                                )
+                                .setColor('Red'),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
                 if (result.modifiedCount == 0) {
                     return interaction.reply({
-                        content: `Queue for division ${division} is already closed.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Warning')
+                                .setDescription(
+                                    `Queue for division ${division} is already closed.`
+                                )
+                                .setColor('Yellow'),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
@@ -87,14 +93,28 @@ module.exports = {
                 }
 
                 interaction.reply({
-                    content: `Queue for division ${division} has been closed.`,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                `Queue for division ${division} has been closed.`
+                            )
+                            .setColor('Green'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
-                    content: 'An error occurred while closing the queue.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while closing the queue.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             });

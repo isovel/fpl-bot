@@ -1,11 +1,4 @@
-const {
-    SlashCommandBuilder,
-    ChatInputCommandInteraction,
-    EmbedBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const config = require('../../../config');
 const { log } = require('../../../functions');
 
@@ -27,10 +20,6 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction<true>} interaction
-     */
     run: async (client, interaction) => {
         const division = interaction.options.getString('division');
 
@@ -49,7 +38,14 @@ module.exports = {
                 log(result, 'debug');
                 if (result.modifiedCount === 0 && result.upsertedCount === 0) {
                     return interaction.reply({
-                        content: `Pulls for division ${division} are already empty.`,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Warning')
+                                .setDescription(
+                                    `Pulls for division ${division} are already empty.`
+                                )
+                                .setColor('Yellow'),
+                        ],
                         ephemeral: client.config.development.ephemeral,
                     });
                 }
@@ -59,11 +55,13 @@ module.exports = {
                 interaction.reply({
                     embeds: [
                         new EmbedBuilder()
-                            .setColor('Green')
+                            .setTitle('Success')
                             .setDescription(
                                 `Pulls for division ${division} have been reset.`
-                            ),
+                            )
+                            .setColor('Green'),
                     ],
+                    ephemeral: client.config.development.ephemeral,
                 });
             });
     },

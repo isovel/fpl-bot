@@ -34,9 +34,15 @@ module.exports = {
         } catch (error) {
             log(error, 'err');
             return interaction.reply({
-                content: 'An error occurred while fetching the applications.',
                 components: [],
-                embeds: [],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'An error occurred while fetching the applications.'
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: client.config.development.ephemeral,
             });
         }
@@ -44,16 +50,26 @@ module.exports = {
         if (users.length === 0) {
             if (skipIds.length > 0) {
                 return interaction.update({
-                    content: 'There are no more pending applications.',
                     components: [],
-                    embeds: [],
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('No More Applications')
+                            .setDescription(
+                                'There are no more pending applications.'
+                            )
+                            .setColor('Purple'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             }
             return interaction.reply({
-                content: 'There are no pending applications.',
                 components: [],
-                embeds: [],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('No Applications')
+                        .setDescription('There are no pending applications.')
+                        .setColor('Purple'),
+                ],
                 ephemeral: client.config.development.ephemeral,
             });
         }
@@ -65,25 +81,6 @@ module.exports = {
             member = await interaction.guild.members.fetch(user.discordId);
         }
 
-        /*
-"platform": "PC",
-  "lastRecordedRank": "Diamond",
-  "highestRecordedRank": "Diamond-CB2",
-  "seasonsPlayed": "cb1",
-  "playtime": 200,
-  "wins": 111,
-  "losses": 111,
-  "eliminations": 111,
-  "deaths": 111,
-  "isMember": false,
-  "kd": "1.00",
-  "matchesPlayed": 222,
-  "winrate": "50.00",
-  "createdAt": {
-    "$date": "2024-06-03T19:01:54.380Z"
-  }
-*/
-
         let seasonTranslate = {
             cb1: 'Closed Beta 1',
             cb2: 'Closed Beta 2',
@@ -91,6 +88,7 @@ module.exports = {
             ob: 'Open Beta',
             s1: 'Season 1',
             s2: 'Season 2',
+            s3: 'Season 3',
         };
 
         let embedData = [
@@ -99,7 +97,7 @@ module.exports = {
             `**Highest Recorded Rank:** ${user.highestRecordedRank}`,
             `**Seasons Played:** ${user.seasonsPlayed
                 .split(',')
-                .map((season) => seasonTranslate[season].toLowerCase())
+                .map((season) => seasonTranslate[season]?.toLowerCase())
                 .join(', ')}`,
             `**Platform:** ${user.platform}`,
             `**Playtime:** ${user.playtime} hours`,

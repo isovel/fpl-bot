@@ -1,10 +1,5 @@
-const {
-    ChatInputCommandInteraction,
-    SlashCommandBuilder,
-} = require('discord.js');
-const ExtendedClient = require('../../../class/ExtendedClient');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { log } = require('../../../functions');
-//import tesseract from 'tesseract.js';
 const { createWorker } = require('tesseract.js');
 const sharp = require('sharp');
 
@@ -21,17 +16,20 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
     run: async (client, interaction) => {
         //check if screenshot is jpg/png
         const imageAtachment = interaction.options.getAttachment('screenshot');
 
         if (!['image/jpeg', 'image/png'].includes(imageAtachment.contentType)) {
             return interaction.reply({
-                content: 'The provided file is not a jpg or png image.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'The provided file is not a jpg or png image.'
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
         }

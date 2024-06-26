@@ -26,12 +26,21 @@ module.exports = {
                     ephemeral: true,
                 });
             });
+        if (!user) {
+            return interaction.reply({
+                content: `You have not yet sent an application. Go to the #fpl-register channel to send one.`,
+                ephemeral: true,
+            });
+        }
         log(division, 'debug');
         log(user.division, 'debug');
-        if (
-            !(user?.applicationStatus === 2) ||
-            !(user?.division === division)
-        ) {
+        if (!(user?.applicationStatus === 2)) {
+            return interaction.reply({
+                content: `Your application has not been accepted yet.`,
+                ephemeral: true,
+            });
+        }
+        if (!(user?.division === division)) {
             return interaction.reply({
                 content: `You are not a member of division ${division}.`,
                 ephemeral: true,

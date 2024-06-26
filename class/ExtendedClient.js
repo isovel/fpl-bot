@@ -8,7 +8,6 @@ const { setupFunctions } = require('../functions');
 const deploy = require('../handlers/deploy');
 const mongodb = require('../handlers/mongodb');
 const components = require('../handlers/components');
-const schedule = require('../handlers/schedule');
 
 console.log('Handlers loaded!');
 
@@ -59,7 +58,6 @@ module.exports = class extends Client {
         events(this);
         components(this);
         setupFunctions(this);
-        schedule.run(this);
 
         // Set up the mongodb database.
         if (config.handler.mongodb.enabled)

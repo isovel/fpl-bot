@@ -57,46 +57,55 @@ module.exports = {
 
         const modal = new ModalBuilder()
             .setTitle('Enter Match Data for ' + user.displayName)
-            .setCustomId(`submit-match-data_${userId}_${gameMode}_${msgId}`);
-
-        log(gameMode, 'debug');
-        client.config.gamemodes
-            .find((gm) => {
-                {
-                    log(gm.value, 'debug');
-                    log(gm.value == gameMode, 'debug');
-                    return gm.value == gameMode;
-                }
-            })
-            .rewards.forEach((reward) => {
-                switch (reward.type) {
-                    case 'bool':
-                        modal.addComponents(
-                            new ActionRowBuilder().addComponents(
-                                new TextInputBuilder()
-                                    .setLabel(reward.label)
-                                    .setCustomId(reward.name)
-                                    .setPlaceholder(reward.description)
-                                    .setRequired(false)
-                                    .setStyle(TextInputStyle.Short)
-                            )
-                        );
-                        break;
-                    default:
-                        modal.addComponents(
-                            new ActionRowBuilder().addComponents(
-                                new TextInputBuilder()
-                                    .setLabel(reward.label)
-                                    .setCustomId(reward.name)
-                                    .setPlaceholder(reward.description)
-                                    .setRequired(true)
-                                    .setStyle(TextInputStyle.Short)
-                            )
-                        );
-                        break;
-                }
-            });
-
+            .setCustomId(`submit-match-data_${userId}_${gameMode}_${msgId}`)
+            .addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel('Placement')
+                        .setCustomId('placement')
+                        .setPlaceholder(
+                            `The placement of the users team (1-${
+                                client.config.gamemodes.find(
+                                    (gm) => gm.value == gameMode
+                                ).teams
+                            })`
+                        )
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                ),
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel('Kills')
+                        .setCustomId('kills')
+                        .setPlaceholder('The number of kills')
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                ),
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel('Assists')
+                        .setCustomId('assists')
+                        .setPlaceholder('The number of assists')
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                ),
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel('Deaths')
+                        .setCustomId('deaths')
+                        .setPlaceholder('The number of deaths')
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                ),
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel('Combat Score')
+                        .setCustomId('combat-score')
+                        .setPlaceholder('The combat score')
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                )
+            );
         interaction.showModal(modal);
     },
 };

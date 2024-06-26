@@ -1,7 +1,9 @@
 const {
     StringSelectMenuInteraction,
     ActionRowBuilder,
-    ButtonBuilder,
+    TextInputStyle,
+    TextInputBuilder,
+    ModalBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
@@ -25,58 +27,32 @@ module.exports = {
         log(`Division: "${division}"`, 'debug');
         log(`Type: "${typeof division}"`, 'debug');
 
-        //send a message to the interaction channel for every user prompting to enter their match data . Threre should be a Enter Data Button that opens a modal to enter the data.
-        const c_queues = client.runtimeVariables.db.collection('queues');
+        const modal = new ModalBuilder()
+            .setTitle('Team Ratings')
+            .setCustomId(
+                `submit-team-ratings_${division}_${gameMode}_${msgId}`
+            );
 
-        const queue = await c_queues.findOne({
-            division: division,
-        });
-
-        log(queue, 'debug', true);
-
-        if (!queue) {
-            return interaction.reply({
-                content: 'Queue not found.',
-                ephemeral: client.config.development.ephemeral,
-            });
+        for (
+            let i = 0;
+            i <
+            client.config.gamemodes.find((gm) => gm.value == gameMode)?.teams;
+            i++
+        ) {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel(`Team on place ${i + 1}`)
+                        .setCustomId(`team-rating_${i + 1}`)
+                        .setPlaceholder(
+                            'Enter the star rating for this team (1-5)'
+                        )
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                )
+            );
         }
 
-        if (!queue.open) {
-            return interaction.reply({
-                content: 'Queue is not open.',
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
-
-        if (queue.randomUsers?.length < 1) {
-            return interaction.reply({
-                content: 'Queue is empty.',
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
-
-        interaction.reply({
-            content: 'Match ended.',
-            ephemeral: client.config.development.ephemeral,
-        });
-
-        queue.randomUsers.forEach((user) => {
-            interaction.channel.send({
-                content: `Enter data for ${user.name}`,
-                components: [
-                    new ActionRowBuilder().addComponents(
-                        new ButtonBuilder()
-                            .setCustomId(
-                                `enter-match-data_${user.id}_${division}_${gameMode}_${msgId}`
-                            )
-                            .setLabel('Enter Data')
-                            .setStyle('Primary')
-                            .setEmoji('📊')
-                    ),
-                ],
-            });
-        });
-
-        interaction.message.delete();
+        await interaction.showModal(modal);
     },
 };

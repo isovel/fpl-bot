@@ -39,16 +39,10 @@ module.exports = {
 
         await interaction.followUp({
             embeds: [
-                new EmbedBuilder().setTitle('Help command').addFields(
-                    {
-                        name: 'Slash commands',
-                        value: `${mapIntCmds.join('\n')}`,
-                    },
-                    {
-                        name: 'Prefix commands',
-                        value: `${mapPreCmds.join('\n')}`,
-                    }
-                ),
+                new EmbedBuilder().setTitle('Help command').addFields({
+                    name: 'Slash commands',
+                    value: `${mapIntCmds.join('\n')}`,
+                }),
             ],
         });
     },
