@@ -130,7 +130,7 @@ module.exports = {
                         .setLabel('Seasons Played')
                         .setCustomId('seasons-played')
                         .setPlaceholder(
-                            'CB1, CB2, OB1, S1, S2 (Seperate by comma)'
+                            'Alpha, CB1, CB2, OB1, S1, S2 (Seperate by comma)'
                         )
                         .setRequired(true)
                         .setStyle(TextInputStyle.Short)
