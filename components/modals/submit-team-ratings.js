@@ -18,7 +18,9 @@ module.exports = {
         const msgId = interaction.customId.split('_')[3];
 
         interaction.fields.fields.forEach((field) => {
-            if (!(field.value > 0 && field.value < 6 && field.value % 1 == 0)) {
+            if (
+                !(parseInt(field.value) && field.value > 0 && field.value < 6)
+            ) {
                 return interaction.reply({
                     content: `Please enter a rating between 1 and 5 for ${field.name}`,
                     ephemeral: client.config.development.ephemeral,

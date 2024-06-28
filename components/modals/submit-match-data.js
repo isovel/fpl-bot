@@ -304,7 +304,9 @@ module.exports = {
 
                 user = await client.users.fetch(id);
 
-                user.send({
+                //Error Here where user is not found (MAybe because member has to be fetched instead of user)
+
+                /*user.send({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Match Data Analyzed')
@@ -313,7 +315,7 @@ module.exports = {
                             )
                             .setColor('Green'),
                     ],
-                });
+                });*/
 
                 //Remove pulled role from user
                 user.roles.remove(client.config.roles['fpl-pulled']);

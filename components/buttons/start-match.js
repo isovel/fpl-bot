@@ -54,7 +54,7 @@ module.exports = {
                     });
 
                 //if user doesnt have verified role
-                if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
+                /*if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
                     return interaction.reply({
                         embeds: [
                             new EmbedBuilder()
@@ -66,7 +66,7 @@ module.exports = {
                         ],
                         ephemeral: client.config.development.ephemeral,
                     });
-                }
+                }*/
                 u.send({
                     embeds: [
                         new EmbedBuilder()
