@@ -3,6 +3,9 @@ module.exports = {
         token: process.env.DISCORD_TOKEN,
         id: process.env.DISCORD_CLIENT_ID,
     },
+    db: {
+        name: 'FFL-Bot',
+    },
     handler: {
         prefix: 'fpl_',
         deploy: true,

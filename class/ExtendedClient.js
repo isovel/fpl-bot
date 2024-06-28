@@ -61,7 +61,9 @@ module.exports = class extends Client {
 
         // Set up the mongodb database.
         if (config.handler.mongodb.enabled)
-            this.runtimeVariables.db = (await mongodb()).db('FFL-Bot');
+            this.runtimeVariables.db = (await mongodb()).db(
+                client.config.db.name
+            );
 
         await this.login(process.env.DISCORD_LOGIN || config.client.token);
 
