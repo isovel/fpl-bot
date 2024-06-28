@@ -268,7 +268,7 @@ module.exports = {
         }
         if (
             !highestRecordedRank.match(
-                /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (cb1|cb2|ob1|s1|s2)$/
+                /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (cb1|cb2|ob1|s1|s2|s3)$/
             ) &&
             highestRecordedRank != 'unranked'
         ) {
