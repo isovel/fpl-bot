@@ -111,6 +111,7 @@ module.exports = {
             interaction.fields.getTextInputValue('seasons-played');
         let isMember = false;
         const seasonAbrs = {
+            'alpha': 'alpha',
             'closed beta 1': 'cb1',
             'closed beta 2': 'cb2',
             'open beta 1': 'ob1',
@@ -162,7 +163,16 @@ module.exports = {
 
         //validate seasons played ()
         let seasons = seasonsPlayed.split(',');
-        let validSeasons = ['cb1', 'cb2', 'ob', 'ob1', 's1', 's2', 's3'];
+        let validSeasons = [
+            'alpha',
+            'cb1',
+            'cb2',
+            'ob',
+            'ob1',
+            's1',
+            's2',
+            's3',
+        ];
         seasons = seasons.map((season) => {
             //replace all seasonabrs with full names
             season = season.toLowerCase().trim();
@@ -282,8 +292,15 @@ module.exports = {
 
         //show application form 2
         await interaction.reply({
-            content: 'Please press the button to continue:',
             ephemeral: true,
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Application Form 2')
+                    .setDescription(
+                        'Please press the "Continue" button to proceed to the next part of the application form.'
+                    )
+                    .setColor('Purple'),
+            ],
             components: [
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()

@@ -234,7 +234,14 @@ module.exports = {
         } catch (e) {
             if (e.code === 11000) {
                 await interaction.update({
-                    content: 'You have already submitted an application!',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'You have already submitted an application!'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: true,
                     components: [],
                 });
@@ -245,8 +252,14 @@ module.exports = {
 
             log(e, 'err');
             await interaction.update({
-                content:
-                    'An error occurred while submitting your application! (MYST has been contacted)',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'An error occurred while submitting your application!'
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
                 components: [],
             });
@@ -254,7 +267,14 @@ module.exports = {
         }
 
         await interaction.update({
-            content: 'Application submitted successfully!',
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Application submitted successfully!')
+                    .setDescription(
+                        'Your application has been submitted successfully! Please wait for a response from our staff.'
+                    )
+                    .setColor('Green'),
+            ],
             ephemeral: true,
             components: [],
         });
