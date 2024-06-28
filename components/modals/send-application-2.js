@@ -98,7 +98,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `Please enter a valid number of wins! You entered: ${wins}`
+                            `Please enter a valid number of wins! \nYou entered: ${wins}`
                         )
                         .setColor('Red'),
                 ],
@@ -117,7 +117,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `Please enter a valid number of losses! You entered: ${losses}`
+                            `Please enter a valid number of losses! \nYou entered: ${losses}`
                         )
                         .setColor('Red'),
                 ],
@@ -136,7 +136,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `Please enter a valid number of eliminations! You entered: ${eliminations}`
+                            `Please enter a valid number of eliminations! \nYou entered: ${eliminations}`
                         )
                         .setColor('Red'),
                 ],
@@ -155,7 +155,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `Please enter a valid number of deaths! You entered: ${deaths}`
+                            `Please enter a valid number of deaths! \nYou entered: ${deaths}`
                         )
                         .setColor('Red'),
                 ],
@@ -165,7 +165,7 @@ module.exports = {
         }
 
         //validate playtime (whole number)
-        if (!playtime.match(/^[0-9]+$/)) {
+        if (!playtime.match(/^[0-9]+( hours)?$/)) {
             log(
                 `${interaction.user.displayName} entered an invalid playtime! ${playtime}`,
                 'warn'
@@ -175,7 +175,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `Please enter a valid playtime! You entered: ${playtime}`
+                            `Please enter a valid playtime! \nYou entered: ${playtime}`
                         )
                         .setColor('Red'),
                 ],

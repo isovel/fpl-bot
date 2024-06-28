@@ -132,7 +132,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `<@${interaction.user.id}> Please enter a valid Embark ID! You entered: ${embarkId}`
+                            `Please enter a valid Embark ID! \nYou entered: ${embarkId} \nAn example would be: unknown#1234`
                         )
                         .setColor('Red'),
                 ],
@@ -152,7 +152,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `<@${interaction.user.id}> Please enter a valid platform! You entered: ${platform}`
+                            `Please enter a valid platform! \nYou entered: ${platform} \nAn example would be: Playstation \nRemember to only enter the platform and not the console.`
                         )
                         .setColor('Red'),
                 ],
@@ -192,11 +192,9 @@ module.exports = {
                         new EmbedBuilder()
                             .setTitle('Error')
                             .setDescription(
-                                `<@${
-                                    interaction.user.id
-                                }> Please only enter valid seasons! You entered: ${seasons.join(
+                                `Please only enter valid seasons for seasons you played! \nYou entered: ${seasons.join(
                                     ', '
-                                )}`
+                                )} \nAn example would be: CB2, OB1, S2 \nRemember to seperate each season with a comma.`
                             )
                             .setColor('Red'),
                     ],
@@ -239,7 +237,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `<@${interaction.user.id}> Please enter a valid rank for your last recorded rank! You entered: ${lastRecordedRank}`
+                            `Please enter a valid rank for your last recorded rank! \nYou entered: ${lastRecordedRank} \nAn example would be: Gold 1 \nRemember to not use any abbreviations, add the number at the end and use a space.`
                         )
                         .setColor('Red'),
                 ],
@@ -281,7 +279,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `<@${interaction.user.id}> Please enter a valid rank and season for your highest recorded rank! You entered: ${highestRecordedRank}`
+                            `Please enter a valid rank and season for your highest recorded rank! \nYou entered: ${highestRecordedRank} \nAn example would be: Gold 1 CB1 \nRemember to add the season in which you achieved this rank.`
                         )
                         .setColor('Red'),
                 ],
