@@ -266,6 +266,8 @@ module.exports = {
             return;
         }
 
+        interaction.member.roles.add(client.config.roles['fpl-pending']);
+
         await interaction.update({
             embeds: [
                 new EmbedBuilder()
