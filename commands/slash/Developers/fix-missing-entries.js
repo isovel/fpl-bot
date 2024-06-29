@@ -26,14 +26,14 @@ module.exports = {
                     discordId: member.id,
                 });
                 if (!user) {
-                    log(
-                        `User ${member.displayName} is missing from the database.`,
-                        'warn'
-                    );
                     if (
                         member.roles.cache.has(divisionRoleA) ||
                         member.roles.cache.has(divisionRoleB)
                     ) {
+                        log(
+                            `User ${member.displayName} is missing from the database but has the division role.`,
+                            'warn'
+                        );
                         client.users.send(member.id, {
                             embeds: [
                                 new EmbedBuilder()
@@ -45,6 +45,10 @@ module.exports = {
                             ],
                         });
                     } else if (member.roles.cache.has(pendingRole)) {
+                        log(
+                            `User ${member.displayName} is missing from the database but has the pending role.`,
+                            'warn'
+                        );
                         //remove pending role
                         member.roles.remove(pendingRole);
                         client.users.send(member.id, {
