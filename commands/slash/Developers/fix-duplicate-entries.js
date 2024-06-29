@@ -2,6 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     ActionRowBuilder,
+    StringSelectMenuBuilder,
 } = require('discord.js');
 const { log } = require('../../../functions');
 const components = require('../../../handlers/components');
