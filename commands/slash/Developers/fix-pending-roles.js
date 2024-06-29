@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { log } = require('../../../functions');
 
 module.exports = {
@@ -8,10 +8,6 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
     run: async (client, interaction) => {
         const c_users = client.runtimeVariables.db.collection('users');
         let users;
