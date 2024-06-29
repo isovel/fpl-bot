@@ -14,7 +14,7 @@ module.exports = {
         try {
             users = await c_users
                 .find({
-                    applicationStatus: 1,
+                    applicationStatus: 2,
                 })
                 .toArray();
 
