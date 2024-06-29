@@ -14,12 +14,11 @@ module.exports = {
     run: async (client, interaction) => {
         interaction.deferReply({ ephemeral: true });
         const c_users = client.runtimeVariables.db.collection('users');
-        const guild = client.config.development.guild;
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
         const divisionRoleB = roles.divisions['B'];
         const pendingRole = roles['fpl-pending'];
-        const users = await guild.members.fetch();
+        const users = await interaction.guild.members.fetch();
 
         for (const [_, member] of users) {
             setTimeout(async () => {
