@@ -16,8 +16,16 @@ module.exports = {
                 .setName('division')
                 .setDescription('The division to change to.')
                 .setRequired(true)
-                .addChoice('A', 'A')
-                .addChoice('B', 'B')
+                .addChoices([
+                    {
+                        name: 'A',
+                        value: 'A',
+                    },
+                    {
+                        name: 'B',
+                        value: 'B',
+                    },
+                ])
         ),
     options: {
         developers: true,
