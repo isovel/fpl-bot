@@ -66,8 +66,10 @@ module.exports = {
 
         try {
             let member = await interaction.guild.members.fetch(user.id);
-            await member.roles.remove(roles.divisions[userDoc.division]);
-            await member.roles.add(roles.divisions[division]);
+            await member.roles.remove(
+                client.config.roles.divisions[userDoc.division]
+            );
+            await member.roles.add(client.config.roles.divisions[division]);
             await c_users.updateOne(
                 { discordId: user.id },
                 { $set: { division } }
