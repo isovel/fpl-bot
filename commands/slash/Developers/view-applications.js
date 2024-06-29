@@ -78,15 +78,33 @@ module.exports = {
             member = await interaction.guild.members.fetch(user.discordId);
         } catch (error) {
             log(error, 'err');
-            await c_users.deleteOne({ discordId: user.discordId });
+            //await c_users.deleteOne({ discordId: user.discordId });
+            client.runtimeVariables.applicationSkips.push(user.discordId);
             interaction.channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            'A user who create an application and left the server has been removed from the database.'
+                            'A user created an application and left. Do you want to delete his entrie in the db?'
                         )
                         .setColor('Red'),
+                ],
+                components: [
+                    new ActionRowBuilder().addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId(`delete-application_${user.discordId}`)
+                            .setPlaceholder('Action')
+                            .addOptions(
+                                {
+                                    label: 'Yes',
+                                    value: 'yes',
+                                },
+                                {
+                                    label: 'No',
+                                    value: 'no',
+                                }
+                            )
+                    ),
                 ],
             });
             //run the command again

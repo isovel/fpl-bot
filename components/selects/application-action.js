@@ -1,4 +1,4 @@
-const { StringSelectMenuInteraction } = require('discord.js');
+const { StringSelectMenuInteraction, EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const viewApplications = require('../../commands/slash/Developers/view-applications');
 const { log } = require('../../functions');
@@ -36,10 +36,16 @@ module.exports = {
                         },
                     }
                 );
-                client.users.send(
-                    discordId,
-                    'We are sorry to inform you that your application has been declined. Please contact a staff member for more information.'
-                );
+                client.users.send(discordId, {
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Application Declined')
+                            .setDescription(
+                                'We are sorry to inform you that your application has been declined. Please create a ticket in fpl-help for further information.'
+                            )
+                            .setColor('Red'),
+                    ],
+                });
                 interaction.guild.members.fetch(discordId).then((member) => {
                     member.roles.remove(client.config.roles['fpl-pending']);
                 });
@@ -66,10 +72,16 @@ module.exports = {
                             );
                         });
                     if (!client.config.development.enabled)
-                        client.users.send(
-                            discordId,
-                            `Congratulations! Your application has been accepted. You are now part of division ${value}.`
-                        );
+                        client.users.send(discordId, {
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle('Application Accepted')
+                                    .setDescription(
+                                        `Your application has been accepted. \nYou have been assigned to **division ${value}**.`
+                                    )
+                                    .setColor('Green'),
+                            ],
+                        });
                     //give role
                     const member =
                         (await interaction.guild.members.cache.find(
