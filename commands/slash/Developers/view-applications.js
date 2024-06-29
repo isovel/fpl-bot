@@ -75,11 +75,12 @@ module.exports = {
         }
 
         let user = users[0];
+        let member;
         //show first application and append a grayed out previous button, a decline button, an accept button and a next button (use an embed to show the user's application)
-        member = await interaction.guild.members.fetch(user.discordId);
-        log(member, 'debug', true);
-        if (!member) {
-            //delete user from database
+        try {
+            member = await interaction.guild.members.fetch(user.discordId);
+        } catch (error) {
+            log(error, 'err');
             await c_users.deleteOne({ discordId: user.discordId });
             interaction.channel.send(
                 new EmbedBuilder()
