@@ -26,6 +26,10 @@ module.exports = {
                     discordId: member.id,
                 });
                 if (!user) {
+                    log(
+                        `User ${member.displayName} is missing from the database.`,
+                        'warn'
+                    );
                     if (
                         member.roles.cache.has(divisionRoleA) ||
                         member.roles.cache.has(divisionRoleB)
