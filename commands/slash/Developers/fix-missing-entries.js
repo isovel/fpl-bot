@@ -19,12 +19,18 @@ module.exports = {
         const pendingRole = roles['fpl-pending'];
         const users = await interaction.guild.members.fetch();
 
+        let usersFound = 0;
+        let usersNotFound = 0;
+
         for (const [_, member] of users) {
             await setTimeout(async () => {
                 const user = await c_users.findOne({
                     discordId: member.id,
                 });
+
                 if (!user) {
+                    usersNotFound++;
+                    log(`Users not found: ${usersNotFound}`, 'info');
                     if (
                         member.roles.cache.has(divisionRoleA) ||
                         member.roles.cache.has(divisionRoleB)
@@ -61,6 +67,9 @@ module.exports = {
                             ],
                         });
                     }
+                } else {
+                    usersFound++;
+                    log(`Users found: ${usersFound}`, 'info');
                 }
             }, 50);
         }
