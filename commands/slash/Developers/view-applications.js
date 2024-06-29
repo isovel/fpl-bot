@@ -82,14 +82,16 @@ module.exports = {
         } catch (error) {
             log(error, 'err');
             await c_users.deleteOne({ discordId: user.discordId });
-            interaction.channel.send(
-                new EmbedBuilder()
-                    .setTitle('Error')
-                    .setDescription(
-                        'A user who create an application and left the server has been removed from the database.'
-                    )
-                    .setColor('Red')
-            );
+            interaction.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'A user who create an application and left the server has been removed from the database.'
+                        )
+                        .setColor('Red'),
+                ],
+            });
             //run the command again
             return module.exports.run(client, interaction, skipIds);
         }
