@@ -1,5 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder,
+} = require('discord.js');
 const { log } = require('../../../functions');
+const components = require('../../../handlers/components');
 
 module.exports = {
     structure: new SlashCommandBuilder()
@@ -49,14 +54,64 @@ module.exports = {
                                         'Confirm Duplicate Entry deletion'
                                     )
                                     .setDescription(
-                                        `Are you sure you want to delete the duplicate entry for  ?`
+                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}?`
                                     )
                                     .setColor('Green'),
+                            ],
+                            components: [
+                                new ActionRowBuilder().addComponents(
+                                    new StringSelectMenuBuilder()
+                                        .setCustomId(
+                                            `delete-application_${duplicateUserDoc._id}`
+                                        )
+                                        .setPlaceholder('Action')
+                                        .addOptions(
+                                            {
+                                                label: 'Yes',
+                                                value: 'yes',
+                                            },
+                                            {
+                                                label: 'No',
+                                                value: 'no',
+                                            }
+                                        )
+                                ),
                             ],
                             ephemeral: client.config.development.ephemeral,
                         });
                     } else {
-                        await c_users.deleteOne({ _id: userDoc._id });
+                        interaction.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle(
+                                        'Confirm Duplicate Entry deletion'
+                                    )
+                                    .setDescription(
+                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}?`
+                                    )
+                                    .setColor('Green'),
+                            ],
+                            components: [
+                                new ActionRowBuilder().addComponents(
+                                    new StringSelectMenuBuilder()
+                                        .setCustomId(
+                                            `delete-application_${userDoc._id}`
+                                        )
+                                        .setPlaceholder('Action')
+                                        .addOptions(
+                                            {
+                                                label: 'Yes',
+                                                value: 'yes',
+                                            },
+                                            {
+                                                label: 'No',
+                                                value: 'no',
+                                            }
+                                        )
+                                ),
+                            ],
+                            ephemeral: client.config.development.ephemeral,
+                        });
                     }
                 }
             }

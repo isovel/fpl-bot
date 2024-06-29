@@ -92,7 +92,7 @@ module.exports = {
                 components: [
                     new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
-                            .setCustomId(`delete-application_${user.discordId}`)
+                            .setCustomId(`delete-application_${user._id}`)
                             .setPlaceholder('Action')
                             .addOptions(
                                 {

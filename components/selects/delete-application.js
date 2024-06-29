@@ -9,10 +9,10 @@ module.exports = {
     run: async (client, interaction) => {
         //if selected is yes delete otherwise do nothing
         const value = interaction.values[0];
-        const discordId = interaction.customId.split('_')[1];
+        const _id = interaction.customId.split('_')[1];
         if (value == 'yes') {
             client.runtimeVariables.db.collection('users').deleteOne({
-                discordId,
+                _id,
             });
             interaction.reply({
                 embeds: [
