@@ -159,7 +159,7 @@ module.exports = {
             ephemeral: client.config.development.ephemeral,
         };
 
-        if (skipIds.length > 0) interaction.update(viewApplicationMessage);
-        else await interaction.reply(viewApplicationMessage);
+        if (interaction.replied) interaction.update(viewApplicationMessage);
+        else interaction.reply(viewApplicationMessage);
     },
 };
