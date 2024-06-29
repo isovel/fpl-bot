@@ -42,6 +42,9 @@ module.exports = {
                     discordId,
                     'We are sorry to inform you that your application has been declined. Please contact a staff member for more information.'
                 );
+                interaction.guild.members.fetch(discordId).then((member) => {
+                    member.roles.remove(client.config.roles['fpl-pending']);
+                });
                 viewApplications.run(client, interaction, [
                     ...skipIds,
                     discordId,
@@ -60,23 +63,32 @@ module.exports = {
                             },
                         }
                     );
-                    client.users.send(
-                        discordId,
-                        `Congratulations! Your application has been accepted. You are now part of division ${value}.`
-                    );
+                    interaction.guild.members
+                        .fetch(discordId)
+                        .then((member) => {
+                            member.roles.remove(
+                                client.config.roles['fpl-pending']
+                            );
+                        });
+                    if (!client.config.development.enabled)
+                        client.users.send(
+                            discordId,
+                            `Congratulations! Your application has been accepted. You are now part of division ${value}.`
+                        );
                     //give role
                     const member =
                         (await interaction.guild.members.cache.find(
                             (m) => m.id == discordId
                         )) ??
                         (await interaction.guild.members.fetch(discordId));
-                    const roleId = client.config.roles.divisions[value];
+                    /*const roleId = client.config.roles.divisions[value];
                     const role =
                         (await interaction.guild.roles.cache.find(
                             (r) => r.id == roleId
-                        )) ?? (await interaction.guild.roles.fetch(roleId));
+                        )) ?? (await interaction.guild.roles.fetch(roleId));*/
 
-                    member.roles.add(role);
+                    member.roles.remove(client.config.roles['fpl-pending']);
+                    member.roles.add(client.config.roles.divisions[value]);
 
                     viewApplications.run(client, interaction, [
                         ...skipIds,

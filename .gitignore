@@ -4,5 +4,4 @@ package-lock.json
 # DO NOT REMOVE THESE FOR SECURITY
 .env
 config.js
-./config.js
-/config.js
+log.txt

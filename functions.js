@@ -1,7 +1,10 @@
 const chalk = require('chalk');
 const config = require('./config.js');
+const fs = require('fs');
 
 let client;
+
+let logFile = config.development.logFile;
 
 /**
  * Logs a message with optional styling.
@@ -11,13 +14,34 @@ let client;
  */
 const log = (string, style, dirLog) => {
     const styles = {
-        info: { prefix: chalk.blue('[INFO]'), logFunction: console.log },
-        err: { prefix: chalk.red('[ERROR]'), logFunction: console.error },
-        warn: { prefix: chalk.yellow('[WARNING]'), logFunction: console.warn },
-        done: { prefix: chalk.green('[SUCCESS]'), logFunction: console.log },
-        debug: { prefix: chalk.magenta('[DEBUG]'), logFunction: console.log },
+        info: {
+            prefix: chalk.blue('[INFO]'),
+            txtPrefix: '[INFO]',
+            logFunction: console.log,
+        },
+        err: {
+            prefix: chalk.red('[ERROR]'),
+            txtPrefix: '[ERROR]',
+            logFunction: console.error,
+        },
+        warn: {
+            prefix: chalk.yellow('[WARNING]'),
+            txtPrefix: '[WARNING]',
+            logFunction: console.warn,
+        },
+        done: {
+            prefix: chalk.green('[SUCCESS]'),
+            txtPrefix: '[SUCCESS]',
+            logFunction: console.log,
+        },
+        debug: {
+            prefix: chalk.magenta('[DEBUG]'),
+            txtPrefix: '[DEBUG]',
+            logFunction: console.log,
+        },
         interaction: {
             prefix: chalk.cyan('[INTERACTION]'),
+            txtPrefix: '[INTERACTION]',
             logFunction: console.log,
         },
     };
@@ -53,6 +77,16 @@ const log = (string, style, dirLog) => {
     } else {
         console.dir(string);
     }
+
+    fs.appendFile(
+        logFile,
+        `${selectedStyle.txtPrefix || ''} ${string}\n`,
+        (err) => {
+            if (err) {
+                console.error(`${chalk.red('[ERROR]')} ${err}`);
+            }
+        }
+    );
 
     if (style === 'err') {
         //write dm to config.users.ownerId

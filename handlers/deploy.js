@@ -20,7 +20,7 @@ module.exports = async (client) => {
 
         const guildId = process.env.GUILD_ID || config.development.guild;
 
-        if (config.development && config.development.enabled && guildId) {
+        if (config.development && config.development.deployToGuild && guildId) {
             if (!isSnowflake(guildId)) {
                 log(
                     'Guild ID is missing. Please set it in .env or config file or disable development in the config',
