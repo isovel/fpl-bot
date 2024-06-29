@@ -80,6 +80,7 @@ module.exports = {
         let member = interaction.guild.members.cache.get(user.discordId);
         if (!member) {
             member = await interaction.guild.members.fetch(user.discordId);
+            log(member, 'debug');
             if (!member) {
                 //delete user from database
                 await c_users.deleteOne({ discordId: user.discordId });
