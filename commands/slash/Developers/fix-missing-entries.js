@@ -21,7 +21,7 @@ module.exports = {
         const users = await interaction.guild.members.fetch();
 
         for (const [_, member] of users) {
-            setTimeout(async () => {
+            await setTimeout(async () => {
                 const user = await c_users.findOne({
                     discordId: member.id,
                 });
