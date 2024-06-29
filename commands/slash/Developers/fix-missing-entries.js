@@ -12,7 +12,6 @@ module.exports = {
         owneOnly: true,
     },
     run: async (client, interaction) => {
-        interaction.deferReply({ ephemeral: true });
         const c_users = client.runtimeVariables.db.collection('users');
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
