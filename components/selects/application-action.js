@@ -16,15 +16,13 @@ module.exports = {
     run: async (client, interaction) => {
         const value = interaction.values[0];
         const discordId = interaction?.customId?.split('_')[1];
-        const skipIds = interaction?.customId?.split('_')[2].split(',');
+        const skipIds = client.runtimeVariables.applicationSkips;
 
         switch (value) {
             case 'skip':
                 //skip for later review
-                viewApplications.run(client, interaction, [
-                    ...skipIds,
-                    discordId,
-                ]);
+                client.runtimeVariables.applicationSkips.push(discordId);
+                viewApplications.run(client, interaction);
                 break;
             case 'decline':
                 //decline the application
@@ -45,10 +43,7 @@ module.exports = {
                 interaction.guild.members.fetch(discordId).then((member) => {
                     member.roles.remove(client.config.roles['fpl-pending']);
                 });
-                viewApplications.run(client, interaction, [
-                    ...skipIds,
-                    discordId,
-                ]);
+                viewApplications.run(client, interaction);
                 break;
             default:
                 if (value) {
@@ -90,10 +85,7 @@ module.exports = {
                     member.roles.remove(client.config.roles['fpl-pending']);
                     member.roles.add(client.config.roles.divisions[value]);
 
-                    viewApplications.run(client, interaction, [
-                        ...skipIds,
-                        discordId,
-                    ]);
+                    viewApplications.run(client, interaction);
                 }
                 break;
         }

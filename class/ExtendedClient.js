@@ -63,6 +63,9 @@ module.exports = class extends Client {
         if (config.handler.mongodb.enabled)
             this.runtimeVariables.db = (await mongodb()).db(config.db.name);
 
+        //initialize runtime variables
+        this.runtimeVariables.applicationSkips = [];
+
         await this.login(process.env.DISCORD_LOGIN || config.client.token);
 
         // deploy this config to the handler

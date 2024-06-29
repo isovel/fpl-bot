@@ -15,12 +15,9 @@ module.exports = {
     options: {
         developers: true,
     },
-    /**
-     * @param {ExtendedClient} client
-     * @param {ChatInputCommandInteraction} interaction
-     */
-    run: async (client, interaction, skipIds = []) => {
+    run: async (client, interaction) => {
         const c_users = client.runtimeVariables.db.collection('users');
+        let skipIds = client.runtimeVariables.applicationSkips || [];
         let users;
         try {
             users = await c_users
@@ -144,11 +141,7 @@ module.exports = {
             components: [
                 new ActionRowBuilder().addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId(
-                            `application-action_${
-                                user.discordId
-                            }_${skipIds.join(',')}`
-                        )
+                        .setCustomId(`application-action_${user.discordId}`)
                         .setPlaceholder('Action')
                         .addOptions(
                             {
