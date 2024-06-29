@@ -220,6 +220,25 @@ module.exports = {
             applicationStatus: 1, // 0 = rejected, 1 = pending, 2 = accepted
         };
 
+        //check if the user has the div a or div b role. If so accept them into the division
+        let missingEntrieUser = false;
+        if (
+            interaction.member.roles.cache.has(
+                client.config.roles.divisions['A']
+            ) ||
+            interaction.member.roles.cache.has(
+                client.config.roles.divisions['B']
+            )
+        ) {
+            userData.applicationStatus = 2;
+            userData.division = interaction.member.roles.cache.has(
+                client.config.roles.divisions.A
+            )
+                ? 'A'
+                : 'B';
+            missingEntrieUser = true;
+        }
+
         log(
             `userData for ${interaction.user.displayName}: ${JSON.stringify(
                 userData
@@ -273,7 +292,9 @@ module.exports = {
                 new EmbedBuilder()
                     .setTitle('Application submitted successfully!')
                     .setDescription(
-                        'Your application has been submitted successfully! Please wait for a response from our staff.'
+                        missingEntrieUser
+                            ? 'You have been reaccepted into the division you were in. Your application has been submitted successfully!'
+                            : 'Your application has been submitted successfully! Please wait for a response from our staff.'
                     )
                     .setColor('Green'),
             ],
