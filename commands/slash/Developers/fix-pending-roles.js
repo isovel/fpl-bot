@@ -21,6 +21,7 @@ module.exports = {
         let message = '';
         let usersFixed = 0;
         let usersNotFixed = 0;
+        let divRoleCount = 0;
 
         log(`Members: ${members.size}`, 'info');
 
@@ -30,6 +31,7 @@ module.exports = {
                 member.roles.cache.has(divisionRoleB)
             ) {
                 log(`Checking user ${member.displayName}`, 'info');
+                divRoleCount++;
                 if (member.roles.cache.has(pendingRole)) {
                     log(
                         `User ${member.displayName} has the pending role but also has the division role. Removing pending role.`,
@@ -51,7 +53,7 @@ module.exports = {
                 new EmbedBuilder()
                     .setTitle('Fixed Pending Roles')
                     .setDescription(
-                        `Fixed the pending roles for ${usersFixed} users. \nNo fix for ${usersNotFixed} users. \n\n${message}`
+                        `Div Roles: ${divRoleCount}. \nFixed the pending roles for ${usersFixed} users. \nNo fix for ${usersNotFixed} users. \n\n${message}`
                     )
                     .setColor('Green'),
             ],
