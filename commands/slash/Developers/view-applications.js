@@ -15,7 +15,7 @@ module.exports = {
     options: {
         developers: true,
     },
-    run: async (client, interaction) => {
+    run: async (client, interaction, replied) => {
         const c_users = client.runtimeVariables.db.collection('users');
         let skipIds = client.runtimeVariables.applicationSkips || [];
         let users;
@@ -108,7 +108,7 @@ module.exports = {
                 ],
             });
             //run the command again
-            return module.exports.run(client, interaction, skipIds);
+            return module.exports.run(client, interaction, replied);
         }
 
         let seasonTranslate = {
@@ -177,7 +177,7 @@ module.exports = {
             ephemeral: client.config.development.ephemeral,
         };
 
-        if (interaction.replied) interaction.editReply(viewApplicationMessage);
+        if (replied) interaction.update(viewApplicationMessage);
         else interaction.reply(viewApplicationMessage);
     },
 };

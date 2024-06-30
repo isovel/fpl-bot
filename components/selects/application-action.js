@@ -22,7 +22,7 @@ module.exports = {
             case 'skip':
                 //skip for later review
                 client.runtimeVariables.applicationSkips.push(discordId);
-                viewApplications.run(client, interaction);
+                viewApplications.run(client, interaction, true);
                 break;
             case 'decline':
                 //decline the application
@@ -49,7 +49,7 @@ module.exports = {
                 interaction.guild.members.fetch(discordId).then((member) => {
                     member.roles.remove(client.config.roles['fpl-pending']);
                 });
-                viewApplications.run(client, interaction);
+                viewApplications.run(client, interaction, true);
                 break;
             default:
                 if (value) {
@@ -97,7 +97,7 @@ module.exports = {
                     member.roles.remove(client.config.roles['fpl-pending']);
                     member.roles.add(client.config.roles.divisions[value]);
 
-                    viewApplications.run(client, interaction);
+                    viewApplications.run(client, interaction, true);
                 }
                 break;
         }
