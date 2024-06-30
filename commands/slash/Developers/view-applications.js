@@ -177,7 +177,7 @@ module.exports = {
             ephemeral: client.config.development.ephemeral,
         };
 
-        if (interaction.replied) interaction.update(viewApplicationMessage);
+        if (interaction.replied) interaction.editReply(viewApplicationMessage);
         else interaction.reply(viewApplicationMessage);
     },
 };
