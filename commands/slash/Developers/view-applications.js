@@ -26,8 +26,6 @@ module.exports = {
                     discordId: { $nin: skipIds },
                 })
                 .toArray();
-
-            console.dir(users);
         } catch (error) {
             log(error, 'err');
             return interaction.reply({
@@ -139,8 +137,6 @@ module.exports = {
             `**KD:** ${user.kd}`,
             `**Winrate:** ${user.winrate}%`,
         ];
-
-        log(embedData, 'debug');
 
         let embed = new EmbedBuilder()
             .setTitle(`**${member.user.displayName}**'s Application`)
