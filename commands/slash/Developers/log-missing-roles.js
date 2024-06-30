@@ -12,15 +12,15 @@ module.exports = {
     options: {
         developers: true,
     },
-    run: async (client, interaction) => {
+    run: (client, interaction) => {
         const c_users = client.runtimeVariables.db.collection('users');
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
         const divisionRoleB = roles.divisions['B'];
         const pendingRole = roles['fpl-pending'];
-        const users = await c_users.find().toArray();
-        const guild = await client.guilds.fetch(interaction.guildId);
-        const members = await guild.members.fetch();
+        const users = c_users.find().toArray();
+        const guild = client.guilds.fetch(interaction.guildId);
+        const members = guild.members.fetch();
 
         let usersFound = 0;
         let usersNotFound = 0;
@@ -28,7 +28,7 @@ module.exports = {
         let message = '';
 
         for (const user of users) {
-            await setTimeout(async () => {
+            setTimeout(async () => {
                 const member = members.get(user.discordId);
 
                 if (!member) return;
