@@ -25,12 +25,12 @@ module.exports = {
         log(`Members: ${members.size}`, 'info');
 
         for (const [_, member] of members) {
-            if (member.roles.cache.has(pendingRole)) {
+            if (
+                member.roles.cache.has(divisionRoleA) ||
+                member.roles.cache.has(divisionRoleB)
+            ) {
                 log(`Checking user ${member.displayName}`, 'info');
-                if (
-                    member.roles.cache.has(divisionRoleA) ||
-                    member.roles.cache.has(divisionRoleB)
-                ) {
+                if (member.roles.cache.has(pendingRole)) {
                     log(
                         `User ${member.displayName} has the pending role but also has the division role. Removing pending role.`,
                         'warn'
