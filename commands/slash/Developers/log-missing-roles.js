@@ -12,23 +12,26 @@ module.exports = {
     options: {
         developers: true,
     },
-    run: (client, interaction) => {
+    run: async (client, interaction) => {
+        interaction.deferReply();
         const c_users = client.runtimeVariables.db.collection('users');
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
         const divisionRoleB = roles.divisions['B'];
         const pendingRole = roles['fpl-pending'];
-        const users = c_users.find().toArray();
-        const guild = interaction.guild;
-        const members = guild.members.fetch();
+        const users = await c_users.find().toArray();
+        const guild = await interaction.guild;
+        const members = await guild.members.fetch();
 
         let usersFound = 0;
         let usersNotFound = 0;
+        let processedUsers = 0;
 
         let message = '';
 
         for (const user of users) {
             setTimeout(async () => {
+                processedUsers++;
                 const member = members.get(user.discordId);
 
                 if (!member) return;
@@ -47,19 +50,20 @@ module.exports = {
                     message += `<@${member.id}> \n`;
                     usersNotFound++;
                 }
+                if (processedUsers >= users.length) {
+                    interaction.editReply({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Missing Roles')
+                                .setDescription(
+                                    `Users found: ${usersFound}. \nUsers missing roles: ${usersNotFound}. \n\n${message}`
+                                )
+                                .setColor('Green'),
+                        ],
+                        ephemeral: client.config.development.ephemeral,
+                    });
+                }
             }, 50);
         }
-
-        interaction.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle('Missing Roles')
-                    .setDescription(
-                        `Users found: ${usersFound}. \nUsers missing roles: ${usersNotFound}. \n\n${message}`
-                    )
-                    .setColor('Green'),
-            ],
-            ephemeral: client.config.development.ephemeral,
-        });
     },
 };
