@@ -19,7 +19,7 @@ module.exports = {
         const divisionRoleB = roles.divisions['B'];
         const pendingRole = roles['fpl-pending'];
         const users = c_users.find().toArray();
-        const guild = client.guilds.fetch(interaction.guildId);
+        const guild = interaction.guild;
         const members = guild.members.fetch();
 
         let usersFound = 0;
