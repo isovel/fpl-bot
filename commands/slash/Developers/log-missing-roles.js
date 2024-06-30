@@ -13,7 +13,7 @@ module.exports = {
         developers: true,
     },
     run: async (client, interaction) => {
-        interaction.deferReply();
+        await interaction.deferReply();
         const c_users = client.runtimeVariables.db.collection('users');
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
