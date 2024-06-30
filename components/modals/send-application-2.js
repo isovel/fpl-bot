@@ -249,6 +249,7 @@ module.exports = {
         //upload with mongodb (client.runtimeVariables.db)
         try {
             const c_users = client.runtimeVariables.db.collection('users');
+
             const result = await c_users.insertOne(userData);
         } catch (e) {
             if (e.code === 11000) {

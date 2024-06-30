@@ -11,14 +11,20 @@ module.exports = {
         const value = interaction.values[0];
         const _id = interaction.customId.split('_')[1];
         if (value == 'yes') {
-            client.runtimeVariables.db.collection('users').deleteOne({
-                _id,
-            });
+            const result = client.runtimeVariables.db
+                .collection('users')
+                .deleteOne({
+                    _id,
+                });
             interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Application Deleted')
-                        .setDescription('The application has been deleted.')
+                        .setDescription(
+                            `The application has been deleted. \nResult: ${JSON.stringify(
+                                result
+                            )}`
+                        )
                         .setColor('Green'),
                 ],
                 ephemeral: client.config.development.ephemeral,

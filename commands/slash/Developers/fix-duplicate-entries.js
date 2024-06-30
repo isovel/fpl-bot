@@ -55,7 +55,7 @@ module.exports = {
                                         'Confirm Duplicate Entry deletion'
                                     )
                                     .setDescription(
-                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}?`
+                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}? \n_id: ${duplicateUserDoc._id}`
                                     )
                                     .setColor('Green'),
                             ],
@@ -88,7 +88,7 @@ module.exports = {
                                         'Confirm Duplicate Entry deletion'
                                     )
                                     .setDescription(
-                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}?`
+                                        `Are you sure you want to delete the duplicate entry for ${user.embarkId}? \n_id: ${userDoc._id}`
                                     )
                                     .setColor('Green'),
                             ],
