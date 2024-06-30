@@ -52,9 +52,10 @@ module.exports = {
             interaction.guild.members.fetch(user.discordId).then((member) => {
                 //if the member has one of the division roles, remove the pending role
                 if (
-                    client.config.divisions.some((d) =>
-                        member.roles.cache.has(client.config.roles[d.shortName])
-                    )
+                    member.roles.cache.has(
+                        client.config.roles.divisions['A']
+                    ) ||
+                    member.roles.cache.has(client.config.roles.divisions['B'])
                 ) {
                     member.roles.remove(client.config.roles['fpl-pending']);
                 }

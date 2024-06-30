@@ -52,7 +52,7 @@ module.exports = {
                         message += `User ${member.displayName} is missing from the database but has the pending role. \n`;
                     }
                 }
-            }, 1000);
+            }, 50);
         }
 
         interaction.reply({
