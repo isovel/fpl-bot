@@ -21,6 +21,8 @@ module.exports = {
         let message = '';
         let usersFixed = 0;
 
+        log(`Members: ${members.size}`, 'info');
+
         for (const [_, member] of members) {
             if (member.roles.cache.has(pendingRole)) {
                 log(`Checking user ${member.displayName}`, 'info');
