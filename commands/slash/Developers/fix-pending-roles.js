@@ -22,8 +22,8 @@ module.exports = {
         let usersFixed = 0;
 
         for (const [_, member] of members) {
-            log(`Checking user ${member.displayName}`, 'info');
             if (member.roles.cache.has(pendingRole)) {
+                log(`Checking user ${member.displayName}`, 'info');
                 if (
                     member.roles.cache.has(divisionRoleA) ||
                     member.roles.cache.has(divisionRoleB)
