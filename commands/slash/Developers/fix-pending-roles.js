@@ -9,65 +9,42 @@ module.exports = {
         developers: true,
     },
     run: async (client, interaction) => {
-        const c_users = client.runtimeVariables.db.collection('users');
-        let users;
-        try {
-            users = await c_users
-                .find({
-                    applicationStatus: 2,
-                })
-                .toArray();
+        //for all discord members with the pending role, check if they have the division role
+        const roles = client.config.roles;
+        const divisionRoleA = roles.divisions['A'];
+        const divisionRoleB = roles.divisions['B'];
+        const pendingRole = roles['fpl-pending'];
 
-            console.dir(users);
-        } catch (error) {
-            log(error, 'err');
-            return interaction.reply({
-                components: [],
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('Error')
-                        .setDescription(
-                            'An error occurred while fetching the applications.'
-                        )
-                        .setColor('Red'),
-                ],
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
+        const guild = await client.guilds.fetch(interaction.guildId);
+        const members = await guild.members.fetch();
 
-        if (users.length === 0) {
-            return interaction.reply({
-                components: [],
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('No Applications')
-                        .setDescription('There are no pending applications.')
-                        .setColor('Purple'),
-                ],
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
+        let message = '';
+        let usersFixed = 0;
 
-        users.forEach((user) => {
-            interaction.guild.members.fetch(user.discordId).then((member) => {
-                //if the member has one of the division roles, remove the pending role
+        for (const [_, member] of members) {
+            if (member.roles.cache.has(pendingRole)) {
                 if (
-                    member.roles.cache.has(
-                        client.config.roles.divisions['A']
-                    ) ||
-                    member.roles.cache.has(client.config.roles.divisions['B'])
+                    member.roles.cache.has(divisionRoleA) ||
+                    member.roles.cache.has(divisionRoleB)
                 ) {
-                    member.roles.remove(client.config.roles['fpl-pending']);
+                    log(
+                        `User ${member.displayName} has the pending role but also has the division role. Removing pending role.`,
+                        'warn'
+                    );
+                    await member.roles.remove(pendingRole);
+                    message += `User ${member.displayName} has the pending role but also has the division role. Removed pending role. \n`;
+                    usersFixed++;
                 }
-            });
-        });
+            }
+        }
 
         interaction.reply({
-            components: [],
             embeds: [
                 new EmbedBuilder()
-                    .setTitle('Success')
-                    .setDescription('All pending applications have been fixed.')
+                    .setTitle('Fixed Pending Roles')
+                    .setDescription(
+                        `Fixed the pending roles for ${usersFixed} users. \n\n${message}`
+                    )
                     .setColor('Green'),
             ],
             ephemeral: client.config.development.ephemeral,
