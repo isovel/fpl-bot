@@ -140,7 +140,7 @@ module.exports = {
 
         let embed = new EmbedBuilder()
             .setTitle(`**${member.user.displayName}**'s Application`)
-            .setThumbnail(member.displayAvatarURL())
+            //.setThumbnail(member.displayAvatarURL())
             .setDescription(embedData.join('\n'))
             .setColor('Purple');
 

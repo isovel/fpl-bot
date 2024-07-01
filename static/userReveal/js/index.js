@@ -199,7 +199,7 @@ pullUserButton.addEventListener('click', () => {
         return;
     }
     let user = window.users[pulledUsers.length];
-    letterStopDelay = 15; // 40 / (user.length / 5);
+    letterStopDelay = 12; // 40 / (user.length / 5);
     revealText(window.users[pulledUsers.length].toUpperCase());
     if (pulledUsers.length == window.users.length - 1) {
         pullUserButton.innerText = 'Continue';
