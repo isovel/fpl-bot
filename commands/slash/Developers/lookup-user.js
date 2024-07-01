@@ -17,16 +17,19 @@ module.exports = {
     },
     run: async (client, interaction) => {
         const c_users = client.runtimeVariables.db.collection('users');
-        const user = await c_users.findOne({
-            discordId: interaction.options.getUser('user').id,
+        const user = interaction.options.getUser('user');
+        const userDoc = await c_users.findOne({
+            discordId: user.id,
         });
 
-        if (!user) {
+        if (!userDoc) {
             return interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('User Not Found')
-                        .setDescription('User not found in the database.')
+                        .setDescription(
+                            `${user.displayName} is not in the database.`
+                        )
                         .setColor('Red'),
                 ],
                 ephemeral: client.config.development.ephemeral,
@@ -37,7 +40,7 @@ module.exports = {
             embeds: [
                 new EmbedBuilder()
                     .setTitle('User Data')
-                    .setDescription(JSON.stringify(user, null, 2))
+                    .setDescription(JSON.stringify(userDoc, null, 2))
                     .setColor('Green'),
             ],
             ephemeral: client.config.development.ephemeral,
