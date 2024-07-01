@@ -65,6 +65,7 @@ module.exports = {
                     )
                     .setColor('Green'),
             ],
+            ephemeral: client.config.development.ephemeral,
         });
     },
 };

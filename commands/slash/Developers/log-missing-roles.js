@@ -37,7 +37,6 @@ module.exports = {
                 if (!member) return;
 
                 usersFound++;
-                log(`Users found: ${usersFound}`, 'info');
                 if (
                     !member.roles.cache.has(divisionRoleA) &&
                     !member.roles.cache.has(divisionRoleB) &&

@@ -37,6 +37,7 @@ module.exports = {
         }
 
         //send dm to every pulled user
+
         const c_queues = client.runtimeVariables.db.collection('queues');
 
         const queue = await c_queues.findOne({
@@ -44,17 +45,17 @@ module.exports = {
         });
 
         const users = queue.randomUsers;
+        if (!client.config.development.enabled) {
+            await users.forEach((user) => {
+                client.users.fetch(user.id).then((u) => {
+                    if (!u)
+                        return interaction.reply({
+                            content: 'User not found.',
+                            ephemeral: client.config.development.ephemeral,
+                        });
 
-        await users.forEach((user) => {
-            client.users.fetch(user.id).then((u) => {
-                if (!u)
-                    return interaction.reply({
-                        content: 'User not found.',
-                        ephemeral: client.config.development.ephemeral,
-                    });
-
-                //if user doesnt have verified role
-                /*if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
+                    //if user doesnt have verified role
+                    /*if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
                     return interaction.reply({
                         embeds: [
                             new EmbedBuilder()
@@ -67,18 +68,19 @@ module.exports = {
                         ephemeral: client.config.development.ephemeral,
                     });
                 }*/
-                u.send({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Match')
-                            .setDescription(
-                                `The match code for the match in division ${division} is **${match.matchCode}**`
-                            )
-                            .setColor('Green'),
-                    ],
+                    u.send({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle('Match')
+                                .setDescription(
+                                    `The match code for the match in division ${division} is **${match.matchCode}**`
+                                )
+                                .setColor('Green'),
+                        ],
+                    });
                 });
             });
-        });
+        }
 
         c_matches.updateOne(
             {
