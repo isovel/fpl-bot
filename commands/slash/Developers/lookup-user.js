@@ -18,7 +18,7 @@ module.exports = {
     run: async (client, interaction) => {
         const c_users = client.runtimeVariables.db.collection('users');
         const user = await c_users.findOne({
-            discordId: interaction.user.id,
+            discordId: interaction.options.getUser('user').id,
         });
 
         if (!user) {
