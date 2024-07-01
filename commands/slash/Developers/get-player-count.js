@@ -3,9 +3,12 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { log } = require('../../../functions');
 
 module.exports = {
-    data: new SlashCommandBuilder()
+    structure: new SlashCommandBuilder()
         .setName('get-player-count')
         .setDescription('Get user counts'),
+    options: {
+        developers: true,
+    },
     async run(interaction) {
         const allPlayers = await interaction.client.db.players.getAll();
         const assignedPlayers = allPlayers.filter((player) => player.assigned);
