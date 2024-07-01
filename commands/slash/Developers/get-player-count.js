@@ -10,28 +10,61 @@ module.exports = {
         developers: true,
     },
     async run(interaction) {
-        const allPlayers = await interaction.client.db.players.getAll();
-        const assignedPlayers = allPlayers.filter((player) => player.assigned);
-        const unassignedPlayers = allPlayers.filter(
-            (player) => !player.assigned
-        );
-        const divisionAPlayers = allPlayers.filter(
-            (player) => player.division === 'A'
-        );
-        const divisionBPlayers = allPlayers.filter(
-            (player) => player.division === 'B'
-        );
-
-        const embed = new EmbedBuilder()
-            .setTitle('Player Count')
-            .addField('All Players', allPlayers.length, true)
-            .addField('Assigned Players', assignedPlayers.length, true)
-            .addField('Unassigned Players', unassignedPlayers.length, true)
-            .addField('Division A Players', divisionAPlayers.length, true)
-            .addField('Division B Players', divisionBPlayers.length, true)
-            .setColor('Purple')
-            .setTimestamp();
-        await interaction.reply({ embeds: [embed] });
-        log('Player count retrieved', embed);
+        const c_users = client.runtimeVariables.db.collection('users');
+        let users;
+        try {
+            users = await c_users.find({}).toArray();
+        } catch (error) {
+            log(error, 'err');
+            return interaction.reply({
+                components: [],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'An error occurred while fetching the applications.'
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+        if (users.length === 0) {
+            return interaction.reply({
+                components: [],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('No Users')
+                        .setDescription('There are no users in the database.')
+                        .setColor('Purple'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+        let allPlayers = 0;
+        let assignedPlayers = 0;
+        let pendingPlayers = 0;
+        let deniedPlayers = 0;
+        let divisionAPlayers = 0;
+        let divisionBPlayers = 0;
+        for (const user of users) {
+            allPlayers++;
+            if (user.applicationStatus == 2) assignedPlayers++;
+            else if (user.applicationStatus == 0) deniedPlayers++;
+            else pendingPlayers++;
+            if (user.division === 'A') divisionAPlayers++;
+            else if (user.division === 'B') divisionBPlayers++;
+        }
+        interaction.reply({
+            components: [],
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Player Counts')
+                    .setDescription(
+                        `All players: ${allPlayers}\nAssigned players: ${assignedPlayers}\nPending players: ${pendingPlayers}\nDenied players: ${deniedPlayers}\nDivision A players: ${divisionAPlayers}\nDivision B players: ${divisionBPlayers}`
+                    )
+                    .setColor('Green'),
+            ],
+        });
     },
 };
