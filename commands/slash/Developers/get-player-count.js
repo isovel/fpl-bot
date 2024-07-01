@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('get-player-count')
         .setDescription('Get user counts'),
-    async execute(interaction) {
+    async run(interaction) {
         const allPlayers = await interaction.client.db.players.getAll();
         const assignedPlayers = allPlayers.filter((player) => player.assigned);
         const unassignedPlayers = allPlayers.filter(
