@@ -9,7 +9,7 @@ module.exports = {
     options: {
         developers: true,
     },
-    async run(interaction, client) {
+    async run(client, interaction) {
         const c_users = client.runtimeVariables.db.collection('users');
         let users;
         try {
