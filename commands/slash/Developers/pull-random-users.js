@@ -97,58 +97,56 @@ module.exports = {
             });
         }
 
+        log(userData, 'debug');
+
         //update user data with weight modifiers
         const c_users = client.runtimeVariables.db.collection('users');
-        await userData.forEach(async (user) => {
-            let discordUser;
-            await setTimeout(async () => {
-                discordUser = await interaction.guild.members
-                    .fetch(user.id)
-                    .catch((err) => {
-                        log(
-                            `User ${user.name} not found in guild. Removing from queue.`,
-                            'warn'
-                        );
-                        c_queues.updateOne(
-                            { division: division },
+        await userData.forEach(
+            async (user) =>
+                await setTimeout(async () => {
+                    let discordUser = await interaction.guild.members.fetch(
+                        user.id
+                    );
+
+                    if (!discordUser) {
+                        return interaction.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle('Error')
+                                    .setDescription(
+                                        'An error occurred fetching user from guild.'
+                                    )
+                                    .setColor('Red'),
+                            ],
+                            ephemeral: client.config.development.ephemeral,
+                        });
+                    }
+
+                    let weight = 1;
+                    let specialRoles = [];
+                    client.config.roles.weightModify.forEach((role) => {
+                        if (discordUser.roles.cache.has(role.id)) {
+                            weight += role.multiplier - 1;
+                            specialRoles.push(role.name);
+                        }
+                    });
+
+                    if (user.weight != weight) {
+                        c_users.updateOne(
+                            { discordId: discordUser.id },
                             {
-                                $pull: {
-                                    users: {
-                                        id: user.id,
-                                    },
+                                $set: {
+                                    weight: weight,
+                                    defaultWeight: weight,
+                                    specialRoles: specialRoles,
                                 },
                             }
                         );
 
-                        //remove from userData
-                        userData = userData.filter((u) => u.id != user.id);
-                    });
-            }, 25);
-
-            let weight = 1;
-            let specialRoles = [];
-            client.config.roles.weightModify.forEach((role) => {
-                if (discordUser.roles.cache.has(role.id)) {
-                    weight += role.multiplier - 1;
-                    specialRoles.push(role.name);
-                }
-            });
-
-            if (user.weight != weight) {
-                c_users.updateOne(
-                    { discordId: discordUser.id },
-                    {
-                        $set: {
-                            weight: weight,
-                            defaultWeight: weight,
-                            specialRoles: specialRoles,
-                        },
+                        user.weight = weight;
                     }
-                );
-
-                user.weight = weight;
-            }
-        });
+                }, 25)
+        );
 
         if (userData.length < amount) {
             return interaction.reply({
@@ -241,8 +239,8 @@ module.exports = {
                 components: [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
-                            .setCustomId('start-web-server_' + division)
-                            .setLabel('Start Web Server')
+                            .setCustomId('configure-web-server_' + division)
+                            .setLabel('Configure Web Server')
                             .setStyle('Primary'),
                         new ButtonBuilder()
                             .setCustomId('configure-vc_' + division)

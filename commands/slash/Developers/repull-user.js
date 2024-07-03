@@ -134,46 +134,14 @@ module.exports = {
             });
         }
 
-        c_queues
+        await c_queues
             .updateOne(
                 { division: userData.division },
                 {
                     $addToSet: { randomUsers: randomUser },
+                    $pull: { randomUsers: { id: user.id } },
                 }
             )
-            .then(async () => {
-                await c_queues.updateOne(
-                    { division: userData.division },
-                    {
-                        $pull: { randomUsers: { id: user.id } },
-                    }
-                );
-                interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Success')
-                            .setDescription(
-                                `User ${user.displayName} has been repulled to ${pulledUser.displayName}.`
-                            )
-                            .setColor('Green'),
-                    ],
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId('stop-web-server')
-                                .setLabel('Stop Old Web Server')
-                                .setStyle('Primary'),
-                            new ButtonBuilder()
-                                .setCustomId(
-                                    'start-web-server_' + randomUser.name
-                                )
-                                .setLabel('Start Web Server')
-                                .setStyle('Primary')
-                        ),
-                    ],
-                    ephemeral: client.config.development.ephemeral,
-                });
-            })
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
@@ -181,12 +149,33 @@ module.exports = {
                         new EmbedBuilder()
                             .setTitle('Error')
                             .setDescription(
-                                'An error occurred while writing to the databse.'
+                                'An error occurred while writing to the database.'
                             )
                             .setColor('Red'),
                     ],
                     ephemeral: client.config.development.ephemeral,
                 });
             });
+        interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Success')
+                    .setDescription(
+                        `User ${user.displayName} has been repulled to ${pulledUser.displayName}.`
+                    )
+                    .setColor('Green'),
+            ],
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(
+                            'configure-web-server_' + userData.division
+                        )
+                        .setLabel('Configure Web Server')
+                        .setStyle('Primary')
+                ),
+            ],
+            ephemeral: client.config.development.ephemeral,
+        });
     },
 };

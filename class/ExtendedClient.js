@@ -8,7 +8,7 @@ const { setupFunctions, log } = require('../functions');
 const deploy = require('../handlers/deploy');
 const mongodb = require('../handlers/mongodb');
 const components = require('../handlers/components');
-const { generatHelpPages } = require('../handlers/help-command');
+const api = require('../handlers/api');
 log(
     `Loading ${process.env.PRODUCTION ? 'Production' : 'Development'} Server`,
     'info'
@@ -33,7 +33,7 @@ module.exports = class extends Client {
     /**
      * / / object / list to be used in a call to any of the methods of the object
      */
-    constructor() {
+    constructor(dir) {
         super({
             intents: 3276799, // Every intent
             partials: [
@@ -54,6 +54,7 @@ module.exports = class extends Client {
                 ],*/
             },
         });
+        this.__dirname = dir;
     }
 
     start = async () => {
@@ -61,6 +62,7 @@ module.exports = class extends Client {
         events(this);
         components(this);
         setupFunctions(this);
+        api(this);
 
         // Set up the mongodb database.
         if (config.handler.mongodb.enabled)

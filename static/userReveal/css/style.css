@@ -1,11 +1,11 @@
 /*Import Montserrat-ExtraBoldItalic.ttf*/
 @font-face {
     font-family: 'Montserrat-ExtraBoldItalic';
-    src: url('/assets/Montserrat-ExtraBoldItalic.ttf') format('truetype');
+    src: url('../assets/Montserrat-ExtraBoldItalic.ttf') format('truetype');
 }
 @font-face {
     font-family: 'Montserrat-ExtraBold';
-    src: url('/assets/Montserrat-ExtraBold.ttf') format('truetype');
+    src: url('../assets/Montserrat-ExtraBold.ttf') format('truetype');
 }
 
 body {
