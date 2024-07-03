@@ -109,17 +109,6 @@ module.exports = {
         const platform = interaction.fields.getTextInputValue('platform');
         const seasonsPlayed =
             interaction.fields.getTextInputValue('seasons-played');
-        let isMember = false;
-        const seasonAbrs = {
-            'alpha': 'alpha',
-            'closed beta 1': 'cb1',
-            'closed beta 2': 'cb2',
-            'open beta 1': 'ob1',
-            'open beta': 'ob1',
-            'season 1': 's1',
-            'season 2': 's2',
-            'season 3': 's3',
-        };
 
         //validate embark id with regex (asd#1234)
         if (!embarkId.match(/.{2,}#[0-9]{4}$/)) {
@@ -163,26 +152,17 @@ module.exports = {
 
         //validate seasons played ()
         let seasons = seasonsPlayed.split(',');
-        let validSeasons = [
-            'alpha',
-            'cb1',
-            'cb2',
-            'ob',
-            'ob1',
-            's1',
-            's2',
-            's3',
-        ];
         seasons = seasons.map((season) => {
             //replace all seasonabrs with full names
             season = season.toLowerCase().trim();
-            if (seasonAbrs[season]) {
-                return seasonAbrs[season];
+            if (client.config.seasons.map((s) => s.name).includes(season)) {
+                return client.config.seasons.find((s) => s.name == season)
+                    .value;
             }
             return season.trim().toLowerCase();
         });
         for (let season of seasons) {
-            if (!validSeasons.includes(season)) {
+            if (!client.config.seasons.map((s) => s.value).includes(season)) {
                 log(
                     `${interaction.user.displayName} entered an invalid season! ${season}`,
                     'warn'
@@ -250,10 +230,16 @@ module.exports = {
 
         //Replace all season abbrs with full names
         highestRecordedRank = highestRecordedRank.toLowerCase().trim();
-        Object.keys(seasonAbrs).forEach((season) => {
+        /*Object.keys(seasonAbrs).forEach((season) => {
             highestRecordedRank = highestRecordedRank.replace(
                 season,
                 seasonAbrs[season]
+            );
+        });*/
+        client.config.seasons.forEach((season) => {
+            highestRecordedRank = highestRecordedRank.replace(
+                season.name.toLowerCase(),
+                season.value
             );
         });
         highestRecordedRank = highestRecordedRank.replace(',', '');
@@ -266,7 +252,11 @@ module.exports = {
         }
         if (
             !highestRecordedRank.match(
-                /^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (cb1|cb2|ob1|s1|s2|s3)$/
+                new RegExp(
+                    `^(unranked|bronze|silver|gold|platinum|diamond) (1|2|3|4) (${client.config.seasons
+                        .map((s) => s.value)
+                        .join('|')})$`
+                )
             ) &&
             highestRecordedRank != 'unranked'
         ) {

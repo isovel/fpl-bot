@@ -1,7 +1,8 @@
 node_modules
 package-lock.json
 
+**/*.old
+log.txt
+
 # DO NOT REMOVE THESE FOR SECURITY
 .env
-config.js
-log.txt

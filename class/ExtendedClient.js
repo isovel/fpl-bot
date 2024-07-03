@@ -1,15 +1,18 @@
-console.log('Loading DiscordJs...');
 const { Client, Partials, Collection } = require('discord.js');
-console.log('Loading Handlers...');
-const config = require('../config');
+const config = process.env.PRODUCTION
+    ? require('../server-config')
+    : require('../config');
 const commands = require('../handlers/commands');
 const events = require('../handlers/events');
-const { setupFunctions } = require('../functions');
+const { setupFunctions, log } = require('../functions');
 const deploy = require('../handlers/deploy');
 const mongodb = require('../handlers/mongodb');
 const components = require('../handlers/components');
-
-console.log('Handlers loaded!');
+const { generatHelpPages } = require('../handlers/help-command');
+log(
+    `Loading ${process.env.PRODUCTION ? 'Production' : 'Development'} Server`,
+    'info'
+);
 
 module.exports = class extends Client {
     collection = {

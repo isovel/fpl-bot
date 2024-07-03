@@ -33,7 +33,14 @@ module.exports = {
             });
         }
 
-        if (match.status != 1) {
+        if (match.status == 2 || match.status == 3) {
+            return interaction.reply({
+                content: 'Match has already ended.',
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        if (match.status == 0) {
             return interaction.reply({
                 content: 'Match has not been started yet.',
                 ephemeral: client.config.development.ephemeral,

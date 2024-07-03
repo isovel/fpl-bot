@@ -1,8 +1,5 @@
-console.log('Loading DotEnv...');
 require('dotenv').config();
-console.log('Loading ExtendedClient...');
 const ExtendedClient = require('./class/ExtendedClient');
-console.log('Loaded ExtendedClient');
 
 const client = new ExtendedClient();
 

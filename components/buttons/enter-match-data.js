@@ -37,13 +37,6 @@ module.exports = {
             });
         }
 
-        if (match.status != 2) {
-            return interaction.reply({
-                content: 'Match has not ended yet.',
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
-
         const user = await client.users.fetch(userId);
 
         log(user, 'debug', true);
@@ -61,7 +54,7 @@ module.exports = {
             .addComponents(
                 new ActionRowBuilder().addComponents(
                     new TextInputBuilder()
-                        .setLabel('Placement')
+                        .setLabel('TeamPlacement')
                         .setCustomId('placement')
                         .setPlaceholder(
                             `The placement of the users team (1-${

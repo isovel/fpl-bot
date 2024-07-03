@@ -28,7 +28,7 @@ module.exports = {
         log(`Type: "${typeof division}"`, 'debug');
 
         const modal = new ModalBuilder()
-            .setTitle('Team Ratings')
+            .setTitle('Objectives Played')
             .setCustomId(
                 `submit-team-ratings_${division}_${gameMode}_${msgId}`
             );
@@ -39,7 +39,7 @@ module.exports = {
             client.config.gamemodes.find((gm) => gm.value == gameMode)?.teams;
             i++
         ) {
-            modal.addComponents(
+            /*modal.addComponents(
                 new ActionRowBuilder().addComponents(
                     new TextInputBuilder()
                         .setLabel(`Team on place ${i + 1}`)
@@ -47,6 +47,16 @@ module.exports = {
                         .setPlaceholder(
                             'Enter the star rating for this team (1-5)'
                         )
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                )
+            );*/
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setLabel(`Team ${i + 1}`)
+                        .setCustomId(`team-rating_${i + 1}`)
+                        .setPlaceholder('Did the team play the objective?')
                         .setRequired(true)
                         .setStyle(TextInputStyle.Short)
                 )

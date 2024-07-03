@@ -29,6 +29,23 @@ module.exports = {
                 });
                 return false;
             }
+            if (component.options?.developers) {
+                if (!config.users.developers.includes(interaction.member.id)) {
+                    await interaction.reply({
+                        content:
+                            config.messageSettings.developerMessage !==
+                                undefined &&
+                            config.messageSettings.developerMessage !== null &&
+                            config.messageSettings.developerMessage !== ''
+                                ? config.messageSettings
+                                      .developerMessageComponent
+                                : 'You are not authorized to use this component',
+                        ephemeral: true,
+                    });
+
+                    return;
+                }
+            }
 
             return true;
         };

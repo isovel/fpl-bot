@@ -17,22 +17,22 @@ module.exports = {
         const gameMode = interaction.customId.split('_')[2];
         const msgId = interaction.customId.split('_')[3];
 
+        const confirmWords = ['yes', 'true', '1', 'ok', 'y', 'ye', 'yeah'];
+        const denyWords = ['no', 'false', '0', 'n', 'nah', 'nope'];
+
         interaction.fields.fields.forEach((field) => {
+            log(field, 'debug', true);
             if (
-                !(parseInt(field.value) && field.value > 0 && field.value < 6)
+                !confirmWords.includes(field.value) &&
+                !denyWords.includes(field.value) //!(parseInt(field.value) && field.value > 0 && field.value < 6)
             ) {
                 return interaction.reply({
-                    content: `Please enter a rating between 1 and 5 for ${field.name}`,
+                    content: `Please enter a valid response for Team ${
+                        field.customId.split('_')[1]
+                    }`,
                     ephemeral: client.config.development.ephemeral,
                 });
             }
-        });
-
-        interaction.message.delete();
-
-        await interaction.reply({
-            content: 'Ratings submitted!',
-            ephemeral: client.config.development.ephemeral,
         });
 
         const c_matches = client.runtimeVariables.db.collection('matches');
@@ -55,6 +55,13 @@ module.exports = {
             });
         }
 
+        interaction.message.delete();
+
+        await interaction.reply({
+            content: 'Ratings submitted!',
+            ephemeral: client.config.development.ephemeral,
+        });
+
         //save the ratings
         c_matches.updateOne(
             {
@@ -64,7 +71,7 @@ module.exports = {
                 $set: {
                     teamRatings: interaction.fields.fields.map((field) => ({
                         placement: field.customId.split('_')[1],
-                        rating: parseInt(field.value),
+                        objective: confirmWords.includes(field.value) ? 1 : 0,
                     })),
                 },
             }

@@ -48,7 +48,7 @@ const log = (string, style, dirLog) => {
 
     const selectedStyle = styles[style] || { logFunction: console.log };
     if (!dirLog) {
-        if (!style == 'err') {
+        if (style != 'err') {
             switch (typeof string) {
                 case 'object':
                     string =

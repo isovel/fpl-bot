@@ -4,7 +4,7 @@ const { log } = require('../../../functions');
 
 module.exports = {
     structure: new SlashCommandBuilder()
-        .setName('get-user-data')
+        .setName('generate-user-data-file')
         .setDescription('Get all user data.'),
     options: {
         developers: true,

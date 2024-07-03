@@ -79,12 +79,14 @@ module.exports = {
                     if (!config.users.developers.includes(message.author.id)) {
                         await message.reply({
                             content:
-                                config.messageSettings.developerMessage !==
-                                    undefined &&
-                                config.messageSettings.developerMessage !==
-                                    null &&
-                                config.messageSettings.developerMessage !== ''
-                                    ? config.messageSettings.developerMessage
+                                config.messageSettings
+                                    .developerMessageCommand !== undefined &&
+                                config.messageSettings
+                                    .developerMessageCommand !== null &&
+                                config.messageSettings
+                                    .developerMessageCommand !== ''
+                                    ? config.messageSettings
+                                          .developerMessageCommand
                                     : 'You are not authorized to use this command',
                             ephemeral: true,
                         });
