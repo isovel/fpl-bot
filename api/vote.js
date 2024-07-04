@@ -67,16 +67,14 @@ router.get('/api/gamemodeVote/results', (req, res) => {
         });
 });
 
-router.get('/api/mapVote/getValidOptions', (req, res) => {
-    if (req.query.map) {
-        getValidOptions(req.query.map)
-            .then((options) => {
-                res.status(200).json(options);
-            })
-            .catch((err) => {
-                res.status(500).send(err);
-            });
-    }
+router.get('/api/gamemodeVote/getValidOptions', (req, res) => {
+    getValidOptions(req.query.map)
+        .then((options) => {
+            res.status(200).json(options);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
 });
 
 module.exports = router;

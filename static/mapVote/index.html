@@ -13,7 +13,7 @@
     >
         <div
             id="header"
-            class="absolute top-0 z-30 w-full p-4 flex justify-center items-center"
+            class="absolute top-0 z-40 w-full p-4 flex justify-center items-center"
         >
             <button class="text-xl transition-all" id="nextAction">
                 Open Map Voting
@@ -51,15 +51,28 @@
                 />
             </div>
         </div>
+        <ul
+            id="validContent"
+            class="absolute h-full w-full text-7xl flex flex-col justify-center items-center"
+        >
+            <li class="text-8xl">VALID MAPS:</li>
+            <li>MONACO</li>
+            <li>SEOUL</li>
+            <li>SKYWAY</li>
+            <li>VEGAS</li>
+            <li>HORIZON</li>
+            <li>KYOTO</li>
+        </ul>
         <video id="bgVideo" controls preload="true" autoplay loop muted>
             <source src="/assets/vote_bg.webm" type="video/webm" />
         </video>
+
         <div id="userRevealer">
             <div id="mainContent" class="h-full w-full z-0">
                 <canvas id="textReveal" class="h-full w-full z-10"></canvas>
                 <div
                     id="transparencyOverlay"
-                    class="hidden absolute top-0 left-0 h-full w-full z-30 bg-gradient-to-b from-[#d31f3c] via-transparent to-[#d31f3c]"
+                    class="absolute top-0 left-0 h-full w-full z-30 bg-gradient-to-b from-[#2e2e2e] via-transparent to-[#2e2e2e]"
                 ></div>
             </div>
         </div>

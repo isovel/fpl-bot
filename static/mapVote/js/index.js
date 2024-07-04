@@ -1,6 +1,8 @@
 const nextActionButton = document.getElementById('nextAction');
+const validContent = document.getElementById('validContent');
 let currentAction = 0;
 let map;
+let mapAbbr;
 let gamemode;
 
 const maps = {
@@ -77,6 +79,7 @@ nextActionButton.addEventListener('click', () => {
                     if (!response.ok) {
                         throw new Error('Failed to close vote');
                     }
+                    validContent.classList.add('hidden');
                     initTextReveal();
                     changeText('Reveal Map');
                 })
@@ -97,6 +100,7 @@ nextActionButton.addEventListener('click', () => {
                 .then((data) => {
                     //go to /textReveal?text=map
                     //window.location.href = `/textReveal?text=${data.map}`;
+                    mapAbbr = data.map.toUpperCase();
                     map = maps[data.map.toLowerCase()].toUpperCase();
                     let dashes = '-'.repeat(
                         Math.floor((16 - data.map.length) / 2)
@@ -113,15 +117,34 @@ nextActionButton.addEventListener('click', () => {
             //start vote
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            fetch('/api/gamemodeVote/start')
+            fetch('/api/gamemodeVote/getValidOptions?map=' + mapAbbr)
                 .then((response) => {
                     if (!response.ok) {
-                        throw new Error('Failed to start vote');
+                        throw new Error('Failed to get valid options');
                     }
-                    changeText('Close Gamemode Voting');
+                    return response.json();
                 })
-                .catch((error) => {
-                    alert('Voting already open');
+                .then((data) => {
+                    validContent.innerHTML = '';
+                    let li = document.createElement('li');
+                    li.innerText = 'VALID GAMEMODES:';
+                    validContent.appendChild(li);
+                    data.forEach((option) => {
+                        let li = document.createElement('li');
+                        li.innerText = option.toUpperCase();
+                        validContent.appendChild(li);
+                    });
+                    validContent.classList.remove('hidden');
+                    fetch('/api/gamemodeVote/start')
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error('Failed to start vote');
+                            }
+                            changeText('Close Gamemode Voting');
+                        })
+                        .catch((error) => {
+                            alert('Voting already open');
+                        });
                 });
             break;
         case 4:
@@ -131,6 +154,8 @@ nextActionButton.addEventListener('click', () => {
                     if (!response.ok) {
                         throw new Error('Failed to close vote');
                     }
+                    validContent.classList.add('hidden');
+                    initTextReveal();
                     changeText('Reveal Gamemode');
                 })
                 .catch((error) => {
