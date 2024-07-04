@@ -27,11 +27,11 @@ const maps = {
     'monaco': [
         'bank it',
         'cashout',
-        'quickcash',
+        'quick cash',
         'terminal attack',
         'power shift',
     ],
-    'seoul': ['bank it', 'cashout', 'quickcash', 'power shift'],
+    'seoul': ['bank it', 'cashout', 'quick cash', 'power shift'],
     'skyway': [
         'bank it',
         'cashout',
@@ -39,17 +39,17 @@ const maps = {
         'power shift',
         'terminal attack',
     ],
-    'vegas': ['cashout', 'quickcash', 'bank it', 'terminal attack'],
+    'vegas': ['cashout', 'quick cash', 'bank it', 'terminal attack'],
     'horizon': [
         'cashout',
-        'quickcash',
+        'quick cash',
         'bank it',
         'terminal attack',
         'power shift',
     ],
     'kyoto': [
         'cashout',
-        'quickcash',
+        'quick cash',
         'bank it',
         'terminal attack',
         'power shift',
@@ -127,6 +127,19 @@ module.exports = {
             votingStartTime = Date.now();
             votingActive = true;
             votingType = type;
+            //reset votes
+            switch (type) {
+                case 1:
+                    mapVotes = new Map();
+                    mapVotesArray = [];
+                    map = null;
+                    break;
+                case 2:
+                    gamemodeVotes = new Map();
+                    gamemodeVotesArray = [];
+                    gamemode = null;
+                    break;
+            }
             resolve();
         });
     },
@@ -160,6 +173,7 @@ module.exports = {
                     ),
                 ];
                 log(votesRanking, 'chatbot');
+                map = votesRanking[0];
                 resolve({
                     map: votesRanking[0],
                     ranking: votesRanking,
@@ -179,6 +193,7 @@ module.exports = {
                     ),
                 ];
                 log(votesRanking, 'chatbot');
+                gamemode = votesRanking[0];
                 resolve({
                     gamemode: votesRanking[0],
                     ranking: votesRanking,
@@ -189,7 +204,7 @@ module.exports = {
     getValidOptions: (map) => {
         return new Promise((resolve, reject) => {
             log(`Getting valid options for ${map}`, 'chatbot');
-            resolve(maps[map]);
+            resolve(maps[map.toLowerCase()]);
         });
     },
 };
