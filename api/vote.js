@@ -33,7 +33,7 @@ router.get('/api/mapVote/results', (req, res) => {
             res.status(200).json(votes);
         })
         .catch((err) => {
-            res.status;
+            res.status(200).json({ map: 'No votes' });
         });
 });
 
@@ -63,7 +63,7 @@ router.get('/api/gamemodeVote/results', (req, res) => {
             res.status(200).json(votes);
         })
         .catch((err) => {
-            res.status;
+            res.status(200).json({ gamemode: 'No votes' });
         });
 });
 

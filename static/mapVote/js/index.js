@@ -205,7 +205,7 @@ nextActionButton.addEventListener('click', () => {
 
 function initTextReveal() {
     ctx.globalAlpha = 1;
-    ctx.fillStyle = '#2e2e2e';
+    ctx.fillStyle = ' ';
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
     gradient.addColorStop(0.1, 'transparent');
     gradient.addColorStop(0.3, '#2e2e2e'); // Adjust fade start position

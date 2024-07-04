@@ -160,6 +160,7 @@ module.exports = {
             log('Getting votes', 'chatbot');
             let votesRanking;
             if (votingType == 1) {
+                if (mapVotesArray.length == 0) return reject();
                 votesRanking = [
                     ...new Set(
                         mapVotesArray
@@ -179,6 +180,7 @@ module.exports = {
                     ranking: votesRanking,
                 });
             } else {
+                if (gamemodeVotesArray.length == 0) return reject();
                 votesRanking = [
                     ...new Set(
                         gamemodeVotesArray
