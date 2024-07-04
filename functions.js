@@ -44,6 +44,11 @@ const log = (string, style, dirLog) => {
             txtPrefix: '[INTERACTION]',
             logFunction: console.log,
         },
+        chatbot: {
+            prefix: chalk.cyan('[CHATBOT]'),
+            txtPrefix: '[CHATBOT]',
+            logFunction: console.log,
+        },
     };
 
     const selectedStyle = styles[style] || { logFunction: console.log };

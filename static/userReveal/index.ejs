@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script>
             window.users = <%- JSON.stringify(users) %>
-            window.userNames = window.users
+            window.userNames = window.users.map((user) => user.toUpperCase())
             window.users = window.users.map((user) => {
                 let dashes = "-".repeat(Math.floor((16-user.length)/2))
                 return `${dashes}${user}${dashes}`
@@ -18,8 +18,8 @@
     </head>
     <body class="text-white h-screen w-screen overflow-hidden">
         <video id="bgVideo" controls preload="true" autoplay loop muted>
-            <source src="./assets/bg.webm" type="video/webm" />
-            <source src="./assets/bg.mp4" type="video/mp4" />
+            <source src="/assets/bg.webm" type="video/webm" />
+            <source src="/assets/bg.mp4" type="video/mp4" />
         </video>
         <div id="userRevealer">
             <div id="mainContent" class="h-full w-full z-0">
@@ -70,7 +70,7 @@
         </div>
         <div
             id="userListWrapper"
-            class="absolute top-0 w-screen h-screen bg-[url('/assets/STATIC_BLANK.jpg')] z-30 flex justify-center items-center text-7xl invisible opacity-0 transition-all duration-500"
+            class="absolute top-0 w-screen h-screen bg-[url('/assets/STATIC_BLANK.png')] z-30 flex justify-center items-center text-7xl invisible opacity-0 transition-all duration-500"
         >
             <ul class="flex flex-col items-center" id="userList"></ul>
         </div>
