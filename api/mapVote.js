@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { startVoting, closeVoting, getVotes } = require('../handlers/chat');
+const {
+    startVoting,
+    closeVoting,
+    getVotes,
+    getValidOptions,
+} = require('../handlers/chat');
 
 router.get('/api/mapVote/start', (req, res) => {
     startVoting(1)
@@ -30,6 +35,18 @@ router.get('/api/mapVote/results', (req, res) => {
         .catch((err) => {
             res.status;
         });
+});
+
+router.get('/api/mapVote/getValidOptions', (req, res) => {
+    if (req.query.map) {
+        getValidOptions(req.query.map)
+            .then((options) => {
+                res.status(200).json(options);
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            });
+    }
 });
 
 module.exports = router;

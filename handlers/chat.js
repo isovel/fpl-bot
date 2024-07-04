@@ -64,6 +64,7 @@ let gamemodeVotesArray;
 
 function newMessage(message, author, createdAt) {
     if (!message.startsWith('!')) return;
+    message = message.toLowerCase();
     if (votingActive && !message.startsWith('!v')) return;
     message = message.split(' ').slice(1).join(' ');
     if (votingActive) {
@@ -183,6 +184,12 @@ module.exports = {
                     ranking: votesRanking,
                 });
             }
+        });
+    },
+    getValidOptions: (map) => {
+        return new Promise((resolve, reject) => {
+            log(`Getting valid options for ${map}`, 'chatbot');
+            resolve(maps[map]);
         });
     },
 };

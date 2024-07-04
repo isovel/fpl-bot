@@ -11,11 +11,13 @@ module.exports = {
         const value = interaction.values[0];
         const _id = interaction.customId.split('_')[1];
         if (value == 'yes') {
+            log(`Deleting application with ID ${_id}`, 'info');
             const result = client.runtimeVariables.db
                 .collection('users')
                 .deleteOne({
                     _id,
                 });
+            log(result, 'info');
             interaction.reply({
                 embeds: [
                     new EmbedBuilder()

@@ -22,7 +22,7 @@ nextActionButton.addEventListener('click', () => {
                     }
                 })
                 .catch((error) => {
-                    console.error(error);
+                    alert('Voting already open');
                 });
             changeText('Close Voting');
             break;

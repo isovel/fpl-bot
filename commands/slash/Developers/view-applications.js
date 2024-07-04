@@ -43,7 +43,7 @@ module.exports = {
         }
 
         if (users.length === 0) {
-            if (skipIds.length > 0) {
+            if (replied) {
                 return interaction.update({
                     components: [],
                     embeds: [
@@ -104,6 +104,7 @@ module.exports = {
                             )
                     ),
                 ],
+                ephemeral: client.config.development.ephemeral,
             });
             //run the command again
             return module.exports.run(client, interaction, replied);

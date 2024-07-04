@@ -54,5 +54,4 @@ canvas {
     animation: fadeOut 0.5s;
     opacity: 0;
     display: none;
-    transform: scale(1.1);
 }
