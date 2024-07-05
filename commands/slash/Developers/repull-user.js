@@ -135,13 +135,24 @@ module.exports = {
         }
 
         await c_queues
-            .updateOne(
-                { division: userData.division },
+            .bulkWrite([
                 {
-                    $addToSet: { randomUsers: randomUser },
-                    $pull: { randomUsers: { id: user.id } },
-                }
-            )
+                    updateOne: {
+                        filter: { division: userData.division },
+                        update: {
+                            $pull: { randomUsers: { id: user.id } },
+                        },
+                    },
+                },
+                {
+                    updateOne: {
+                        filter: { division: userData.division },
+                        update: {
+                            $addToSet: { randomUsers: randomUser },
+                        },
+                    },
+                },
+            ])
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
