@@ -57,11 +57,6 @@ module.exports = {
 
         interaction.message.delete();
 
-        await interaction.reply({
-            content: 'Ratings submitted!',
-            ephemeral: client.config.development.ephemeral,
-        });
-
         //save the ratings
         c_matches.updateOne(
             {
@@ -76,6 +71,11 @@ module.exports = {
                 },
             }
         );
+
+        interaction.reply({
+            content: 'Ratings submitted!',
+            ephemeral: client.config.development.ephemeral,
+        });
 
         match.users.forEach((user) => {
             interaction.channel.send({

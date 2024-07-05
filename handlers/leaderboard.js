@@ -44,7 +44,7 @@ module.exports = {
 
             embedData.push(
                 `**${index + 1}. <@${user.discordId}> - Score: ${Math.round(
-                    (score / 140) * 1000
+                    (score / 150) * 1000
                 )}**Kills: ${kills} | Deaths: ${deaths} | Assists: ${assists} | KDA: ${kda.toFixed(
                     2
                 )} | Wins: ${wins}`

@@ -46,7 +46,7 @@ module.exports = {
         const embedFields = [
             {
                 name: 'Score',
-                value: '' + Math.round(((score || 0) / 140) * 1000),
+                value: '' + Math.round(((score || 0) / 150) * 1000),
                 inline: true,
             },
             {

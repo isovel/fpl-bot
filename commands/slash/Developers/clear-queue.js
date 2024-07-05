@@ -55,7 +55,7 @@ module.exports = {
 
                 log(result, 'debug');
 
-                client.channels.cache.get(client.config.channels.queue).send({
+                interaction.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Success')
