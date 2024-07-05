@@ -79,7 +79,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Stats')
             .setDescription(
-                `Stats for ${user.username}\n\nMatches played: ${
+                `Stats for ${user.username}\nMatches played: ${
                     userDoc.fplMatchesPlayed || 0
                 }`
             )

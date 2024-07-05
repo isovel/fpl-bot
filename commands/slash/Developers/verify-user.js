@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder,
+} = require('discord.js');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
 
@@ -41,6 +45,40 @@ module.exports = {
                 ephemeral: client.config.development.ephemeral,
             });
         }
+
+        let embedData = [
+            `Do you want to verify ${user.displayName}?`,
+            `**Matches:** ${userData.matchesPlayed}`,
+            `**Wins:** ${userData.wins}`,
+            `**Losses:** ${userData.losses}`,
+            `**Eliminations:** ${userData.kills}`,
+            `**Deaths:** ${userData.deaths}`,
+        ];
+
+        //send message with user stats and ask for confirmation
+        return interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Verify User')
+                    .setDescription(embedData.join('\n'))
+                    .setColor('Purple'),
+            ],
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('verify-user')
+                        .setLabel('Verify')
+                        .setStyle('Success')
+                        .setEmoji('✅'),
+                    new ButtonBuilder()
+                        .setCustomId('cancel-verify')
+                        .setLabel('Cancel')
+                        .setStyle('Danger')
+                        .setEmoji('❌')
+                ),
+            ],
+            ephemeral: client.config.development.ephemeral,
+        });
 
         await c_users.updateOne(
             { discordId: user.id },
