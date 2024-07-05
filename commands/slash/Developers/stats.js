@@ -23,6 +23,7 @@ module.exports = {
         if (!userDoc) {
             return await interaction.reply({
                 content: 'This user does not have an application.',
+                ephemeral: true,
             });
         }
 
@@ -87,6 +88,7 @@ module.exports = {
 
         await interaction.reply({
             embeds: [embed],
+            ephemeral: true,
         });
     },
 };
