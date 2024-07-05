@@ -3,7 +3,7 @@ const { log } = require('../functions');
 
 let permissionHandlerDivVc = {
     setPulled: async (client, interaction, user, division) => {
-        if (user.roles.cache.has(client.config.roles['fpl-pulled']))
+        if (user.roles.cache.has(client.config.roles['fpl-verified']))
             return permissionHandlerDivVc.setVerified(
                 client,
                 interaction,

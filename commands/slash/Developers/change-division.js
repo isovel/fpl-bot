@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const ExtendedClient = require('../../../class/ExtendedClient');
+const config = require('../../../config');
 const { log } = require('../../../functions');
 
 module.exports = {
@@ -16,23 +18,38 @@ module.exports = {
                 .setName('division')
                 .setDescription('The division to change to.')
                 .setRequired(true)
-                .addChoices([
-                    {
-                        name: 'A',
-                        value: 'A',
-                    },
-                    {
-                        name: 'B',
-                        value: 'B',
-                    },
-                ])
+                .addChoices(
+                    config.divisions.map((d) => {
+                        return { name: d.shortName, value: d.shortName };
+                    })
+                )
+        )
+        .addStringOption((option) =>
+            option
+                .setName('reason')
+                .setDescription('The reason for changing the division.')
+                .setRequired(false)
+        )
+        .addBooleanOption((option) =>
+            option
+                .setName('send-dm')
+                .setDescription('Whether to send a DM to the user.')
+                .setRequired(false)
         ),
     options: {
         developers: true,
     },
+    /**
+     *
+     * @param {ExtendedClient} client
+     * @param {import('discord.js').CommandInteraction} interaction
+     */
     run: async (client, interaction) => {
         const user = interaction.options.getUser('user');
         const division = interaction.options.getString('division');
+        const reason =
+            interaction.options.getString('reason') || 'No reason provided.';
+        const sendDm = interaction.options.getBoolean('send-dm');
         const c_users = client.runtimeVariables.db.collection('users');
 
         const userDoc = await c_users.findOne({ discordId: user.id });
@@ -74,6 +91,28 @@ module.exports = {
                 { discordId: user.id },
                 { $set: { division } }
             );
+            if (sendDm) {
+                await user.send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Division Changed')
+                            .setDescription(
+                                `Your division has been changed to ${division} by a staff member.`
+                            )
+                            .addFields(
+                                {
+                                    name: 'Reason',
+                                    value: reason,
+                                },
+                                {
+                                    name: 'Staff Member',
+                                    value: interaction.user.displayName,
+                                }
+                            )
+                            .setColor('Green'),
+                    ],
+                });
+            }
         } catch (error) {
             log(error, 'err');
             return interaction.reply({

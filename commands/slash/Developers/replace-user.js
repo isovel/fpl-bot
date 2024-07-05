@@ -1,0 +1,213 @@
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+} = require('discord.js');
+const permHandler = require('../../../handlers/permissions')['div-vc'];
+const { log } = require('../../../functions');
+
+module.exports = {
+    structure: new SlashCommandBuilder()
+        .setName('replace-user')
+        .setDescription('Replace a specific user with another user.')
+        .addUserOption((opt) =>
+            opt
+                .setName('old-user')
+                .setDescription('The old user.')
+                .setRequired(true)
+        )
+        .addUserOption((opt) =>
+            opt
+                .setName('new-user')
+                .setDescription('The new user.')
+                .setRequired(true)
+        ),
+    options: {
+        developers: true,
+    },
+    run: async (client, interaction) => {
+        const oldUser = interaction.options.getMember('old-user');
+        const newUser = interaction.options.getMember('new-user');
+
+        const c_users = client.runtimeVariables.db.collection('users');
+
+        const oldUserData = await c_users.findOne({ discordId: oldUser.id });
+        const newUserData = await c_users.findOne({ discordId: newUser.id });
+
+        if (oldUserData?.division != newUserData?.division) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'Both users are not in the same division.'
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        const c_queues = client.runtimeVariables.db.collection('queues');
+
+        let queueData = await c_queues.findOne({
+            division: oldUserData.division,
+        });
+
+        if (!queueData) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription('Queue not found in the database.')
+                        .setColor('Red'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        if (
+            !(
+                queueData.randomUsers.filter((u) => u.id === oldUser.id)
+                    .length > 0
+            )
+        ) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription('User not found in the queue.')
+                        .setColor('Yellow'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
+
+        //remove pulled role from user
+        oldUser.roles.remove(
+            interaction.guild.roles.cache.get(client.config.roles['fpl-pulled'])
+        );
+
+        //Remove permissions from user to access vc if exists
+        permHandler.reset(client, interaction, oldUser, oldUserData.division);
+
+        //add pulled role to random user
+        newUser.roles.add(client.config.roles['fpl-pulled']);
+
+        //set permissions for random user
+        permHandler.setPulled(
+            client,
+            interaction,
+            newUser,
+            newUserData.division
+        );
+
+        const c_matches = client.runtimeVariables.db.collection('matches');
+
+        log('MSGID: ' + queueData.pulledMsgId, 'debug');
+
+        const match = await c_matches.findOne({
+            division: oldUserData.division,
+            msgId: queueData.pulledMsgId,
+        });
+
+        log('MATCH: ' + match, 'debug');
+
+        if (
+            match &&
+            match.matchCode &&
+            match.status == 1 &&
+            !client.config.development.enabled
+        ) {
+            //send dm
+            newUser.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Match')
+                        .setDescription(
+                            `The match code for the match in division ${userData.division} is **${match.matchCode}**`
+                        )
+                        .setColor('Green'),
+                ],
+            });
+        }
+        /* .updateOne(
+                { division: oldUserData.division },
+                {
+                    $addToSet: {
+                        randomUsers: {
+                            id: newUser.id,
+                            name: newUserData.embarkId.slice(0, -5),
+                            weight: newUserData.weight,
+                        },
+                    },
+                    $pull: { randomUsers: { id: oldUser.id } },
+                }
+            )*/
+        //remove old user and add new user
+        c_queues
+            .bulkWrite([
+                {
+                    updateOne: {
+                        filter: { division: oldUserData.division },
+                        update: {
+                            $pull: { randomUsers: { id: oldUser.id } },
+                        },
+                    },
+                },
+                {
+                    updateOne: {
+                        filter: { division: oldUserData.division },
+                        update: {
+                            $addToSet: {
+                                randomUsers: {
+                                    id: newUser.id,
+                                    name: newUserData.embarkId.slice(0, -5),
+                                    weight: newUserData.weight,
+                                },
+                            },
+                        },
+                    },
+                },
+            ])
+            .catch((err) => {
+                log(err, 'err');
+                return interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while writing to the database.'
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            })
+            .then((result) => {
+                interaction.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                `User ${oldUser.displayName} has been repulled to ${newUser.displayName}.`
+                            )
+                            .setColor('Green'),
+                    ],
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId(
+                                    'configure-web-server_' +
+                                        newUserData.division
+                                )
+                                .setLabel('Configure Web Server')
+                                .setStyle('Primary')
+                        ),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            });
+    },
+};

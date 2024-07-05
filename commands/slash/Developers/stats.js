@@ -26,24 +26,64 @@ module.exports = {
             });
         }
 
-        if (!userDoc.resultData) {
-            return await interaction.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('Stats')
-                        .setDescription(`Stats for ${user.username}`)
-                        .addField(
-                            'No stats',
-                            'This user does not have any stats.'
-                        ),
-                ],
-                ephemeral: client.config.development.ephemeral,
-            });
-        }
+        let kills = 0;
+        let deaths = 0;
+        let assists = 0;
+        let kda = 0;
+        let wins = 0;
+        let score = userDoc.points || 0;
+
+        userDoc.matches?.forEach((match) => {
+            kills += match.resultData.kills;
+            deaths += match.resultData.deaths;
+            assists += match.resultData.assists;
+            wins += match.win ? 1 : 0;
+        });
+
+        kda = (kills + assists) / deaths || 0;
+
+        const embedFields = [
+            {
+                name: 'Score',
+                value: '' + Math.round(((score || 0) / 140) * 1000),
+                inline: true,
+            },
+            {
+                name: 'Kills',
+                value: '' + kills,
+                inline: true,
+            },
+            {
+                name: 'Deaths',
+                value: '' + deaths,
+                inline: true,
+            },
+            {
+                name: 'Assists',
+                value: '' + assists,
+                inline: true,
+            },
+            {
+                name: 'KDA',
+                value: '' + kda?.toFixed(2),
+                inline: true,
+            },
+            {
+                name: 'Wins',
+                value: '' + wins,
+                inline: true,
+            },
+        ];
 
         const embed = new EmbedBuilder()
             .setTitle('Stats')
-            .setDescription(`Stats for ${user.username}`);
+            .setDescription(
+                `Stats for ${user.username}\n\nMatches played: ${
+                    userDoc.fplMatchesPlayed || 0
+                }`
+            )
+            .addFields(embedFields)
+            .setColor('Purple');
 
         await interaction.reply({
             embeds: [embed],

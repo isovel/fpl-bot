@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
+const { updateLeaderboard } = require('../../handlers/leaderboard');
 
 //Do not forget the aggregate function in mongoDB
 
@@ -96,6 +97,12 @@ module.exports = {
             });
         }
 
+        let resultData = {};
+
+        interaction.fields.fields.forEach(
+            (field) => (resultData[field.customId] = parseInt(field.value))
+        );
+
         //save the data
         await c_matches
             .updateOne(
@@ -104,12 +111,7 @@ module.exports = {
                 },
                 {
                     $set: {
-                        [`resultData.${userId}`]: interaction.fields.fields.map(
-                            (field) => ({
-                                name: field.customId,
-                                value: field.value,
-                            })
-                        ),
+                        [`resultData.${userId}`]: resultData,
                     },
                 }
             )
@@ -167,46 +169,39 @@ module.exports = {
             match.users.forEach((user) => {
                 const data = match.resultData[user.id];
 
+                log(data, 'debug');
+
                 kills.push({
                     id: user.id,
-                    kills: parseInt(data.find((d) => d.name == 'kills').value),
+                    kills: parseInt(data['kills']),
                 });
 
                 kda.push({
                     id: user.id,
                     kda:
-                        (parseInt(data.find((d) => d.name == 'kills').value) +
-                            parseInt(
-                                data.find((d) => d.name == 'assists').value
-                            )) /
-                        parseInt(data.find((d) => d.name == 'deaths').value),
+                        (parseInt(data['kills']) + parseInt(data['assists'])) /
+                        parseInt(data['deaths']),
                 });
 
                 combatScores.push({
                     id: user.id,
-                    combatScore: parseInt(
-                        data.find((d) => d.name == 'combat-score').value
-                    ),
+                    combatScore: parseInt(data['combat-score']),
                 });
 
                 log(
                     `User ${user.id} gained ${
-                        (50 / (teams - 1)) *
-                        (teams - data.find((d) => d.name == 'placement').value)
+                        (50 / (teams - 1)) * (teams - data['placement'])
                     } points for placement`,
                     'debug'
                 );
-                let pPoints =
-                    (50 / (teams - 1)) *
-                    (teams - data.find((d) => d.name == 'placement').value);
+                let pPoints = (50 / (teams - 1)) * (teams - data['placement']);
                 pointData[user.id] = {
                     totalPoints: pPoints,
                     pointSources: [
                         {
                             source: 'Placement',
                             points: pPoints,
-                            index: data.find((d) => d.name == 'placement')
-                                .value,
+                            index: data['placement'],
                         },
                     ],
                 };
@@ -283,14 +278,11 @@ module.exports = {
                 log(
                     `User ${id} gained ${
                         50 *
-                        match.teamRatings.find((rating) => {
-                            return (
+                        match.teamRatings.find(
+                            (rating) =>
                                 rating.placement ==
-                                match.resultData[id].find(
-                                    (d) => d.name == 'placement'
-                                ).value
-                            );
-                        }).objective
+                                match.resultData[id]['placement']
+                        ).objective
                     } points for rating`,
                     'debug'
                 );
@@ -306,53 +298,69 @@ module.exports = {
                     }).objective;*/
                 let objPoints =
                     50 *
-                    match.teamRatings.find((rating) => {
-                        return (
+                    match.teamRatings.find(
+                        (rating) =>
                             rating.placement ==
-                            match.resultData[id].find(
-                                (d) => d.name == 'placement'
-                            ).value
-                        );
-                    }).objective;
+                            match.resultData[id]['placement']
+                    ).objective;
                 pointData[id].totalPoints += objPoints;
                 pointData[id].pointSources.push({
                     source: 'Objective',
                     points: objPoints,
-                    index: match.resultData[id].find(
-                        (d) => d.name == 'placement'
-                    ).value,
+                    index: match.teamRatings.find(
+                        (rating) =>
+                            rating.placement ==
+                            match.resultData[id]['placement']
+                    ).objective,
                 });
             });
 
             log(pointData, 'debug');
 
-            //update the user data
-            const u = await c_users.findOne({
-                discordId: userId,
-            });
-
-            if (!u) {
-                log('User not found in database (discordId).', 'warn');
-                return interaction.reply({
-                    content: 'User not found in database.',
-                    ephemeral: client.config.development.ephemeral,
-                });
-            }
-
             Object.keys(pointData).forEach(async (id) => {
+                const u = await c_users.findOne({
+                    discordId: id,
+                });
+
+                if (!u) {
+                    log('User not found in database (discordId).', 'warn');
+                    return interaction.reply({
+                        content: 'User not found in database.',
+                        ephemeral: client.config.development.ephemeral,
+                    });
+                }
+
+                function calcGameImpact(x) {
+                    return 19 * Math.pow(1.4, -x) + 1;
+                }
+
+                let pointDifference =
+                    pointData[id].totalPoints - (u.points || 0);
+                log(`Point difference for ${id}: ${pointDifference}`, 'debug');
+                let gameImpact = calcGameImpact(u.fplMatchesPlayed || 0);
+                log(`Game Impact for ${id}: ${gameImpact}`, 'debug');
+                let pointChange = (pointDifference / 20) * gameImpact;
+                log(`Point change for ${id}: ${pointChange}`, 'debug');
+
                 c_users.updateOne(
                     {
                         discordId: id,
                     },
                     {
                         $inc: {
-                            points: pointData[id].totalPoints,
-                            matchesPlayed: 1,
+                            points: pointChange,
+                            fplMatchesPlayed: 1,
                         },
                         //add match data to user
                         $push: {
                             matches: {
                                 matchId: msgId,
+                                timestamp: new Date(),
+                                win: client.config.gamemodes
+                                    .find((gm) => gm.value == gameMode)
+                                    .winningTeams.includes(
+                                        match.resultData[id]['placement']
+                                    ),
                                 resultData: match.resultData[id],
                                 pointData: pointData[id],
                             },
@@ -362,22 +370,6 @@ module.exports = {
 
                 member = await interaction.guild.members.fetch(id);
 
-                //Error Here where user is not found (MAybe because member has to be fetched instead of user)
-
-                /*
-                You Got 10 Kills
-                You Got 8 Assists
-                You Got 3 Deaths
-                Your Combat Score was 213231
-                --------------
-                Points Recieved: 113
-                --------------
-                Team Results: 1st - 50 Points
-                Elimination Placement 1st - 20 Points
-                KDA Placement 3rd - 10 points
-                Combat Placement 1st - 15 points
-                Objective Played: yes - 50 points
-                */
                 let userPointData = {
                     placement: pointData[id].pointSources.find(
                         (source) => source.source == 'Placement'
@@ -396,37 +388,27 @@ module.exports = {
                     ),
                 };
                 let seperator =
-                    match.resultData[id].find((d) => d.name == 'assists')
-                        .value >
-                    match.resultData[id].find((d) => d.name == 'deaths').value
-                        ? match.resultData[id].find((d) => d.name == 'assists')
-                              .value > 9
+                    match.resultData[id]['assists'] >
+                    match.resultData[id]['deaths']
+                        ? match.resultData[id]['assists'] > 9
                             ? '-------------------'
                             : '------------------'
-                        : match.resultData[id].find((d) => d.name == 'deaths')
-                              .value > 9
+                        : match.resultData[id]['deaths'] > 9
                         ? '-------------------'
                         : '------------------';
                 let embedData = [
-                    `You got ${
-                        match.resultData[id].find((d) => d.name == 'kills')
-                            .value
-                    } Kills`,
-                    `You got ${
-                        match.resultData[id].find((d) => d.name == 'assists')
-                            .value
-                    } Assists`,
-                    `You got ${
-                        match.resultData[id].find((d) => d.name == 'deaths')
-                            .value
-                    } Deaths`,
-                    `Your Combat Score was ${
-                        match.resultData[id].find(
-                            (d) => d.name == 'combat-score'
-                        ).value
-                    }`,
+                    `You got ${match.resultData[id]['kills']} Kills`,
+                    `You got ${match.resultData[id]['assists']} Assists`,
+                    `You got ${match.resultData[id]['deaths']} Deaths`,
+                    `Your Combat Score was ${match.resultData[id]['combat-score']}`,
                     seperator,
-                    `Points Recieved: ${pointData[id].totalPoints}`,
+                    `Points Achieved: ${pointData[id].totalPoints}`,
+                    //`Game Impact: ${Math.round(gameImpact)}`,
+                    `Old Points: ${Math.round(u.points || 0)}`,
+                    `Points Change: ${pointChange > 0 ? '+' : ''}${Math.round(
+                        pointChange
+                    )}`,
+                    `New Points: ${Math.round((u.points || 0) + pointChange)}`,
                     seperator,
                     `Team Results: ${toNumStr(
                         userPointData.placement.index
@@ -441,7 +423,7 @@ module.exports = {
                         userPointData.combatScore.index
                     )} - ${userPointData.combatScore.points} points`,
                     `Objective Played: ${
-                        userPointData.objective.index == 1 ? 'Yes' : 'No'
+                        userPointData.objective.index ? 'Yes' : 'No'
                     } - ${userPointData.objective.points} points`,
                 ];
 
@@ -569,19 +551,21 @@ module.exports = {
 
             await c_queues.updateOne(
                 {
-                    msgId: msgId,
+                    division: match.division,
                 },
                 {
                     $set: {
-                        pulledUsers: [],
+                        randomUsers: [],
                     },
                 }
             );
 
+            updateLeaderboard(client, match.division);
+
             //delete the message
             interaction.reply({
                 content:
-                    'All Match data has been submitted. The match has been analyzed and the points have been distributed. The match has been closed',
+                    'All Match data has been submitted. The match has been analyzed and the points have been distributed. The match has been closed and the queue has been reset.',
                 ephemeral: client.config.development.ephemeral,
             });
         } else {

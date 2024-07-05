@@ -12,6 +12,7 @@ const maps = {
     'skyway': 'Skyway Stadium',
     'kyoto': 'Kyoto',
     'seoul': 'Seoul',
+    'No votes': 'No votes',
 };
 
 const pullUserButton = document.getElementById('pullUser');

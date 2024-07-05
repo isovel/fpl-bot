@@ -65,26 +65,31 @@ module.exports = {
             label: 'CASHOUT',
             value: 'cashout',
             teams: 4,
+            winningTeams: [1, 2],
         },
         {
             label: 'TERMINAL ATTACK',
             value: 'terminal-attack',
             teams: 2,
+            winningTeams: [1],
         },
         {
             label: 'POWER SHIFT',
             value: 'power-shift',
             teams: 2,
+            winningTeams: [1],
         },
         {
             label: 'QUICK CASH',
             value: 'quick-cash',
             teams: 3,
+            winningTeams: [1],
         },
         {
             label: 'BANK IT',
             value: 'bank-it',
             teams: 4,
+            winningTeams: [1],
         },
     ],
 
@@ -105,6 +110,7 @@ module.exports = {
                 },
             },
         },
+        leaderboard: '1247568563187748970',
     },
     categories: {
         'fpl-vcs': '1249102505531674634',
@@ -118,8 +124,13 @@ module.exports = {
         weightModify: [
             {
                 id: '1247210839291990016',
-                multiplier: 100,
+                multiplier: 2,
                 name: 'YouTube Member',
+            },
+            {
+                id: '1258553710070468651',
+                multiplier: 1000,
+                name: 'Guaranteed Pick',
             },
         ],
         'fpl-admin': '1246807125930278952',
