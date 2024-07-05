@@ -110,12 +110,6 @@ ttvClient.on('message', (channel, tags, message, self) => {
 });
 
 // Start fetch loop
-let ok = ytClient.start();
-if (!ok) {
-    log('Failed to start ytClient, check emitted error', 'error');
-}
-
-ttvClient.connect().catch((err) => log(err, 'error'));
 
 module.exports = {
     startVoting: (type) => {
@@ -124,6 +118,11 @@ module.exports = {
                 `Starting voting for ${type == 1 ? 'map' : 'gamemode'}`,
                 'chatbot'
             );
+            let ok = ytClient.start();
+            if (!ok) {
+                log('Failed to start ytClient, check emitted error', 'error');
+            }
+            ttvClient.connect().catch((err) => log(err, 'error'));
             votingStartTime = Date.now();
             votingActive = true;
             votingType = type;
@@ -146,6 +145,8 @@ module.exports = {
     closeVoting: () => {
         return new Promise((resolve, reject) => {
             log('Closing voting', 'chatbot');
+            ytClient.stop();
+            ttvClient.disconnect();
             votingActive = false;
             if (votingType == 1) {
                 mapVotesArray = Array.from(mapVotes.values());

@@ -2,6 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     ActionRowBuilder,
+    ButtonBuilder,
 } = require('discord.js');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
 const { log } = require('../../../functions');
@@ -34,6 +35,17 @@ module.exports = {
                 ephemeral: client.config.development.ephemeral,
             });
         }
+        if (!userData.division) {
+            return interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription('User does not have a division.')
+                        .setColor('Yellow'),
+                ],
+                ephemeral: client.config.development.ephemeral,
+            });
+        }
         if (userData.verified) {
             return interaction.reply({
                 embeds: [
@@ -51,7 +63,7 @@ module.exports = {
             `**Matches:** ${userData.matchesPlayed}`,
             `**Wins:** ${userData.wins}`,
             `**Losses:** ${userData.losses}`,
-            `**Eliminations:** ${userData.kills}`,
+            `**Eliminations:** ${userData.eliminations}`,
             `**Deaths:** ${userData.deaths}`,
         ];
 
@@ -66,62 +78,18 @@ module.exports = {
             components: [
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
-                        .setCustomId('verify-user')
+                        .setCustomId('verify-user_' + user.id)
                         .setLabel('Verify')
                         .setStyle('Success')
                         .setEmoji('✅'),
                     new ButtonBuilder()
-                        .setCustomId('cancel-verify')
+                        .setCustomId('cancel-verify_' + user.id)
                         .setLabel('Cancel')
-                        .setStyle('Danger')
+                        .setStyle('Primary')
                         .setEmoji('❌')
                 ),
             ],
             ephemeral: client.config.development.ephemeral,
         });
-
-        await c_users.updateOne(
-            { discordId: user.id },
-            { $set: { verified: true } }
-        );
-
-        //give user the verified role
-        user.roles
-            .add(client.config.roles['fpl-verified'])
-            .then(async () => {
-                user.voice.setMute(false);
-
-                //reset unverified channel permissions
-                permHandler.setVerified(
-                    client,
-                    interaction,
-                    user,
-                    userData.division
-                );
-
-                interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Success')
-                            .setDescription(
-                                `${user.displayName} has been verified.`
-                            )
-                            .setColor('Green'),
-                    ],
-                    ephemeral: client.config.development.ephemeral,
-                });
-            })
-            .catch((err) => {
-                log(err, 'err');
-                interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Error')
-                            .setDescription('An error occurred.')
-                            .setColor('Red'),
-                    ],
-                    ephemeral: client.config.development.ephemeral,
-                });
-            });
     },
 };
