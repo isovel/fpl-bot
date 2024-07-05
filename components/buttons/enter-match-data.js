@@ -49,7 +49,7 @@ module.exports = {
         }
 
         const modal = new ModalBuilder()
-            .setTitle('Enter Match Data for ' + user.displayName)
+            .setTitle(user.displayName)
             .setCustomId(`submit-match-data_${userId}_${gameMode}_${msgId}`)
             .addComponents(
                 new ActionRowBuilder().addComponents(

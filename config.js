@@ -65,7 +65,7 @@ module.exports = {
             label: 'CASHOUT',
             value: 'cashout',
             teams: 4,
-            winningTeams: [1, 2],
+            winningTeams: [1],
         },
         {
             label: 'TERMINAL ATTACK',
