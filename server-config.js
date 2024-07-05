@@ -65,26 +65,31 @@ module.exports = {
             label: 'CASHOUT',
             value: 'cashout',
             teams: 4,
+            winningTeams: [1, 2],
         },
         {
             label: 'TERMINAL ATTACK',
             value: 'terminal-attack',
             teams: 2,
+            winningTeams: [1],
         },
         {
             label: 'POWER SHIFT',
             value: 'power-shift',
             teams: 2,
+            winningTeams: [1],
         },
         {
             label: 'QUICK CASH',
             value: 'quick-cash',
             teams: 3,
+            winningTeams: [1],
         },
         {
             label: 'BANK IT',
             value: 'bank-it',
             teams: 4,
+            winningTeams: [1],
         },
     ],
 
@@ -105,6 +110,7 @@ module.exports = {
                 },
             },
         },
+        leaderboard: '1239671865073471570',
     },
     categories: {
         'fpl-vcs': '1256304614920294431',
@@ -149,9 +155,9 @@ module.exports = {
     },
     development: {
         enabled: false,
+        ephemeral: true,
         deployToGuild: true,
         logFile: 'log.txt',
-        ephemeral: true,
         guild: process.env.GUILD_ID,
     },
     messageSettings: {
