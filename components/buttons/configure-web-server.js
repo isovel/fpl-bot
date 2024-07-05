@@ -8,12 +8,12 @@ module.exports = {
     run: async (client, interaction) => {
         const division = interaction.customId.split('_')[1];
 
-        if (client.runtimeVariables.users) {
+        /*if (client.runtimeVariables.users) {
             return interaction.reply({
                 content: 'Web server is already configured.',
                 ephemeral: client.config.development.ephemeral,
             });
-        }
+        }*/
 
         const c_queues = client.runtimeVariables.db.collection('queues');
 

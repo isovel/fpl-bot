@@ -63,7 +63,7 @@ let gamemodeVotes = new Map();
 let gamemodeVotesArray;
 
 function newMessage(message, author, createdAt) {
-    if (!message.startsWith('!')) return;
+    if (!message?.startsWith('!')) return;
     message = message.toLowerCase();
     if (votingActive && !message.startsWith('!v')) return;
     message = message.split(' ').slice(1).join(' ');
