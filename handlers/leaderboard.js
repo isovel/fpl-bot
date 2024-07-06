@@ -43,7 +43,9 @@ module.exports = {
             kda = (kills + assists) / deaths || 0;
 
             embedData.push(
-                `**${index + 1}. <@${user.discordId}> - Score: ${Math.round(
+                `**${index + 1}. ${
+                    user.embarkId.split('#')[0]
+                } - Score: ${Math.round(
                     (score / 150) * 1000
                 )}**Kills: ${kills} | Deaths: ${deaths} | Assists: ${assists} | KDA: ${kda.toFixed(
                     2
