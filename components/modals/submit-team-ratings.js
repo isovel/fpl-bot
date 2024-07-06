@@ -17,6 +17,8 @@ module.exports = {
         const gameMode = interaction.customId.split('_')[2];
         const msgId = interaction.customId.split('_')[3];
 
+        interaction.deferReply();
+
         const confirmWords = ['yes', 'true', '1', 'ok', 'y', 'ye', 'yeah'];
         const denyWords = ['no', 'false', '0', 'n', 'nah', 'nope'];
 
@@ -72,13 +74,8 @@ module.exports = {
             }
         );
 
-        interaction.reply({
-            content: 'Ratings submitted!',
-            ephemeral: client.config.development.ephemeral,
-        });
-
-        match.users.forEach((user) => {
-            interaction.channel.send({
+        await match.users.forEach(async (user) => {
+            await interaction.channel.send({
                 content: `Enter data for ${user.name}`,
                 components: [
                     new ActionRowBuilder().addComponents(
@@ -92,6 +89,11 @@ module.exports = {
                     ),
                 ],
             });
+        });
+
+        interaction.editReply({
+            content: 'Ratings submitted!',
+            ephemeral: client.config.development.ephemeral,
         });
     },
 };
