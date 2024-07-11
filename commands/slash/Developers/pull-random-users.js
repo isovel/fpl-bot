@@ -240,10 +240,10 @@ module.exports = {
                             .setCustomId('configure-web-server_' + division)
                             .setLabel('Configure Web Server')
                             .setStyle('Primary'),
-                        new ButtonBuilder()
+                        /*new ButtonBuilder()
                             .setCustomId('configure-vc_' + division)
                             .setLabel('Configure Vcs')
-                            .setStyle('Primary'),
+                            .setStyle('Primary'),*/
                         new ButtonBuilder()
                             .setCustomId('supply-match-code_' + division)
                             .setLabel('Supply Match Code')
