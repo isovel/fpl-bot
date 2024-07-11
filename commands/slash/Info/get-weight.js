@@ -37,7 +37,7 @@ module.exports = {
                 new EmbedBuilder()
                     .setTitle('Weight')
                     .setDescription(
-                        `The weight of <@${user.discordId}> is ${
+                        `The weight of <@${user.id}> is ${
                             userDoc.weight || userDoc.defaultWeight
                         }.`
                     )
