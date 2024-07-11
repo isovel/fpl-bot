@@ -201,14 +201,12 @@ module.exports = {
         );
 
         //give all users the pulled role
-        const pulledRole = interaction.guild.roles.cache.get(
-            client.config.roles['fpl-pulled']
-        );
+        const pulledRole = client.config.roles.pulled;
 
         for (user of samples) {
             let discordUser = await interaction.guild.members.fetch(user.id);
 
-            discordUser.roles.add(pulledRole).catch((err) => {
+            await discordUser.roles.add(pulledRole).catch((err) => {
                 log(err, 'err');
                 return interaction.reply({
                     embeds: [

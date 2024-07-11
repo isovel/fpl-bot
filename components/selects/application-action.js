@@ -43,7 +43,7 @@ module.exports = {
                     'applicationDeclined'
                 );
                 interaction.guild.members.fetch(discordId).then((member) => {
-                    member.roles.remove(client.config.roles['fpl-pending']);
+                    member.roles.remove(client.config.roles.pending);
                 });
                 viewApplications.run(client, interaction, true);
                 break;
@@ -63,9 +63,7 @@ module.exports = {
                     interaction.guild.members
                         .fetch(discordId)
                         .then((member) => {
-                            member.roles.remove(
-                                client.config.roles['fpl-pending']
-                            );
+                            member.roles.remove(client.config.roles.pending);
                         });
                     //if (!client.config.development.enabled)
                     notificationHandler.notifyUser(
@@ -88,7 +86,7 @@ module.exports = {
                             (r) => r.id == roleId
                         )) ?? (await interaction.guild.roles.fetch(roleId));*/
 
-                    member.roles.remove(client.config.roles['fpl-pending']);
+                    member.roles.remove(client.config.roles.pending);
                     member.roles.add(client.config.roles.divisions[value]);
 
                     viewApplications.run(client, interaction, true);

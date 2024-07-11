@@ -18,7 +18,7 @@ module.exports = {
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
         const divisionRoleB = roles.divisions['B'];
-        const pendingRole = roles['fpl-pending'];
+        const pendingRole = pending;
         const users = await interaction.guild.members.fetch();
 
         let usersFound = 0;

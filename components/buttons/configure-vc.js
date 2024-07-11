@@ -53,10 +53,10 @@ module.exports = {
         const category = client.channels.cache.get(
             client.config.categories['fpl-vcs']
         );
-        //client.config.roles['fpl-pulled'] client.config.roles['fpl-approved']
+        //client.config.roles.pulled client.config.roles['fpl-approved']
         const everyoneRole = interaction.guild.roles.everyone;
         const approvedRole = interaction.guild.roles.cache.get(
-            client.config.roles['fpl-verified']
+            client.config.roles.verified
         );
 
         //delete old channel if there

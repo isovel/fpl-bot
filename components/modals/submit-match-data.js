@@ -435,17 +435,20 @@ module.exports = {
                     'matchDataAnalyzed',
                     undefined,
                     {
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle('Match Data Analyzed')
-                                .setDescription(embedData.join('\n'))
-                                .setColor('Purple'),
-                        ],
+                        message: {
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle('Match Data Analyzed')
+                                    .setDescription(embedData.join('\n'))
+                                    .setColor('Purple'),
+                            ],
+                        },
+                        noButton: true,
                     }
                 );
 
                 //Remove pulled role from user
-                member.roles.remove(client.config.roles['fpl-pulled']);
+                member.roles.remove(client.config.roles.pulled);
             });
 
             //update the match status

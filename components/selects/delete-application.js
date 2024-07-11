@@ -9,13 +9,13 @@ module.exports = {
     run: async (client, interaction) => {
         //if selected is yes delete otherwise do nothing
         const value = interaction.values[0];
-        const _id = interaction.customId.split('_')[1];
+        const id = interaction.customId.split('_')[1];
         if (value == 'yes') {
-            log(`Deleting application with ID ${_id}`, 'info');
-            const result = client.runtimeVariables.db
+            log(`Deleting application with ID ${id}`, 'info');
+            const result = await client.runtimeVariables.db
                 .collection('users')
                 .deleteOne({
-                    _id,
+                    _id: id,
                 });
             log(result, 'info');
             interaction.message.delete();

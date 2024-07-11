@@ -86,14 +86,14 @@ module.exports = {
 
         //remove pulled role from user
         oldUser.roles.remove(
-            interaction.guild.roles.cache.get(client.config.roles['fpl-pulled'])
+            interaction.guild.roles.cache.get(client.config.roles.pulled)
         );
 
         //Remove permissions from user to access vc if exists
         permHandler.reset(client, interaction, oldUser, oldUserData.division);
 
         //add pulled role to random user
-        newUser.roles.add(client.config.roles['fpl-pulled']);
+        newUser.roles.add(client.config.roles.pulled);
 
         //set permissions for random user
         permHandler.setPulled(

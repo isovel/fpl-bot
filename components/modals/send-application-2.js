@@ -269,7 +269,7 @@ module.exports = {
             return;
         }
 
-        interaction.member.roles.add(client.config.roles['fpl-pending']);
+        interaction.member.roles.add(client.config.roles.pending);
 
         await interaction.update({
             embeds: [

@@ -28,7 +28,7 @@ module.exports = {
 
         //give user the verified role
         user.roles
-            .add(client.config.roles['fpl-verified'])
+            .add(client.config.roles.verified)
             .then(async () => {
                 user.voice.setMute(false);
 

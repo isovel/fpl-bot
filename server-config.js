@@ -112,8 +112,8 @@ module.exports = {
         },
         leaderboard: '1239671865073471570',
         notifications: {
-            'application': '1260563756006768732',
-            'match': '1261039956911063195',
+            application: '1260563756006768732',
+            match: '1261039956911063195',
         },
     },
     categories: {
@@ -152,10 +152,10 @@ module.exports = {
                 name: 'Champion (TTV-T1)',
             },
         ],
-        'fpl-admin': '1238551023446917221',
-        'fpl-pulled': '1256312860577894550',
-        'fpl-verified': '1256312913799544972',
-        'fpl-pending': '1238551748923232347',
+        admin: '1238551023446917221',
+        pulled: '1256312860577894550',
+        verified: '1256312913799544972',
+        pending: '1238551748923232347',
     },
     development: {
         enabled: false,

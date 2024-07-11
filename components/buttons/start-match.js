@@ -49,7 +49,7 @@ module.exports = {
                         });
 
                     //if user doesnt have verified role
-                    /*if (!u.roles?.cache?.has(client.config.roles['fpl-verified'])) {
+                    /*if (!u.roles?.cache?.has(client.config.roles.verified)) {
                     return interaction.reply({
                         embeds: [
                             new EmbedBuilder()

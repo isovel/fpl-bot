@@ -47,7 +47,7 @@ module.exports = {
 
         //Remove the verified role
         user.roles
-            .remove(client.config.roles['fpl-verified'])
+            .remove(client.config.roles.verified)
             .then(() => {
                 //reset vc permissions
                 permHandler.setUnverified(

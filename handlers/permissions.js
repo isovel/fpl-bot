@@ -3,7 +3,7 @@ const { log } = require('../functions');
 
 let permissionHandlerDivVc = {
     setPulled: async (client, interaction, user, division) => {
-        if (user.roles.cache.has(client.config.roles['fpl-verified']))
+        if (user.roles.cache.has(client.config.roles.verified))
             return permissionHandlerDivVc.setVerified(
                 client,
                 interaction,
@@ -23,7 +23,7 @@ let permissionHandlerDivVc = {
             //reset verified channel permissions and set unverified channel permissions
 
             //if user doesnt have pulled role cancel
-            if (!user.roles.cache.has(client.config.roles['fpl-pulled'])) {
+            if (!user.roles.cache.has(client.config.roles.pulled)) {
                 return resolve(false);
             }
 
@@ -82,7 +82,7 @@ let permissionHandlerDivVc = {
             //reset unverified channel permissions and set verified channel permissions
 
             //if user doesnt have pulled role cancel
-            if (!user.roles.cache.has(client.config.roles['fpl-pulled'])) {
+            if (!user.roles.cache.has(client.config.roles.pulled)) {
                 return resolve(false);
             }
 
@@ -141,7 +141,7 @@ let permissionHandlerDivVc = {
             //reset unverified channel permissions and set verified channel permissions
 
             //if user doesnt have pulled role cancel
-            if (!user.roles.cache.has(client.config.roles['fpl-pulled'])) {
+            if (!user.roles.cache.has(client.config.roles.pulled)) {
                 return resolve(false);
             }
 

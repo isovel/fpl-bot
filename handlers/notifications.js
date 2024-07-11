@@ -21,7 +21,7 @@ module.exports = {
     channels: Array.from(notificationMessages.values()).map(
         (notification) => notification.channel
     ),
-    notifyUser: async (interaction, userId, notificationId, data, message) => {
+    notifyUser: async (interaction, userId, notificationId, data, options) => {
         let users = [],
             user;
         if (typeof userId == 'object') {
@@ -59,8 +59,8 @@ module.exports = {
             return;
         }
 
-        if (message) {
-            notification.message = message;
+        if (options?.message) {
+            notification.message = options.message;
         }
 
         log(`Creating thread for reason ${notification.reason}.`, 'info');
@@ -72,13 +72,6 @@ module.exports = {
             autoArchiveDuration: ThreadAutoArchiveDuration.ThreeDays,
             type: ChannelType.PrivateThread,
         });
-        if (typeof userId == 'object') {
-            await users.map(async (u) => {
-                await thread.members.add(u);
-            });
-        } else {
-            await thread.members.add(user);
-        }
         if (data)
             Object.keys(data)?.forEach((key) => {
                 notification.message.embeds[0].setDescription(
@@ -88,16 +81,23 @@ module.exports = {
                     )
                 );
             });
-        notification.message.components = [
-            new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                    .setLabel('Mark as read')
-                    .setStyle('Primary')
-                    .setCustomId('mark-as-read')
-            ),
-        ];
+        if (!options?.noButton)
+            notification.message.components = [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setLabel('Mark as read')
+                        .setStyle('Primary')
+                        .setCustomId('mark-as-read')
+                ),
+            ];
         thread.send(notification.message);
-
+        if (typeof userId == 'object') {
+            await users.map(async (u) => {
+                await thread.members.add(u);
+            });
+        } else {
+            await thread.members.add(user);
+        }
         return thread.id;
     },
 };
