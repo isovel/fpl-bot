@@ -1,6 +1,7 @@
 const {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
+    EmbedBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
@@ -20,7 +21,13 @@ module.exports = {
         log('This is a test error!', 'err');
 
         await interaction.reply({
-            content: 'Test error has been generated!',
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Success')
+                    .setDescription('Test error has been generated!')
+                    .setColor('Green'),
+            ],
+            ephemeral: true,
         });
     },
 };

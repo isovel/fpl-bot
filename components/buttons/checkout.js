@@ -1,4 +1,4 @@
-const {} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
@@ -22,7 +22,14 @@ module.exports = {
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you out.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while checking you out.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: true,
                 });
             });
@@ -31,7 +38,14 @@ module.exports = {
             !(user?.division === division)
         ) {
             return interaction.reply({
-                content: `You are not a member of division ${division}.`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription(
+                            `You are not a member of division ${division}.`
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
@@ -44,7 +58,12 @@ module.exports = {
 
         if (!queueData.users?.find((u) => u.id === interaction.user.id)) {
             return interaction.reply({
-                content: 'You are already checked out.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription('You are already checked out.')
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
@@ -64,14 +83,26 @@ module.exports = {
                 log(result, 'debug');
 
                 return interaction.reply({
-                    content: 'You have been checked out.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(`You have been checked out.`)
+                            .setColor('Green'),
+                    ],
                     ephemeral: true,
                 });
             })
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you out.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while checking you out.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: true,
                 });
             });

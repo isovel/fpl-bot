@@ -49,7 +49,7 @@ module.exports = {
                     (score / 150) * 1000
                 )}**Kills: ${kills} | Deaths: ${deaths} | Assists: ${assists} | KDA: ${kda.toFixed(
                     2
-                )} | Wins/Total: ${wins}/${user.matches?.length}`
+                )} | Wins: ${wins}/${user.matches?.length}`
             );
         });
 

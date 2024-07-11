@@ -22,7 +22,12 @@ module.exports = {
 
         if (!userDoc) {
             return await interaction.reply({
-                content: 'This user does not have an application.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription('User not found in the database.')
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }

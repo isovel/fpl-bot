@@ -17,7 +17,13 @@ module.exports = {
 
         if (!userDoc) {
             return await interaction.reply({
-                content: 'You do not have an application.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription('User not found in the database.')
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
             });
         }
 
@@ -35,7 +41,13 @@ module.exports = {
 
         if (userDoc.weight == weight) {
             return await interaction.reply({
-                content: 'Your weight is already up to date.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warning')
+                        .setDescription('Your weight is already up to date.')
+                        .setColor('Yellow'),
+                ],
+                ephemeral: true,
             });
         }
 
@@ -74,7 +86,15 @@ module.exports = {
         }
 
         await interaction.reply({
-            content: 'Weight updated!',
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Weight Updated')
+                    .setDescription(
+                        `Your weight has been updated to **${weight}**.`
+                    )
+                    .setColor('Green'),
+            ],
+            ephemeral: true,
         });
     },
 };

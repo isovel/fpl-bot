@@ -1,4 +1,4 @@
-const {} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
@@ -22,13 +22,27 @@ module.exports = {
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you in.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while checking you in.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: true,
                 });
             });
         if (!user) {
             return interaction.reply({
-                content: `You have not yet sent an application. Go to the #fpl-register channel to send one.`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription(
+                            'You have not yet sent an application. Go to the #fpl-register channel to send one.'
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
@@ -36,13 +50,27 @@ module.exports = {
         log(user.division, 'debug');
         if (!(user?.applicationStatus === 2)) {
             return interaction.reply({
-                content: `Your application has not been accepted yet.`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription(
+                            'Your application has not been accepted yet.'
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
         if (!(user?.division === division)) {
             return interaction.reply({
-                content: `You are not a member of division ${division}.`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription(
+                            `You are not a member of division ${division}.`
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
@@ -56,14 +84,26 @@ module.exports = {
 
         if (!queueData.open) {
             return interaction.reply({
-                content: `The queue for division ${division} is not open at the moment.`,
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Queue Closed')
+                        .setDescription(
+                            `The queue for division ${division} is not open at the moment.`
+                        )
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
 
         if (queueData.users?.find((u) => u.id === interaction.user.id)) {
             return interaction.reply({
-                content: 'You are already checked in.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Warn')
+                        .setDescription(`You are already checked in.`)
+                        .setColor('Yellow'),
+                ],
                 ephemeral: true,
             });
         }
@@ -85,14 +125,26 @@ module.exports = {
                 log(result, 'debug');
 
                 return interaction.reply({
-                    content: 'You have been checked in.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Checked In')
+                            .setDescription(`You have been checked in.`)
+                            .setColor('Green'),
+                    ],
                     ephemeral: true,
                 });
             })
             .catch((error) => {
                 log(error, 'err');
                 return interaction.reply({
-                    content: 'An error occurred while checking you in.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred while checking you in.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: true,
                 });
             });

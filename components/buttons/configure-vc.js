@@ -1,4 +1,8 @@
-const { PermissionFlagsBits, ChannelType } = require('discord.js');
+const {
+    PermissionFlagsBits,
+    ChannelType,
+    EmbedBuilder,
+} = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
@@ -158,14 +162,28 @@ module.exports = {
             )
             .then(() => {
                 interaction.reply({
-                    content: 'Vcs created!',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Success')
+                            .setDescription(
+                                'Voice channels created successfully.'
+                            )
+                            .setColor('Green'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             })
             .catch((err) => {
                 log(err, 'err');
                 interaction.reply({
-                    content: 'An error occurred creating the VCs.',
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                'An error occurred creating the VCs.'
+                            )
+                            .setColor('Red'),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             });

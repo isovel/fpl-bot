@@ -1,4 +1,4 @@
-const {} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 
 module.exports = {
@@ -17,7 +17,14 @@ module.exports = {
 
         //write message to use command /repull user on <@userId>
         interaction.reply({
-            content: `Use the command \`/repull-user ${user.displayName}\` to repull the user.`,
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('User Verification Cancelled')
+                    .setDescription(
+                        `Use the command \`/repull-user ${user.displayName}\` to repull the user.`
+                    )
+                    .setColor('Purple'),
+            ],
             ephemeral: client.config.development.ephemeral,
         });
     },

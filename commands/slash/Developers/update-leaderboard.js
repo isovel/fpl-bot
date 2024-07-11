@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { updateLeaderboard } = require('../../../handlers/leaderboard');
 const config = require('../../../config');
 
@@ -26,7 +26,12 @@ module.exports = {
         await updateLeaderboard(client, division);
 
         await interaction.reply({
-            content: 'Leaderboard updated.',
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Leaderboard Updated')
+                    .setDescription('Leaderboard updated.')
+                    .setColor('Green'),
+            ],
             ephemeral: client.config.development.ephemeral,
         });
     },

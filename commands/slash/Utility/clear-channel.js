@@ -1,6 +1,7 @@
 const {
     ChatInputCommandInteraction,
     SlashCommandBuilder,
+    EmbedBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 
@@ -22,7 +23,14 @@ module.exports = {
 
         if (!channel) {
             return interaction.editReply({
-                content: 'This command can only be used in a channel.',
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            'This command can only be used in a channel.'
+                        )
+                        .setColor('Red'),
+                ],
                 ephemeral: true,
             });
         }

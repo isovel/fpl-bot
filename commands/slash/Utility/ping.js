@@ -1,4 +1,8 @@
-const { ChatInputCommandInteraction, SlashCommandBuilder } = require('discord.js');
+const {
+    ChatInputCommandInteraction,
+    SlashCommandBuilder,
+    EmbedBuilder,
+} = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 
 module.exports = {
@@ -6,17 +10,21 @@ module.exports = {
         .setName('ping')
         .setDescription('Replies with pong!'),
     options: {
-        cooldown: 5000
+        cooldown: 5000,
     },
     /**
-     * @param {ExtendedClient} client 
-     * @param {ChatInputCommandInteraction} interaction 
+     * @param {ExtendedClient} client
+     * @param {ChatInputCommandInteraction} interaction
      */
     run: async (client, interaction) => {
-
         await interaction.reply({
-            content: 'Pong! ' +  client.ws.ping
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Pong!')
+                    .setDescription(`Ping: ${client.ws.ping}ms`)
+                    .setColor('Green'),
+            ],
+            ephemeral: true,
         });
-
-    }
+    },
 };

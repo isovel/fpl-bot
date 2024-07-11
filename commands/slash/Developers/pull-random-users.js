@@ -270,7 +270,6 @@ module.exports = {
                             )
                             .setColor('Green'),
                     ],
-                    content: 'Pulled random users and sent message.',
                     ephemeral: true,
                 });
                 c_queues.updateOne(
