@@ -18,6 +18,7 @@ module.exports = {
                     _id,
                 });
             log(result, 'info');
+            interaction.message.delete();
             interaction.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -32,6 +33,7 @@ module.exports = {
                 ephemeral: client.config.development.ephemeral,
             });
         } else {
+            interaction.message.delete();
             interaction.reply({
                 embeds: [
                     new EmbedBuilder()
