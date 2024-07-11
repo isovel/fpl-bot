@@ -279,6 +279,7 @@ module.exports = {
                     {
                         $set: {
                             pulledMsgId: msg.id,
+                            pulledMsgChannelId: msg.channel.id,
                         },
                     }
                 );

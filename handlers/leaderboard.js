@@ -40,7 +40,7 @@ module.exports = {
                 wins += match.win ? 1 : 0;
             });
 
-            kda = (kills + assists) / deaths || 0;
+            kda = (kills + assists) / (deaths || 1) || 0;
 
             embedData.push(
                 `**${index + 1}. ${

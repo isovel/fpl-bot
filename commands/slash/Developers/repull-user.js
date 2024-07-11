@@ -3,9 +3,12 @@ const {
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
+    ChatInputCommandInteraction,
 } = require('discord.js');
 const permHandler = require('../../../handlers/permissions')['div-vc'];
+const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
+const notificationHandler = require('../../../handlers/notifications');
 
 module.exports = {
     structure: new SlashCommandBuilder()
@@ -17,6 +20,10 @@ module.exports = {
     options: {
         developers: true,
     },
+    /**
+     * @param {ExtendedClient} client
+     * @param {ChatInputCommandInteraction} interaction
+     */
     run: async (client, interaction) => {
         const user = interaction.options.getMember('user');
 
@@ -95,6 +102,10 @@ module.exports = {
         }
 
         queueData.randomUsers.push(randomUser);
+        //remove pulled user from random users
+        queueData.randomUsers = queueData.randomUsers.filter(
+            (u) => u.id !== user.id
+        );
 
         //add pulled role to random user
         let pulledUser = await interaction.guild.members.fetch(randomUser.id);
@@ -120,18 +131,17 @@ module.exports = {
 
         log('MATCH: ' + match, 'debug');
 
-        if (match && match.matchCode && match.status == 1) {
+        if (match && match.matchCode) {
             //send dm
-            pulledUser.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('Match')
-                        .setDescription(
-                            `The match code for the match in division ${userData.division} is **${match.matchCode}**`
-                        )
-                        .setColor('Green'),
-                ],
-            });
+            notificationHandler.notifyUser(
+                interaction,
+                pulledUser.id,
+                'matchCodeSet',
+                {
+                    division: userData.division,
+                    matchCode: match.matchCode,
+                }
+            );
         }
 
         await c_queues
@@ -167,6 +177,27 @@ module.exports = {
                     ephemeral: client.config.development.ephemeral,
                 });
             });
+
+        //update original message
+        const channel = await interaction.guild.channels.fetch(
+            queueData.pulledMsgChannelId
+        );
+        const msg = await channel.messages.fetch(queueData.pulledMsgId);
+
+        msg.edit({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(msg.embeds[0].data.title)
+                    .setDescription(
+                        queueData.randomUsers
+                            .map((u) => `<@${u.id}>`)
+                            .join('\n')
+                    )
+                    .setColor('Purple'),
+            ],
+            components: msg.components,
+        });
+
         interaction.reply({
             embeds: [
                 new EmbedBuilder()
