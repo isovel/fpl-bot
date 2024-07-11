@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
+const notificationHandler = require('../../handlers/notifications');
 
 module.exports = {
     customId: 'start-match',
@@ -37,16 +38,9 @@ module.exports = {
         }
 
         //send dm to every pulled user
+        //if (!client.config.development.enabled)
 
-        const c_queues = client.runtimeVariables.db.collection('queues');
-
-        const queue = await c_queues.findOne({
-            division: division,
-        });
-
-        const users = queue.randomUsers;
-        if (!client.config.development.enabled) {
-            await users.forEach((user) => {
+        /*await users.forEach((user) => {
                 client.users.fetch(user.id).then((u) => {
                     if (!u)
                         return interaction.reply({
@@ -68,7 +62,7 @@ module.exports = {
                         ephemeral: client.config.development.ephemeral,
                     });
                 }*/
-                    u.send({
+        /*u.send({
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle('Match')
@@ -79,8 +73,7 @@ module.exports = {
                         ],
                     });
                 });
-            });
-        }
+            });*/
 
         c_matches.updateOne(
             {
@@ -90,7 +83,6 @@ module.exports = {
             {
                 $set: {
                     status: 1,
-                    users: users,
                 },
             }
         );

@@ -111,6 +111,10 @@ module.exports = {
             },
         },
         leaderboard: '1247568563187748970',
+        notifications: {
+            'application': '1260564188410150922',
+            'match': '1261038899547865088',
+        },
     },
     categories: {
         'fpl-vcs': '1249102505531674634',

@@ -2,6 +2,7 @@ const { StringSelectMenuInteraction, EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const viewApplications = require('../../commands/slash/Developers/view-applications');
 const { log } = require('../../functions');
+const notificationHandler = require('../../handlers/notifications');
 
 module.exports = {
     customId: 'application-action',
@@ -36,16 +37,11 @@ module.exports = {
                         },
                     }
                 );
-                client.users.send(discordId, {
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Application Declined')
-                            .setDescription(
-                                'We are sorry to inform you that your application has been declined. Please create a ticket in fpl-help for further information.'
-                            )
-                            .setColor('Red'),
-                    ],
-                });
+                notificationHandler.notifyUser(
+                    interaction,
+                    discordId,
+                    'applicationDeclined'
+                );
                 interaction.guild.members.fetch(discordId).then((member) => {
                     member.roles.remove(client.config.roles['fpl-pending']);
                 });
@@ -71,17 +67,15 @@ module.exports = {
                                 client.config.roles['fpl-pending']
                             );
                         });
-                    if (!client.config.development.enabled)
-                        client.users.send(discordId, {
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setTitle('Application Accepted')
-                                    .setDescription(
-                                        `Your application has been accepted. \nYou have been assigned to **division ${value}**.`
-                                    )
-                                    .setColor('Green'),
-                            ],
-                        });
+                    //if (!client.config.development.enabled)
+                    notificationHandler.notifyUser(
+                        interaction,
+                        discordId,
+                        'applicationAccepted',
+                        {
+                            division: value,
+                        }
+                    );
                     //give role
                     const member =
                         (await interaction.guild.members.cache.find(

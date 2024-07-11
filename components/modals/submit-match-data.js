@@ -2,6 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 const { updateLeaderboard } = require('../../handlers/leaderboard');
+const notificationHandler = require('../../handlers/notifications');
 
 //Do not forget the aggregate function in mongoDB
 
@@ -427,16 +428,21 @@ module.exports = {
                     } - ${userPointData.objective.points} points`,
                 ];
 
-                if (client.config.development.enabled) {
-                    member.send({
+                //if (client.config.development.enabled)
+                notificationHandler.notifyUser(
+                    interaction,
+                    id,
+                    'matchDataAnalyzed',
+                    undefined,
+                    {
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle('Match Data Analyzed')
                                 .setDescription(embedData.join('\n'))
                                 .setColor('Purple'),
                         ],
-                    });
-                }
+                    }
+                );
 
                 //Remove pulled role from user
                 member.roles.remove(client.config.roles['fpl-pulled']);

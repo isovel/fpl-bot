@@ -10,7 +10,7 @@ let logFile = config.development.logFile;
  * Logs a message with optional styling.
  *
  * @param {string} string - The message to log.
- * @param {'info' | 'err' | 'warn' | 'done' | undefined} style - The style of the log.
+ * @param {'info' | 'err' | 'warn' | 'done' | 'debug' | 'interaction' | 'chatbot' | undefined} style - The style of the log.
  */
 const log = (string, style, dirLog) => {
     const styles = {
