@@ -83,7 +83,7 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle('Error')
                         .setDescription(
-                            `${user.discordId} created an application and left. Do you want to delete his entrie in the db?`
+                            `\`${user.discordId}\` created an application and left. Do you want to delete his entrie in the db?`
                         )
                         .setColor('Red'),
                 ],
