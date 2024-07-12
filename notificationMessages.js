@@ -79,6 +79,23 @@ const notificationMessages = new Map([
             channel: config.channels.notifications.match,
         },
     ],
+    [
+        'divisionChanged',
+        {
+            reason: 'Division',
+            channel: config.channels.notifications.division,
+            message: {
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Division Changed')
+                        .setDescription(
+                            'You have been moved to **division {{division}}**.'
+                        )
+                        .setColor('Purple'),
+                ],
+            },
+        },
+    ],
 ]);
 
 module.exports = notificationMessages;

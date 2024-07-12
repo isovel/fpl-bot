@@ -112,8 +112,9 @@ module.exports = {
         },
         leaderboard: '1247568563187748970',
         notifications: {
-            'application': '1260564188410150922',
-            'match': '1261038899547865088',
+            application: '1260564188410150922',
+            match: '1261038899547865088',
+            division: '1261433355124080700',
         },
     },
     categories: {

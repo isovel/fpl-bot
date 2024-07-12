@@ -114,6 +114,7 @@ module.exports = {
         notifications: {
             application: '1260563756006768732',
             match: '1261039956911063195',
+            division: '1261433158184730624',
         },
     },
     categories: {
@@ -126,7 +127,7 @@ module.exports = {
         },
         //multipliers will be added to the user's weight (weight+=multiplier-1)
         weightModify: [
-            {
+            /*{
                 id: '1146913497943392418',
                 multiplier: 2,
                 name: 'Legend (YT)',
@@ -150,7 +151,7 @@ module.exports = {
                 id: '1246568974720962592',
                 multiplier: 2,
                 name: 'Champion (TTV-T1)',
-            },
+            },*/
         ],
         admin: '1238551023446917221',
         pulled: '1256312860577894550',
