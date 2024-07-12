@@ -84,7 +84,7 @@ module.exports = {
         );
 
         //Remove permissions from user to access vc if exists
-        permHandler.reset(client, interaction, user, userData.division);
+        //permHandler.reset(client, interaction, user, userData.division);
 
         //pull new random user from queue.users
         let randomUser;

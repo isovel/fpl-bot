@@ -33,12 +33,12 @@ module.exports = {
                 user.voice.setMute(false);
 
                 //reset unverified channel permissions
-                permHandler.setVerified(
+                /*permHandler.setVerified(
                     client,
                     interaction,
                     user,
                     userData.division
-                );
+                );*/
 
                 interaction.reply({
                     embeds: [

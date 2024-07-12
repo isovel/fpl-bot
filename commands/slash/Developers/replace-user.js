@@ -89,7 +89,7 @@ module.exports = {
             interaction.guild.roles.cache.get(client.config.roles.pulled)
         );
 
-        //Remove permissions from user to access vc if exists
+        /*//Remove permissions from user to access vc if exists
         permHandler.reset(client, interaction, oldUser, oldUserData.division);
 
         //add pulled role to random user
@@ -101,7 +101,7 @@ module.exports = {
             interaction,
             newUser,
             newUserData.division
-        );
+        );*/
 
         const c_matches = client.runtimeVariables.db.collection('matches');
 

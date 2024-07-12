@@ -50,12 +50,12 @@ module.exports = {
             .remove(client.config.roles.verified)
             .then(() => {
                 //reset vc permissions
-                permHandler.setUnverified(
+                /*permHandler.setUnverified(
                     client,
                     interaction,
                     user,
                     userData.division
-                );
+                );*/
 
                 interaction.reply({
                     embeds: [
