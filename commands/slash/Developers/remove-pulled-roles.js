@@ -6,6 +6,9 @@ const {
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
+const config = process.env.PRODUCTION
+    ? require('../../../server-config')
+    : require('../../../config');
 
 module.exports = {
     structure: new SlashCommandBuilder()
