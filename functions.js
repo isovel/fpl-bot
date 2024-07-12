@@ -1,5 +1,7 @@
 const chalk = require('chalk');
-const config = require('./config.js');
+const config = process.env.PRODUCTION
+    ? require('./server-config')
+    : require('./config');
 const fs = require('fs');
 
 let client;

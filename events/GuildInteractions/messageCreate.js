@@ -1,5 +1,7 @@
 const { ChannelType, Message } = require('discord.js');
-const config = require('../../config');
+const config = process.env.PRODUCTION
+    ? require('../../server-config')
+    : require('../../config');
 const { log } = require('../../functions');
 const ExtendedClient = require('../../class/ExtendedClient');
 

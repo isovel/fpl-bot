@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { updateLeaderboard } = require('../../../handlers/leaderboard');
-const config = require('../../../config');
+const config = process.env.PRODUCTION
+    ? require('../../../server-config')
+    : require('../../../config');
 
 module.exports = {
     structure: new SlashCommandBuilder()

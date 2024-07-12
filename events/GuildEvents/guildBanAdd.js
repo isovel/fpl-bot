@@ -1,4 +1,6 @@
-const config = require('../../config');
+const config = process.env.PRODUCTION
+    ? require('../../server-config')
+    : require('../../config');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { EmbedBuilder } = require('discord.js');
 const { time } = require('../../functions');
@@ -6,16 +8,23 @@ const { time } = require('../../functions');
 module.exports = {
     event: 'guildBanAdd',
     /**
-     * 
-     * @param {ExtendedClient} client 
-     * @param {import('discord.js').GuildBan} ban 
-     * @returns 
+     *
+     * @param {ExtendedClient} client
+     * @param {import('discord.js').GuildBan} ban
+     * @returns
      */
     run: async (client, ban) => {
+        if (
+            !(
+                config.channels.modLogs.enabled &&
+                config.channels.modLogs.channel
+            )
+        )
+            return;
 
-        if (!(config.channels.modLogs.enabled && config.channels.modLogs.channel)) return;
-
-        const modLogsChannel = client.channels.cache.get(config.channels.modLogs.channel);
+        const modLogsChannel = client.channels.cache.get(
+            config.channels.modLogs.channel
+        );
 
         if (!modLogsChannel || modLogsChannel.guildId !== ban.guild.id) return;
 
@@ -32,12 +41,11 @@ module.exports = {
                         .setTitle('Guild Ban Add')
                         .setThumbnail(message.author.displayAvatarURL())
                         .setDescription(data.join('\n'))
-                        .setColor('Red')
-                ]   
+                        .setColor('Red'),
+                ],
             });
         } catch (err) {
             console.error(err);
-        };
-
-    }
+        }
+    },
 };

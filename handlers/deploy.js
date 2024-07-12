@@ -1,6 +1,8 @@
 const { REST, Routes } = require('discord.js');
 const { log, isSnowflake } = require('../functions');
-const config = require('../config');
+const config = process.env.PRODUCTION
+    ? require('../server-config')
+    : require('../config');
 const ExtendedClient = require('../class/ExtendedClient');
 
 /**
