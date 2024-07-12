@@ -12,7 +12,7 @@ const notificationMessages = new Map([
             message: {
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle('Application Created')
+                        .setTitle('Application Accepted')
                         .setDescription(
                             'Your application has been accepted. \nYou have been assigned to **division {{division}}**.'
                         )
