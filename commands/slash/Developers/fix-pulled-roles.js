@@ -9,8 +9,10 @@ const { log } = require('../../../functions');
 
 module.exports = {
     structure: new SlashCommandBuilder()
-        .setName('remove-chosen-roles')
-        .setDescription('Remove chosen role from all users.'),
+        .setName('fix-pulled-roles')
+        .setDescription(
+            'Remove pulled role from all users and add pulled role to chosen users.'
+        ),
     options: {
         developers: true,
     },
@@ -23,7 +25,7 @@ module.exports = {
         const members = await interaction.guild.members.fetch();
         const role = client.config.roles.pulled;
 
-        log(`Removing pulled role from ${members.size} users.`, 'info');
+        log(`Fixing pulled role from ${members.size} users.`, 'info');
 
         if (!role) {
             return interaction.reply({
@@ -40,6 +42,8 @@ module.exports = {
         await members.forEach((member) => {
             member.roles.remove(role);
         });
+
+        const c_queues = client.runtimeVariables.db.collection('queues');
 
         interaction.reply({
             embeds: [

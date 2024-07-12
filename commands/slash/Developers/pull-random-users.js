@@ -35,6 +35,7 @@ module.exports = {
         developers: true,
     },
     run: async (client, interaction) => {
+        interaction.deferReply();
         const division = interaction.options.getString('division');
         const amount = interaction.options.getInteger('amount');
 
@@ -45,7 +46,7 @@ module.exports = {
         });
 
         if (!queueData) {
-            return interaction.reply({
+            return interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Error')
@@ -60,7 +61,7 @@ module.exports = {
 
         //check if users have already been pulled
         if (queueData.randomUsers?.length > 0) {
-            return interaction.reply({
+            return interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Warning')
@@ -86,7 +87,7 @@ module.exports = {
         let userData = queueData.users;
 
         if (userData.length < amount) {
-            return interaction.reply({
+            return interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Warning')
@@ -111,7 +112,7 @@ module.exports = {
                     );
 
                     if (!discordUser) {
-                        return interaction.reply({
+                        return interaction.editReply({
                             embeds: [
                                 new EmbedBuilder()
                                     .setTitle('Error')
@@ -151,7 +152,7 @@ module.exports = {
         );
 
         if (userData.length < amount) {
-            return interaction.reply({
+            return interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle('Warning')
@@ -210,7 +211,7 @@ module.exports = {
 
             await discordUser.roles.add(pulledRole).catch((err) => {
                 log(err, 'err');
-                return interaction.reply({
+                return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Error')
