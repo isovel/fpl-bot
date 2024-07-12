@@ -4,6 +4,7 @@ const {
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
+    ChatInputCommandInteraction,
 } = require('discord.js');
 const { log } = require('../functions');
 const notificationMessages = require('../notificationMessages');
@@ -16,6 +17,8 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction
      * @param {*} userId
      * @param {*} notificationId
+     * @param {*} data
+     * @param {*} options
      */
     notificationMessages: notificationMessages,
     channels: Array.from(notificationMessages.values()).map(
@@ -48,8 +51,8 @@ module.exports = {
             );
             return;
         }
-        const channel = await interaction.guild.channels.fetch(
-            notification.channel
+        const channel = await interaction.guild.channels.cache.find(
+            (c) => c.id == notification.channel
         );
         if (!channel) {
             log(
