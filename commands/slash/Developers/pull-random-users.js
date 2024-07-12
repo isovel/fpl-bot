@@ -35,7 +35,7 @@ module.exports = {
         developers: true,
     },
     run: async (client, interaction) => {
-        interaction.deferReply();
+        await interaction.deferReply();
         const division = interaction.options.getString('division');
         const amount = interaction.options.getInteger('amount');
 
