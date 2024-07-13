@@ -53,6 +53,7 @@ module.exports = {
                 {
                     division: division,
                     matchCode: matchCode,
+                    noButton: true,
                 }
             );
 
