@@ -5,21 +5,21 @@ const { log } = require('../../../functions');
 module.exports = {
     structure: new SlashCommandBuilder()
         .setName('set-weight')
-        .setDescription('Set your weight or the weight of a user.')
+        .setDescription('Set the weight of a user.')
+        .addUserOption((option) =>
+            option
+                .setName('user')
+                .setDescription('The user to set the weight of.')
+                .setRequired(true)
+        )
         .addIntegerOption((option) =>
             option
                 .setName('weight')
                 .setDescription('The weight to set.')
                 .setRequired(true)
-        )
-        .addUserOption((option) =>
-            option
-                .setName('user')
-                .setDescription('The user to set the weight of.')
-                .setRequired(false)
         ),
     run: async (client, interaction) => {
-        const user = interaction.member;
+        const user = interaction.options.getUser('user') || interaction.member;
         const weight = interaction.options.getInteger('weight');
 
         //check if user has an application
