@@ -57,12 +57,16 @@ module.exports = {
 
                 log(result, 'debug');
 
+                const queueData = c_queues.findOne({
+                    division: division,
+                });
+
                 interaction.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Success')
                             .setDescription(
-                                `Queue for division ${division} has been cleared.`
+                                `Queue for division ${division} has been cleared.\nThere are now ${queueData?.users?.length} users in the queue.`
                             )
                             .setColor('Green'),
                     ],
