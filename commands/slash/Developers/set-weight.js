@@ -6,17 +6,17 @@ module.exports = {
     structure: new SlashCommandBuilder()
         .setName('set-weight')
         .setDescription('Set your weight or the weight of a user.')
-        .addUserOption((option) =>
-            option
-                .setName('user')
-                .setDescription('The user to set the weight of.')
-                .setRequired(false)
-        )
         .addIntegerOption((option) =>
             option
                 .setName('weight')
                 .setDescription('The weight to set.')
                 .setRequired(true)
+        )
+        .addUserOption((option) =>
+            option
+                .setName('user')
+                .setDescription('The user to set the weight of.')
+                .setRequired(false)
         ),
     run: async (client, interaction) => {
         const user = interaction.member;
