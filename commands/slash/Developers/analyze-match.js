@@ -17,6 +17,9 @@ module.exports = {
                 .setDescription('The screenshot of the match')
                 .setRequired(true)
         ),
+    options: {
+        developers: true,
+    },
     run: async (client, interaction) => {
         //let imageUrl = './match.png';
         //let base64Image = fs.readFileSync(imageUrl, { encoding: 'base64' });
