@@ -1,4 +1,9 @@
-const { Client, Partials, Collection } = require('discord.js');
+const {
+    Client,
+    Partials,
+    Collection,
+    GatewayIntentBits,
+} = require('discord.js');
 const config = process.env.PRODUCTION
     ? require('../server-config')
     : require('../config');
@@ -35,7 +40,9 @@ module.exports = class extends Client {
      */
     constructor(dir) {
         super({
-            intents: 3276799, // Every intent
+            intents: Object.keys(GatewayIntentBits).map((a) => {
+                return GatewayIntentBits[a];
+            }), // Every intent
             partials: [
                 Partials.Channel,
                 Partials.GuildMember,
