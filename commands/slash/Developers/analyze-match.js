@@ -86,6 +86,28 @@ module.exports = {
 
         log(playerData, 'debug');
 
+        //key is name of player, value is object of stats
+        let keyValuePlayerData = new Map([
+            playerData.map(([key, value]) => {
+                return {
+                    key: key,
+                    value: {
+                        teamName: value[0],
+                        teamPosition: parseInt(value[1]),
+                        teamCash: parseInt(value[2]),
+                        role: value[3],
+                        eliminations: parseInt(value[4]),
+                        assists: parseInt(value[5]),
+                        deaths: parseInt(value[6]),
+                        revives: parseInt(value[7]),
+                        combat: parseInt(value[8]),
+                        support: parseInt(value[9]),
+                        objective: parseInt(value[10]),
+                    },
+                };
+            }),
+        ]);
+
         interaction.editReply({
             embeds: [
                 new EmbedBuilder()

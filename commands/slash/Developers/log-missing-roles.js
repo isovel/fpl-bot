@@ -13,7 +13,9 @@ module.exports = {
         developers: true,
     },
     run: async (client, interaction) => {
-        await interaction.deferReply();
+        await interaction.deferReply({
+            ephemeral: client.config.development.ephemeral,
+        });
         const c_users = client.runtimeVariables.db.collection('users');
         const roles = client.config.roles;
         const divisionRoleA = roles.divisions['A'];
