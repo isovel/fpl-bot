@@ -16,7 +16,7 @@ module.exports = {
             const result = await client.runtimeVariables.db
                 .collection('users')
                 .deleteOne({
-                    _id: ObjectId(_id),
+                    _id: new ObjectId(_id),
                 });
             log(result, 'info');
             interaction.message.delete();
