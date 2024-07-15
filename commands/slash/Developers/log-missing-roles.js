@@ -42,6 +42,7 @@ module.exports = {
                     !member.roles.cache.has(divisionRoleB) &&
                     !member.roles.cache.has(pendingRole)
                 ) {
+                    if (user.applicationStatus == 0) return;
                     log(
                         `User ${member.displayName} has an entry in the database but is missing a role.`,
                         'warn'
@@ -51,8 +52,6 @@ module.exports = {
                             ? user.division
                             : user.applicationStatus == 1
                             ? 'pending'
-                            : user.applicationStatus == 0
-                            ? 'declined'
                             : 'unkown'
                     }\n`;
                     usersNotFound++;
