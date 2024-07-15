@@ -47,7 +47,9 @@ module.exports = {
                         'warn'
                     );
                     message += `<@${member.id}> - ${
-                        user.division || user.applicationStatus == 1
+                        user.division
+                            ? user.division
+                            : user.applicationStatus == 1
                             ? 'pending'
                             : user.applicationStatus == 0
                             ? 'declined'
