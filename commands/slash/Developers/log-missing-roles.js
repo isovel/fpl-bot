@@ -46,7 +46,13 @@ module.exports = {
                         `User ${member.displayName} has an entry in the database but is missing a role.`,
                         'warn'
                     );
-                    message += `<@${member.id}> \n`;
+                    message += `<@${member.id}> - ${
+                        user.division || user.applicationStatus == 1
+                            ? 'pending'
+                            : user.applicationStatus == 0
+                            ? 'declined'
+                            : 'unkown'
+                    }\n`;
                     usersNotFound++;
                 }
                 if (processedUsers >= users.length) {
