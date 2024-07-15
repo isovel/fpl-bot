@@ -1,5 +1,6 @@
 const { StringSelectMenuInteraction, EmbedBuilder } = require('discord.js');
 const { log } = require('../../functions');
+const { ObjectId } = require('mongodb');
 
 module.exports = {
     customId: 'delete-application',
@@ -9,13 +10,13 @@ module.exports = {
     run: async (client, interaction) => {
         //if selected is yes delete otherwise do nothing
         const value = interaction.values[0];
-        const id = interaction.customId.split('_')[1];
+        const _id = interaction.customId.split('_')[1];
         if (value == 'yes') {
-            log(`Deleting application with ID ${id}`, 'info');
+            log(`Deleting application with _ID ${_id}`, 'info');
             const result = await client.runtimeVariables.db
                 .collection('users')
                 .deleteOne({
-                    _id: id,
+                    _id: ObjectId(_id),
                 });
             log(result, 'info');
             interaction.message.delete();
