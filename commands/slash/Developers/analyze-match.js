@@ -51,14 +51,14 @@ module.exports = {
                 ],
             });
         }
-        interaction.deferReply();
+        await interaction.deferReply();
         const imageUrlData = await fetch(image.url);
         const buffer = await imageUrlData.arrayBuffer();
         const stringifiedBuffer = Buffer.from(buffer).toString('base64');
         const contentType = imageUrlData.headers.get('content-type');
         const imageBase64 = `data:${contentType};base64,${stringifiedBuffer}`;
 
-        const response = await openai.chat.completions.create({
+        const response = /* await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {
@@ -78,7 +78,7 @@ module.exports = {
                     ],
                 },
             ],
-        }); /* {
+        }); */ {
             id: 'chatcmpl-9lM9zuWc55oCHX6koFeuW6lARgSv7',
             object: 'chat.completion',
             created: 1721073627,
@@ -101,7 +101,7 @@ module.exports = {
                 total_tokens: 2108,
             },
             system_fingerprint: 'fp_298125635f',
-        };*/
+        };
 
         log(response, 'debug');
 
@@ -170,10 +170,13 @@ module.exports = {
                     )
                     .setColor('Purple'),
             ],
-            attachments: [
+            files: [
                 new AttachmentBuilder()
                     .setName(timestamp + '.png')
-                    .setFile(buffer),
+                    .setFile(
+                        Buffer.from(stringifiedBuffer, 'base64'),
+                        timestamp
+                    ),
             ],
         });
         interaction.channel.send({
