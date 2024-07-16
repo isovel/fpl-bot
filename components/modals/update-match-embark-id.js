@@ -8,7 +8,7 @@ const {
 const { updateLeaderboard } = require('../../handlers/leaderboards');
 
 module.exports = {
-    customId: 'submit-team-ratings',
+    customId: 'update-match-embarkid',
     options: {
         developers: true,
     },
@@ -21,51 +21,57 @@ module.exports = {
         await interaction.deferReply();
         const gamemode = interaction.customId.split('_')[1];
         const analysisTimestamp = parseInt(interaction.customId.split('_')[2]);
+        const oldEmbarkId = interaction.customId
+            .split('_')[3]
+            .replaceAll('~', '_');
+        const newEmbarkId = interaction.values[0];
+        const objectivesPlayed = interaction.customId.split('_')[4].split(',');
 
-        const confirmWords = ['yes', 'true', '1', 'ok', 'y', 'ye', 'yeah'];
-        const denyWords = ['no', 'false', '0', 'n', 'nah', 'nope'];
-
-        interaction.fields.fields.forEach((field) => {
-            log(field, 'debug', true);
-            if (
-                !confirmWords.includes(field.value) &&
-                !denyWords.includes(field.value) //!(parseInt(field.value) && field.value > 0 && field.value < 6)
-            ) {
-                return interaction.reply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle('Warn')
-                            .setDescription(
-                                `Please enter a valid response for Team ${
-                                    field.customId.split('_')[1]
-                                }`
-                            )
-                            .setColor('Yellow'),
-                    ],
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(
-                                    `match-gamemode_${analysisTimestamp}_${gamemode}`
-                                )
-                                .setLabel('Try Again')
-                                .setStyle('Primary')
-                                .setEmoji('🔄')
-                        ),
-                    ],
-                    ephemeral: client.config.development.ephemeral,
-                });
-            }
-        });
+        if (!newEmbarkId.match(/.{2,}#[0-9]{4}$/)) {
+            log(
+                `${interaction.user.displayName} entered an invalid Embark ID! ${embarkId}`,
+                'warn'
+            );
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle('Error')
+                        .setDescription(
+                            `Please enter a valid Embark ID! \nYou entered: ${embarkId} \nAn example would be: unknown#1234`
+                        )
+                        .setColor('Red'),
+                ],
+                ephemeral: true,
+            });
+            return;
+        }
 
         const c_matchAnalysis =
             client.runtimeVariables.db.collection('matchAnalysis');
 
         log(analysisTimestamp, 'debug', true);
 
-        const matchData = await c_matchAnalysis.findOne({
+        let matchData = await c_matchAnalysis.findOne({
             timestamp: new Date(analysisTimestamp),
         });
+
+        //change key matchData.playerData[oldEmbarkId] to matchData.playerData[newEmbarkId]
+
+        await c_matchAnalysis.updateOne(
+            {
+                timestamp: new Date(analysisTimestamp),
+            },
+            {
+                $set: {
+                    [`playerData.${newEmbarkId.toLowerCase()}`]:
+                        matchData.playerData[oldEmbarkId.toLowerCase()],
+                },
+            }
+        );
+
+        matchData.playerData[newEmbarkId.toLowerCase()] =
+            matchData.playerData[oldEmbarkId.toLowerCase()];
+        delete matchData.playerData[oldEmbarkId.toLowerCase()];
 
         log(matchData, 'debug', true);
 
@@ -83,9 +89,9 @@ module.exports = {
 
         const pointData = await calculatePoints(
             new Map(Object.entries(matchData.playerData)),
-            interaction.fields.fields.map((field) => {
-                if (confirmWords.includes(field.value)) return true;
-                if (denyWords.includes(field.value)) return false;
+            objectivesPlayed.map((d) => {
+                if (d == 'y') return true;
+                if (d == 'n') return false;
             })
         );
 
@@ -135,23 +141,7 @@ module.exports = {
                         new ActionRowBuilder().addComponents(
                             new ButtonBuilder()
                                 .setCustomId(
-                                    `set-match-embarkid_${gamemode}_${analysisTimestamp}_${embarkId
-                                        .replaceAll('_', '~')
-                                        .replaceAll(
-                                            ' ',
-                                            ''
-                                        )}_${interaction.fields.fields
-                                        .map((field) => {
-                                            if (
-                                                confirmWords.includes(
-                                                    field.value
-                                                )
-                                            )
-                                                return 'y';
-                                            if (denyWords.includes(field.value))
-                                                return 'n';
-                                        })
-                                        .join(',')}`
+                                    `set-match-embark-id_${embarkId}_${analysisTimestamp}`
                                 )
                                 .setLabel('Set Embark ID')
                                 .setStyle('Primary')
