@@ -161,7 +161,7 @@ module.exports = {
                 });
             }
 
-            if (userDocs[0].embarkId != embarkId) {
+            if (userDocs[0].embarkId.toLowerCase() != embarkId.toLowerCase()) {
                 matchData.playerData[userDocs[0].embarkId] =
                     matchData.playerData[embarkId.toLowerCase()];
                 delete matchData.playerData[embarkId.toLowerCase()];
