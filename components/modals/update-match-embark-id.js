@@ -60,17 +60,21 @@ module.exports = {
 
         //change key matchData.playerData[oldEmbarkId] to matchData.playerData[newEmbarkId]
 
-        await c_matchAnalysis.updateOne(
-            {
-                timestamp: new Date(analysisTimestamp),
-            },
-            {
-                $set: {
-                    [`playerData.${newEmbarkId.toLowerCase()}`]:
-                        matchData.playerData[oldEmbarkId.toLowerCase()],
+        await c_matchAnalysis
+            .updateOne(
+                {
+                    timestamp: new Date(analysisTimestamp),
                 },
-            }
-        );
+                {
+                    $set: {
+                        [`playerData.${newEmbarkId.toLowerCase()}`]:
+                            matchData.playerData[oldEmbarkId.toLowerCase()],
+                    },
+                }
+            )
+            .then((result) => {
+                log(result, 'debug', true);
+            });
 
         matchData.playerData[newEmbarkId.toLowerCase()] =
             matchData.playerData[oldEmbarkId.toLowerCase()];
@@ -93,6 +97,7 @@ module.exports = {
         const pointData = await calculatePoints(
             new Map(Object.entries(matchData.playerData)),
             objectivesPlayed.map((d) => {
+                log(d, 'debug');
                 if (d == 'y') return true;
                 if (d == 'n') return false;
             })
@@ -146,18 +151,10 @@ module.exports = {
                                 .setCustomId(
                                     `set-match-embarkid_${gamemode}_${analysisTimestamp}_${embarkId
                                         .replaceAll('_', '~')
-                                        .replaceAll(' ', '')}_${objectivesPlayed
-                                        .map((field) => {
-                                            if (
-                                                confirmWords.includes(
-                                                    field.value
-                                                )
-                                            )
-                                                return 'y';
-                                            if (denyWords.includes(field.value))
-                                                return 'n';
-                                        })
-                                        .join(',')}`
+                                        .replaceAll(
+                                            ' ',
+                                            ''
+                                        )}_${objectivesPlayed}`
                                 )
                                 .setLabel('Set Embark ID')
                                 .setStyle('Primary')
