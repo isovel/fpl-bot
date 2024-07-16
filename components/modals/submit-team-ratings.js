@@ -166,12 +166,10 @@ module.exports = {
                     matchData.playerData[embarkId.toLowerCase()];
                 delete matchData.playerData[embarkId.toLowerCase()];
 
-                log([...pointData.keys()], 'debug');
                 pointData.set(
                     userDocs[0].embarkId.toLowerCase(),
                     pointData.get(embarkId)
                 );
-                log([...pointData.keys()], 'debug');
                 pointData.delete(embarkId);
             }
             playerDocs.set(userDocs[0].embarkId, userDocs[0]);
