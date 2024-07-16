@@ -201,7 +201,7 @@ module.exports = {
                     'warn'
                 );
                 log(`Seaching for ${embarkId}`, 'debug');
-                log(pointData.keys(), 'debug');
+                log(pointData.keys(), 'debug', true);
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
