@@ -181,6 +181,7 @@ module.exports = {
                     `Player data for user with embark ID ${embarkId} not found in match data`,
                     'warn'
                 );
+                log(playerData, 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
@@ -198,6 +199,7 @@ module.exports = {
                     `Point data for user with embark ID ${embarkId} not found`,
                     'warn'
                 );
+                log(playerPointData, 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
@@ -215,6 +217,7 @@ module.exports = {
                     `User with embark ID ${embarkId} not found in the database`,
                     'warn'
                 );
+                log(userDoc, 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
