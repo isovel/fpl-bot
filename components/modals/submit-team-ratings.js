@@ -129,6 +129,16 @@ module.exports = {
                             )
                             .setColor('Red'),
                     ],
+                    //button to change embarkId of specific user
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId('set-match-embark-id_' + embarkId)
+                                .setLabel('Set Embark ID')
+                                .setStyle('Primary')
+                                .setEmoji('🔄')
+                        ),
+                    ],
                     ephemeral: client.config.development.ephemeral,
                 });
             }
@@ -158,12 +168,86 @@ module.exports = {
         log(`Found ${playerDocs.size} players in the database`, 'debug', true);
 
         for await (const embarkId of playerDocs.keys()) {
+            const userDoc = playerDocs.get(embarkId);
+            const playerPointData = pointData.get(embarkId.toLowerCase());
+            const playerData = matchData.playerData[embarkId.toLowerCase()];
+            if (!playerData) {
+                log(
+                    `Player data for user with embark ID ${embarkId} not found in match data`,
+                    'warn'
+                );
+                return interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                `Player data for user with embark ID ${embarkId} not found in match data`
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            }
+            if (!playerPointData) {
+                log(
+                    `Point data for user with embark ID ${embarkId} not found`,
+                    'warn'
+                );
+                return interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                `Point data for user with embark ID ${embarkId} not found`
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            }
+            if (!userDoc) {
+                log(
+                    `User with embark ID ${embarkId} not found in the database`,
+                    'warn'
+                );
+                return interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                `User with embark ID ${embarkId} not found in the database`
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            }
+        }
+        for await (const embarkId of playerDocs.keys()) {
+            const userDoc = playerDocs.get(embarkId);
+            const playerPointData = pointData.get(embarkId.toLowerCase());
+            const playerData = matchData.playerData[embarkId.toLowerCase()];
             const result = await submitPointData(
                 client,
-                playerDocs.get(embarkId),
-                pointData.get(embarkId.toLowerCase()),
-                matchData.playerData[embarkId.toLowerCase()]
+                userDoc,
+                playerPointData,
+                playerData,
+                analysisTimestamp
             );
+
+            if (!result) {
+                return interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Error')
+                            .setDescription(
+                                `An error occurred while submitting point data for user with embark ID ${embarkId}`
+                            )
+                            .setColor('Red'),
+                    ],
+                    ephemeral: client.config.development.ephemeral,
+                });
+            }
         }
 
         interaction.editReply({

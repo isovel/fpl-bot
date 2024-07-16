@@ -128,7 +128,13 @@ module.exports = {
         return pointData;
     },
     //submit point data for one user and calculate their new total points
-    submitPointData: async (client, userDoc, pointData, playerData) => {
+    submitPointData: async (
+        client,
+        userDoc,
+        pointData,
+        playerData,
+        analysisTimestamp
+    ) => {
         log(`submitting point data for ${userDoc.embarkId}`, 'debug');
 
         let pointDifference = pointData.totalPoints - (userDoc.points || 0);
@@ -141,6 +147,16 @@ module.exports = {
 
         let pointChange = (pointDifference / 20) * gameImpact;
 
+        //check if analysisTimestamp has already been used
+        if (
+            userDoc.matches.find(
+                (match) => match.timestamp == analysisTimestamp
+            )
+        ) {
+            log('Match already analyzed', 'debug');
+            return false;
+        }
+
         await c_users.updateOne(
             {
                 discordId: userDoc.discordId,
@@ -152,7 +168,7 @@ module.exports = {
                 },
                 $push: {
                     matches: {
-                        timestamp: new Date(),
+                        timestamp: new Date(analysisTimestamp),
                         win: playerData.teamPosition == 1,
                         pointData,
                         playerData,
