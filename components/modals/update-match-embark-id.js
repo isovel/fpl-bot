@@ -146,10 +146,7 @@ module.exports = {
                                 .setCustomId(
                                     `set-match-embarkid_${gamemode}_${analysisTimestamp}_${embarkId
                                         .replaceAll('_', '~')
-                                        .replaceAll(
-                                            ' ',
-                                            ''
-                                        )}_${interaction.fields.fields
+                                        .replaceAll(' ', '')}_${objectivesPlayed
                                         .map((field) => {
                                             if (
                                                 confirmWords.includes(
