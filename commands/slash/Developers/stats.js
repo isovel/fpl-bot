@@ -40,7 +40,8 @@ module.exports = {
         let score = userDoc.points || 0;
 
         userDoc.matches?.forEach((match) => {
-            kills += match.resultData?.kills || match.playerData?.kills || 0;
+            kills +=
+                match.resultData?.kills || match.playerData?.eliminations || 0;
             deaths += match.resultData?.deaths || match.playerData?.deaths || 0;
             assists +=
                 match.resultData?.assists || match.playerData?.assists || 0;

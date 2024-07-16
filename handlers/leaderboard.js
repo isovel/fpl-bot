@@ -35,7 +35,9 @@ module.exports = {
 
             user.matches?.forEach((match) => {
                 kills +=
-                    match.resultData?.kills || match.playerData?.kills || 0;
+                    match.resultData?.kills ||
+                    match.playerData?.eliminations ||
+                    0;
                 deaths +=
                     match.resultData?.deaths || match.playerData?.deaths || 0;
                 assists +=
