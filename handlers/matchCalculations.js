@@ -149,7 +149,7 @@ module.exports = {
 
         //check if analysisTimestamp has already been used
         if (
-            userDoc.matches.find(
+            userDoc.matches?.find(
                 (match) => match.timestamp == analysisTimestamp
             )
         ) {
