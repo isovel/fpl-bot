@@ -106,6 +106,7 @@ module.exports = {
         log(response, 'debug');
 
         let csvRawData = response.choices[0].message.content
+            .replace('```csv', '')
             .replaceAll('`', '')
             .replaceAll('|', ',')
             .replaceAll(' ', '');
@@ -116,6 +117,8 @@ module.exports = {
 
         //parse csv data
         let lines = csvRawData.split('\n');
+        //remove all empty
+        lines = lines.filter((line) => line.trim() != '');
         lines.forEach((line, index) => {
             if (index == 0) return;
             if (line.trim() == '') return;
