@@ -200,7 +200,8 @@ module.exports = {
                     `Point data for user with embark ID ${embarkId} not found`,
                     'warn'
                 );
-                log(pointData, 'debug', true);
+                log(`Seaching for ${embarkId}`, 'debug');
+                log(pointData.keys(), 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
