@@ -98,7 +98,19 @@ module.exports = {
             //use case insensitive search
             let userDocs = await c_users
                 .find({
-                    embarkId: { $regex: new RegExp(`^${embarkId}$`, 'i') },
+                    embarkId: {
+                        $regex: new RegExp(
+                            `^${
+                                embarkId
+                                    .split('#')[0]
+                                    .replace(/0/g, '(O|0)')
+                                    .replace(/(?<!\()(O)/g, '(O|0)') +
+                                '#' +
+                                embarkId.split('#')[1]
+                            }$`,
+                            'i'
+                        ),
+                    },
                 })
                 .toArray();
 
