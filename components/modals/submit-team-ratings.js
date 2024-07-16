@@ -107,7 +107,7 @@ module.exports = {
                     `User with embark ID ${embarkId} not found in the database`,
                     'warn'
                 );
-                continue;
+                //continue;
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
@@ -125,7 +125,7 @@ module.exports = {
                     `Multiple users with embark ID ${embarkId} found in the database`,
                     'warn'
                 );
-                continue;
+                //continue;
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
