@@ -165,6 +165,9 @@ module.exports = {
                 matchData.playerData[userDocs[0].embarkId] =
                     matchData.playerData[embarkId.toLowerCase()];
                 delete matchData.playerData[embarkId.toLowerCase()];
+
+                pointData.set(userDocs[0].embarkId, pointData.get(embarkId));
+                pointData.delete(embarkId);
             }
             playerDocs.set(userDocs[0].embarkId, userDocs[0]);
         }
@@ -200,7 +203,7 @@ module.exports = {
                     `Point data for user with embark ID ${embarkId} not found`,
                     'warn'
                 );
-                log(`Seaching for ${embarkId}`, 'debug');
+                log(`Seaching for ${embarkId.toLowerCase()}`, 'debug');
                 log(pointData.keys(), 'debug', true);
                 return interaction.editReply({
                     embeds: [
