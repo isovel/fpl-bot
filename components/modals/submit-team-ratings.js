@@ -162,7 +162,7 @@ module.exports = {
             }
 
             if (userDocs[0].embarkId.toLowerCase() != embarkId.toLowerCase()) {
-                matchData.playerData[userDocs[0].embarkId] =
+                matchData.playerData[userDocs[0].embarkId.toLowerCase()] =
                     matchData.playerData[embarkId.toLowerCase()];
                 delete matchData.playerData[embarkId.toLowerCase()];
 
@@ -181,7 +181,7 @@ module.exports = {
         log(`Found ${playerDocs.size} players in the database`, 'debug', true);
 
         for await (const embarkId of playerDocs.keys()) {
-            const playerData = matchData.playerData[embarkId];
+            const playerData = matchData.playerData[embarkId.toLowerCase()];
             const playerPointData = pointData.get(embarkId.toLowerCase());
             const userDoc = playerDocs.get(embarkId);
             if (!playerData) {
@@ -189,7 +189,7 @@ module.exports = {
                     `Player data for user with embark ID ${embarkId} not found in match data`,
                     'warn'
                 );
-                log(`Seaching for ${embarkId}`, 'debug');
+                log(`Seaching for ${embarkId.toLowerCase()}`, 'debug');
                 log(Object.keys(matchData.playerData), 'debug');
                 return interaction.editReply({
                     embeds: [
