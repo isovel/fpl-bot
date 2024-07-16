@@ -104,7 +104,7 @@ module.exports = {
                                 embarkId
                                     .split('#')[0]
                                     .replace(/0/g, '(O|0)')
-                                    .replace(/(?<!\()(O)/g, '(O|0)') +
+                                    .replace(/(?<!\()(O)/gi, '(O|0)') +
                                 '#' +
                                 embarkId.split('#')[1]
                             }$`,
