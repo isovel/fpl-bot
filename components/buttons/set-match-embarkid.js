@@ -1,4 +1,9 @@
-const { ModalBuilder } = require('discord.js');
+const {
+    ModalBuilder,
+    ActionRowBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+} = require('discord.js');
 const ExtendedClient = require('../../class/ExtendedClient');
 const { log } = require('../../functions');
 
