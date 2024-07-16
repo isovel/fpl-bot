@@ -134,7 +134,7 @@ module.exports = {
         if (match && match.matchCode) {
             //send dm
             notificationHandler.notifyUser(
-                interaction,
+                client,
                 pulledUser.id,
                 'matchCodeSet',
                 {

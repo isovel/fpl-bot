@@ -1,5 +1,12 @@
 const OpenAI = require('openai');
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    ChatInputCommandInteraction,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
+} = require('discord.js');
+const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
 
 const openai = new OpenAI({
@@ -20,12 +27,15 @@ module.exports = {
     options: {
         developers: true,
     },
+    /**
+     * @param {ExtendedClient} client
+     * @param {ChatInputCommandInteraction} interaction
+     */
     run: async (client, interaction) => {
         //let imageUrl = './match.png';
         //let base64Image = fs.readFileSync(imageUrl, { encoding: 'base64' });
         const image = interaction.options.getAttachment('screenshot');
         //check if image is a png or jpg
-        console.log(image);
         if (
             !image.contentType.includes('png') &&
             !image.contentType.includes('jpg') &&
@@ -47,7 +57,7 @@ module.exports = {
         const contentType = imageUrlData.headers.get('content-type');
         const imageBase64 = `data:${contentType};base64,${stringifiedBuffer}`;
 
-        const response = await openai.chat.completions.create({
+        const response = /*await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {
@@ -67,12 +77,39 @@ module.exports = {
                     ],
                 },
             ],
-        });
+        });*/ {
+            id: 'chatcmpl-9lM9zuWc55oCHX6koFeuW6lARgSv7',
+            object: 'chat.completion',
+            created: 1721073627,
+            model: 'gpt-4o-2024-05-13',
+            choices: [
+                {
+                    index: 0,
+                    message: {
+                        role: 'assistant',
+                        content:
+                            'player,teamName,teamPosition,teamCash,role,eliminations,assists,deaths,revives,combat,support,objective\nSTEMON #5456,The Vogues,1,36090,H,8,0,4,0,5575,2933,2900\nOBEMUS #8871,The Vogues,1,36090,H,0,3,6,0,1093,2137,400\nTEEJAY #0768,The Vogues,1,36090,M,0,3,4,4,1929,4077,900\nVOIRI #1076,The Shock & Awe,2,13440,M,4,6,5,1,3805,2627,300\nWITTYTRAP #7545,The Shock & Awe,2,13440,H,6,3,4,0,4436,3885,1200\nIK_RIBSTARTTV #0410,The Shock & Awe,2,13440,L,11,3,2,1,6850,400,1700\nGEORGY #3016,The High Notes,3,11640,M,4,5,2,3,2823,4751,200\nCYNLO #5113,The High Notes,3,11640,H,4,4,5,0,3373,292,1200\nANIMEMIES #6342,The High Notes,3,11640,M,3,5,4,3,3576,3412,1700\nHEJZ #1913,The Mighty,4,1952,H,0,0,1,0,0,0,0\nCOOLJWB #1524,The Mighty,4,1952,L,0,0,5,0,3807,150,1000\nAMARKINE #4523,The Mighty,4,1952,L,0,1,4,1,1358,250,0',
+                    },
+                    logprobs: null,
+                    finish_reason: 'stop',
+                },
+            ],
+            usage: {
+                prompt_tokens: 1678,
+                completion_tokens: 430,
+                total_tokens: 2108,
+            },
+            system_fingerprint: 'fp_298125635f',
+        };
+
+        log(response, 'debug');
 
         let csvRawData = response.choices[0].message.content
             .replaceAll('`', '')
             .replaceAll('|', ',')
             .replaceAll(' ', '');
+
+        log(csvRawData, 'debug');
 
         let playerData = new Map();
 
@@ -84,29 +121,38 @@ module.exports = {
             playerData.set(line.split(',')[0], line.split(',').slice(1));
         });
 
-        log(playerData, 'debug');
+        log(playerData, 'debug', true);
 
         //key is name of player, value is object of stats
-        let keyValuePlayerData = new Map([
-            playerData.map(([key, value]) => {
-                return {
-                    key: key,
-                    value: {
-                        teamName: value[0],
-                        teamPosition: parseInt(value[1]),
-                        teamCash: parseInt(value[2]),
-                        role: value[3],
-                        eliminations: parseInt(value[4]),
-                        assists: parseInt(value[5]),
-                        deaths: parseInt(value[6]),
-                        revives: parseInt(value[7]),
-                        combat: parseInt(value[8]),
-                        support: parseInt(value[9]),
-                        objective: parseInt(value[10]),
-                    },
-                };
-            }),
-        ]);
+        let keyValuePlayerData = {};
+
+        playerData.forEach((value, key) => {
+            keyValuePlayerData[key.toLowerCase()] = {
+                teamName: value[0],
+                teamPosition: parseInt(value[1]),
+                teamCash: parseInt(value[2]),
+                role: value[3],
+                eliminations: parseInt(value[4]),
+                assists: parseInt(value[5]),
+                deaths: parseInt(value[6]),
+                revives: parseInt(value[7]),
+                combat: parseInt(value[8]),
+                support: parseInt(value[9]),
+                objective: parseInt(value[10]),
+            };
+        });
+
+        //save data in c_matcheAnalysis
+        const c_matchAnalysis =
+            client.runtimeVariables.db.collection('matchAnalysis');
+        const timestamp = Date.now();
+        c_matchAnalysis.insertOne({
+            timestamp: new Date(timestamp),
+            playerData: keyValuePlayerData,
+            csvData: csvRawData,
+            gptResponse: response,
+            imageUrl: image.url,
+        });
 
         interaction.editReply({
             embeds: [
@@ -122,6 +168,29 @@ module.exports = {
                         })
                     )
                     .setColor('Purple'),
+            ],
+        });
+        interaction.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle('Gamemode Selection')
+                    .setDescription(
+                        'Please enter the gamemode of the match. This will be used to calculate the points for the match.'
+                    )
+                    .setColor('Purple'),
+            ],
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId(`match-gamemode_${timestamp}`)
+                        .setPlaceholder('Select the Gamemode')
+                        .addOptions(
+                            client.config.gamemodes.map((gm) => ({
+                                label: gm.label,
+                                value: gm.value,
+                            }))
+                        )
+                ),
             ],
         });
     },

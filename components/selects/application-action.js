@@ -38,7 +38,7 @@ module.exports = {
                     }
                 );
                 notificationHandler.notifyUser(
-                    interaction,
+                    client,
                     discordId,
                     'applicationDeclined'
                 );
@@ -67,7 +67,7 @@ module.exports = {
                         });
                     //if (!client.config.development.enabled)
                     notificationHandler.notifyUser(
-                        interaction,
+                        client,
                         discordId,
                         'applicationAccepted',
                         {

@@ -19,18 +19,14 @@ module.exports = {
      * @param {StringSelectMenuInteraction} interaction
      */
     run: async (client, interaction) => {
-        const gameMode = interaction.values[0];
-        const division = interaction.customId.split('_').slice(1)[0];
-        const msgId = interaction.customId.split('_').slice(2);
-
-        log('Game Mode: ' + gameMode, 'debug');
-        log(`Division: "${division}"`, 'debug');
-        log(`Type: "${typeof division}"`, 'debug');
+        const gameMode =
+            interaction.values[0] || interaction.customId.split('_')[2];
+        const analysisTimestamp = interaction.customId.split('_')[1];
 
         const modal = new ModalBuilder()
             .setTitle('Objectives Played')
             .setCustomId(
-                `submit-team-ratings_${division}_${gameMode}_${msgId}`
+                `submit-team-ratings_${gameMode}_${analysisTimestamp}`
             );
 
         for (

@@ -18,11 +18,7 @@
         "express": "^4.19.2",
         "ip": "^2.0.1",
         "mongodb": "^6.7.0",
-        "node-schedule": "^2.1.1",
         "openai": "^4.52.7",
-        "pg": "^8.11.5",
-        "sharp": "^0.33.4",
-        "tesseract.js": "^5.1.0",
         "tmi.js": "^1.8.5",
         "youtube-chat": "^2.2.0"
     }

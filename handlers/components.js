@@ -101,11 +101,6 @@ module.exports = (client) => {
                     commandName: module.commandName,
                     file: file,
                 });
-
-                log(
-                    `Loaded new autocomplete component: ${file}, commandName: ${module.commandName}`,
-                    'info'
-                );
             } else {
                 log(`Invalid component type: ${file}`, 'warn');
             }
@@ -118,9 +113,9 @@ module.exports = (client) => {
             (item) => item.type === type
         );
         log(
-            `Loaded ${type} components: ${typeComponents.map(
-                (item) => item.file
-            )}`,
+            `Loaded ${typeComponents.length} ${type} component${
+                typeComponents.length > 1 ? 's' : ''
+            }`,
             'info'
         );
     }

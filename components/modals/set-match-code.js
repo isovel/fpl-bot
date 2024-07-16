@@ -47,7 +47,7 @@ module.exports = {
             );
 
             await notificationHandler.notifyUser(
-                interaction,
+                client,
                 match.users.map((u) => u.id),
                 'matchCodeUpdated',
                 {
@@ -84,7 +84,7 @@ module.exports = {
                 console.log('result', result);
 
                 notificationHandler.notifyUser(
-                    interaction,
+                    client,
                     users.map((u) => u.id),
                     'matchCodeSet',
                     {

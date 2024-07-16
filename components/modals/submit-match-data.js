@@ -430,7 +430,7 @@ module.exports = {
 
                 //if (client.config.development.enabled)
                 notificationHandler.notifyUser(
-                    interaction,
+                    client,
                     id,
                     'matchDataAnalyzed',
                     undefined,

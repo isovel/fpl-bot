@@ -39,7 +39,7 @@ module.exports = {
         const notificationId = interaction.options.getString('notification');
 
         const success = await notificationHandler.notifyUser(
-            interaction,
+            client,
             userIds,
             notificationId,
             {

@@ -21,12 +21,13 @@ module.exports = {
     channels: Array.from(notificationMessages.values()).map(
         (notification) => notification.channel
     ),
-    notifyUser: async (interaction, userId, notificationId, data, options) => {
+    notifyUser: async (client, userId, notificationId, data, options) => {
         let users = [],
             user;
+        const guild = await client.guilds.fetch(process.env.GUILD_ID);
         if (typeof userId == 'object') {
             userId.forEach(async (id) => {
-                user = await interaction.guild.members.fetch(id);
+                user = await guild.members.fetch(id);
                 if (!user) {
                     log(`User ${id} not found`, 'error');
                     return;
@@ -34,13 +35,13 @@ module.exports = {
                 users.push(user);
             });
         } else {
-            user = await interaction.guild.members.fetch(userId);
+            user = await guild.members.fetch(userId);
             if (!user) {
                 log(`User ${userId} not found`, 'error');
                 return;
             }
         }
-        const notification = notificationMessages.get(notificationId);
+        let notification = notificationMessages.get(notificationId);
         if (!notification) {
             log(
                 `Notification ${notificationId} not found in notificationMessages`,
@@ -48,9 +49,7 @@ module.exports = {
             );
             return;
         }
-        const channel = await interaction.guild.channels.fetch(
-            notification.channel
-        );
+        const channel = await guild.channels.fetch(notification.channel);
         if (!channel) {
             log(
                 `Channel ${notification.channel} not found in guild cache`,
@@ -91,6 +90,7 @@ module.exports = {
                 ),
             ];
         thread.send(notification.message);
+        log(`Thread created`, 'info');
         if (typeof userId == 'object') {
             await users.map(async (u) => {
                 await thread.members.add(u);
@@ -98,6 +98,7 @@ module.exports = {
         } else {
             await thread.members.add(user);
         }
+        log(`Users added to thread`, 'info');
         return thread.id;
     },
 };

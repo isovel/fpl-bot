@@ -7,7 +7,7 @@ const ExtendedClient = require('../class/ExtendedClient');
  * @param {ExtendedClient} client
  */
 module.exports = (client) => {
-    let loadedCommands = [];
+    let loadedCommands = {};
     for (const type of readdirSync('./commands/')) {
         for (const dir of readdirSync('./commands/' + type)) {
             for (const file of readdirSync(
@@ -69,9 +69,20 @@ module.exports = (client) => {
                     client.applicationcommandsArray.push(module.structure);
                 }
 
-                loadedCommands.push(file);
+                if (!loadedCommands[dir]) loadedCommands[dir] = [];
+                loadedCommands[dir].push(file);
             }
         }
     }
-    log('Loaded commands: ' + loadedCommands, 'info');
+    //loaded x commands of type y
+    Array.from(Object.keys(loadedCommands)).forEach((type) => {
+        if (type == 'slash') {
+        }
+        log(
+            `Loaded ${loadedCommands[type].length} command${
+                loadedCommands[type].length > 1 ? 's' : ''
+            } of type ${type}`,
+            'info'
+        );
+    });
 };

@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { notifyUser } = require('./notifications');
+const { log } = require('../functions');
 
 module.exports = {
     calculatePoints: async (playerData, teamsObjectivePlayed) => {
@@ -29,6 +30,8 @@ module.exports = {
             true
         ])
         */
+        log(teamsObjectivePlayed, 'debug', true);
+
         let pointData = new Map();
 
         let kills = [];
@@ -55,6 +58,8 @@ module.exports = {
             let pPoints =
                 (50 / (teamsObjectivePlayed.length - 1)) *
                 (teamsObjectivePlayed.length - value.teamPosition);
+            log(`value: ${JSON.stringify(value)}, key: ${key}`, 'debug', true);
+            log(`Placement points for ${key}: ${pPoints}`, 'debug');
             pointData.set(key, {
                 totalPoints: pPoints,
                 pointSources: [
@@ -67,6 +72,8 @@ module.exports = {
             });
         });
 
+        log(pointData, 'debug', true);
+
         kills.sort((a, b) => b.kills - a.kills);
         kda.sort((a, b) => b.kda - a.kda);
         combatScores.sort((a, b) => b.combatScore - a.combatScore);
@@ -74,6 +81,7 @@ module.exports = {
         kills.forEach((kill, index) => {
             let kPoints =
                 (20 / (kills.length - 1)) * (kills.length - 1 - index);
+            log(`Kills points for ${kill.id}: ${kPoints}`, 'debug');
             pointData.get(kill.id).totalPoints += kPoints;
             pointData.get(kill.id).pointSources.push({
                 source: 'Kills',
@@ -84,6 +92,7 @@ module.exports = {
 
         kda.forEach((k, index) => {
             let kdaPoints = (15 / (kda.length - 1)) * (kda.length - 1 - index);
+            log(`KDA points for ${k.id}: ${kdaPoints}`, 'debug');
             pointData.get(k.id).totalPoints += kdaPoints;
             pointData.get(k.id).pointSources.push({
                 source: 'kda',
@@ -96,6 +105,7 @@ module.exports = {
             let csPoints =
                 (15 / (combatScores.length - 1)) *
                 (combatScores.length - 1 - index);
+            log(`Combat Score points for ${cs.id}: ${csPoints}`, 'debug');
             pointData.get(cs.id).totalPoints += csPoints;
             pointData.get(cs.id).pointSources.push({
                 source: 'Combat Score',
@@ -106,6 +116,7 @@ module.exports = {
 
         playerData.forEach((value, key) => {
             let objPoints = 50 * teamsObjectivePlayed[value.teamPosition - 1];
+            log(`Objective points for ${key}: ${objPoints}`, 'debug');
             pointData.get(key).totalPoints += objPoints;
             pointData.get(key).pointSources.push({
                 source: 'Objective',
@@ -117,237 +128,136 @@ module.exports = {
         return pointData;
     },
     //submit point data for one user and calculate their new total points
-    submitPointData: async (client, embarkId, pointData, playerData) => {
-        return new Promise(async (resolve, reject) => {
-            c_users = client.runtimeVariables.db.collection('users');
+    submitPointData: async (client, userDoc, pointData, playerData) => {
+        log(`submitting point data for ${userDoc.embarkId}`, 'debug');
 
-            let userDocs = await c_users.find({ embarkId }).toArray();
+        let pointDifference = pointData.totalPoints - (userDoc.points || 0);
 
-            if (userDocs.length == 0) {
-                return reject('User not found');
-            }
-            if (userDocs.length > 1) {
-                return reject('Multiple users found');
-            }
+        function calcGameImpact(x) {
+            return 19 * Math.pow(1.4, -x) + 1;
+        }
 
-            /*
-             function calcGameImpact(x) {
-                    return 19 * Math.pow(1.4, -x) + 1;
-                }
+        let gameImpact = calcGameImpact(userDoc.fplMatchesPlayed || 0);
 
-                let pointDifference =
-                    pointData[id].totalPoints - (u.points || 0);
-                log(`Point difference for ${id}: ${pointDifference}`, 'debug');
-                let gameImpact = calcGameImpact(u.fplMatchesPlayed || 0);
-                log(`Game Impact for ${id}: ${gameImpact}`, 'debug');
-                let pointChange = (pointDifference / 20) * gameImpact;
-                log(`Point change for ${id}: ${pointChange}`, 'debug');
+        let pointChange = (pointDifference / 20) * gameImpact;
 
-                c_users.updateOne(
-                    {
-                        discordId: id,
-                    },
-                    {
-                        $inc: {
-                            points: pointChange,
-                            fplMatchesPlayed: 1,
-                        },
-                        //add match data to user
-                        $push: {
-                            matches: {
-                                matchId: msgId,
-                                timestamp: new Date(),
-                                win: client.config.gamemodes
-                                    .find((gm) => gm.value == gameMode)
-                                    .winningTeams.includes(
-                                        match.resultData[id]['placement']
-                                    ),
-                                resultData: match.resultData[id],
-                                pointData: pointData[id],
-                            },
-                        },
-                    }
-                );
-
-                member = await interaction.guild.members.fetch(id);
-
-                let userPointData = {
-                    placement: pointData[id].pointSources.find(
-                        (source) => source.source == 'Placement'
-                    ),
-                    kills: pointData[id].pointSources.find(
-                        (source) => source.source == 'Kills'
-                    ),
-                    kda: pointData[id].pointSources.find(
-                        (source) => source.source == 'kda'
-                    ),
-                    combatScore: pointData[id].pointSources.find(
-                        (source) => source.source == 'Combat Score'
-                    ),
-                    objective: pointData[id].pointSources.find(
-                        (source) => source.source == 'Objective'
-                    ),
-                };
-                let seperator =
-                    match.resultData[id]['assists'] >
-                    match.resultData[id]['deaths']
-                        ? match.resultData[id]['assists'] > 9
-                            ? '-------------------'
-                            : '------------------'
-                        : match.resultData[id]['deaths'] > 9
-                        ? '-------------------'
-                        : '------------------';
-                let embedData = [
-                    `You got ${match.resultData[id]['kills']} Kills`,
-                    `You got ${match.resultData[id]['assists']} Assists`,
-                    `You got ${match.resultData[id]['deaths']} Deaths`,
-                    `Your Combat Score was ${match.resultData[id]['combat-score']}`,
-                    seperator,
-                    `Points Achieved: ${pointData[id].totalPoints}`,
-                    //`Game Impact: ${Math.round(gameImpact)}`,
-                    `Old Points: ${Math.round(u.points || 0)}`,
-                    `Points Change: ${pointChange > 0 ? '+' : ''}${Math.round(
-                        pointChange
-                    )}`,
-                    `New Points: ${Math.round((u.points || 0) + pointChange)}`,
-                    seperator,
-                    `Team Results: ${toNumStr(
-                        userPointData.placement.index
-                    )} - ${userPointData.placement.points} Points`,
-                    `Elimination Placement: ${toNumStr(
-                        userPointData.kills.index
-                    )} - ${userPointData.kills.points} Points`,
-                    `KDA Placement: ${toNumStr(userPointData.kda.index)} - ${
-                        userPointData.kda.points
-                    } points`,
-                    `Combat Placement: ${toNumStr(
-                        userPointData.combatScore.index
-                    )} - ${userPointData.combatScore.points} points`,
-                    `Objective Played: ${
-                        userPointData.objective.index ? 'Yes' : 'No'
-                    } - ${userPointData.objective.points} points`,
-                ];
-
-                //if (client.config.development.enabled)
-                notificationHandler.notifyUser(
-                    interaction,
-                    id,
-                    'matchDataAnalyzed',
-                    undefined,
-                    {
-                        message: {
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setTitle('Match Data Analyzed')
-                                    .setDescription(embedData.join('\n'))
-                                    .setColor('Purple'),
-                            ],
-                        },
-                        noButton: true,
-                    }
-                );
-            */
-
-            let userDoc = userDocs[0];
-
-            let pointDifference = pointData.totalPoints - (userDoc.points || 0);
-
-            function calcGameImpact(x) {
-                return 19 * Math.pow(1.4, -x) + 1;
-            }
-
-            let gameImpact = calcGameImpact(userDoc.fplMatchesPlayed || 0);
-
-            let pointChange = (pointDifference / 20) * gameImpact;
-
-            await c_users.updateOne(
-                {
-                    embarkId,
+        await c_users.updateOne(
+            {
+                discordId: userDoc.discordId,
+            },
+            {
+                $inc: {
+                    points: pointChange,
+                    fplMatchesPlayed: 1,
                 },
-                {
-                    $inc: {
-                        points: pointChange,
-                        fplMatchesPlayed: 1,
+                $push: {
+                    matches: {
+                        timestamp: new Date(),
+                        win: playerData.teamPosition == 1,
+                        pointData,
+                        playerData,
+                        gameImpact,
+                        pointChange,
                     },
-                    $push: {
-                        matches: {
-                            matchId: embarkId,
-                            timestamp: new Date(),
-                            win: playerData.teamPosition == 1,
-                            pointData,
-                            playerData,
-                            gameImpact,
-                            pointChange,
-                        },
-                    },
-                }
-            );
+                },
+            }
+        );
 
-            let userPointData = {
-                placement: pointData.pointSources.find(
-                    (source) => source.source == 'Placement'
-                ),
-                kills: pointData.pointSources.find(
-                    (source) => source.source == 'Kills'
-                ),
-                kda: pointData.pointSources.find(
-                    (source) => source.source == 'kda'
-                ),
-                combatScore: pointData.pointSources.find(
-                    (source) => source.source == 'Combat Score'
-                ),
-                objective: pointData.pointSources.find(
-                    (source) => source.source == 'Objective'
-                ),
-            };
+        let userPointData = {
+            placement: pointData.pointSources.find(
+                (source) => source.source == 'Placement'
+            ),
+            kills: pointData.pointSources.find(
+                (source) => source.source == 'Kills'
+            ),
+            kda: pointData.pointSources.find(
+                (source) => source.source == 'kda'
+            ),
+            combatScore: pointData.pointSources.find(
+                (source) => source.source == 'Combat Score'
+            ),
+            objective: pointData.pointSources.find(
+                (source) => source.source == 'Objective'
+            ),
+        };
 
-            let seperator =
-                playerData.assists > playerData.deaths
-                    ? playerData[embarkId].assists > 9
-                        ? '-------------------'
-                        : '------------------'
-                    : playerData[embarkId].deaths > 9
+        const seperator =
+            playerData.assists > playerData.deaths
+                ? playerData.assists > 9
                     ? '-------------------'
-                    : '------------------';
+                    : '------------------'
+                : playerData.deaths > 9
+                ? '-------------------'
+                : '------------------';
 
-            let embedData = [
-                `You got ${playerData.eliminations} Kills`,
-                `You got ${playerData.assists} Assists`,
-                `You got ${playerData.deaths} Deaths`,
-                `Your Combat Score was ${playerData.combat}`,
-                seperator,
-                `Points Achieved: ${pointData.totalPoints}`,
-                `Old Points: ${userDoc.points || 0}`,
-                `Points Change: ${pointChange > 0 ? '+' : ''}${pointChange}`,
-                `New Points: ${userDoc.points + pointChange}`,
-                seperator,
-                `Team Results: ${userPointData.placement.index} - ${userPointData.placement.points} Points`,
-                `Elimination Placement: ${userPointData.kills.index} - ${userPointData.kills.points} Points`,
-                `KDA Placement: ${userPointData.kda.index} - ${userPointData.kda.points} points`,
-                `Combat Placement: ${userPointData.combatScore.index} - ${userPointData.combatScore.points} points`,
-                `Objective Played: ${
-                    userPointData.objective.index ? 'Yes' : 'No'
-                } - ${userPointData.objective.points} points`,
-            ];
+        function toNumStr(num) {
+            switch (num) {
+                case 1:
+                    return '1st';
+                case 2:
+                    return '2nd';
+                case 3:
+                    return '3rd';
+                default:
+                    return `${num}th`;
+            }
+        }
 
-            notifyUser(
-                interaction,
-                userDoc.discordId,
-                'matchDataAnalyzed',
-                undefined,
-                {
-                    message: {
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle('Match Data Analyzed')
-                                .setDescription(embedData.join('\n'))
-                                .setColor('Purple'),
-                        ],
-                    },
-                }
-            );
+        const embedData = [
+            `You got ${playerData.eliminations} Kills`,
+            `You got ${playerData.assists} Assists`,
+            `You got ${playerData.deaths} Deaths`,
+            `Your Combat Score was ${playerData.combat}`,
+            seperator,
+            `Score Achieved: ${Math.round(
+                (pointData.totalPoints / 150) * 1000
+            )}`,
+            `Old Score: ${Math.round(((userDoc.points || 0) / 150) * 1000)}`,
+            `Score Change: ${pointChange > 0 ? '+' : ''}${Math.round(
+                ((pointChange || 0) / 150) * 1000
+            )}`,
+            `New Score: ${Math.round(
+                (((userDoc.points || 0) + pointChange) / 150) * 1000
+            )}`,
+            seperator,
+            `Total Points: ${Math.round(pointData.totalPoints)}/150`,
+            `Team Results: ${toNumStr(
+                userPointData.placement.index
+            )} - ${Math.round(userPointData.placement.points)} Points`,
+            `Elimination Placement: ${toNumStr(
+                userPointData.kills.index
+            )} - ${Math.round(userPointData.kills.points)} Points`,
+            `KDA Placement: ${toNumStr(userPointData.kda.index)} - ${Math.round(
+                userPointData.kda.points
+            )} points`,
+            `Combat Placement: ${toNumStr(
+                userPointData.combatScore.index
+            )} - ${Math.round(userPointData.combatScore.points)} points`,
+            `Objective Played: ${
+                userPointData.objective.index ? 'Yes' : 'No'
+            } - ${userPointData.objective.points} points`,
+        ];
 
-            return resolve(true);
-        });
+        log(embedData, 'debug', true);
+
+        await notifyUser(
+            client,
+            userDoc.discordId,
+            'matchDataAnalyzed',
+            undefined,
+            {
+                message: {
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle('Match Data Analyzed')
+                            .setDescription(embedData.join('\n'))
+                            .setColor('Purple'),
+                    ],
+                },
+            }
+        );
+        log('notified user', 'debug');
+
+        return true;
     },
 };

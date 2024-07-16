@@ -7,7 +7,7 @@ const ExtendedClient = require('../class/ExtendedClient');
  * @param {ExtendedClient} client
  */
 module.exports = (client) => {
-    let loadedEvents = [];
+    let loadedEvents = {};
     for (const dir of readdirSync('./events/')) {
         for (const file of readdirSync('./events/' + dir).filter((f) =>
             f.endsWith('.js')
@@ -27,7 +27,8 @@ module.exports = (client) => {
                 continue;
             }
 
-            loadedEvents.push(file);
+            if (!loadedEvents[dir]) loadedEvents[dir] = [];
+            loadedEvents[dir].push(file);
 
             if (module.once) {
                 client.once(module.event, (...args) =>
@@ -40,5 +41,12 @@ module.exports = (client) => {
             }
         }
     }
-    log('Loaded events: ' + loadedEvents, 'info');
+    Array.from(Object.keys(loadedEvents)).forEach((dir) => {
+        log(
+            `Loaded ${loadedEvents[dir].length} event${
+                loadedEvents[dir].length > 1 ? 's' : ''
+            } for ${dir}.`,
+            'info'
+        );
+    });
 };
