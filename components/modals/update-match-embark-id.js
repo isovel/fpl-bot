@@ -141,7 +141,23 @@ module.exports = {
                         new ActionRowBuilder().addComponents(
                             new ButtonBuilder()
                                 .setCustomId(
-                                    `set-match-embark-id_${embarkId}_${analysisTimestamp}`
+                                    `set-match-embarkid_${gamemode}_${analysisTimestamp}_${embarkId
+                                        .replaceAll('_', '~')
+                                        .replaceAll(
+                                            ' ',
+                                            ''
+                                        )}_${interaction.fields.fields
+                                        .map((field) => {
+                                            if (
+                                                confirmWords.includes(
+                                                    field.value
+                                                )
+                                            )
+                                                return 'y';
+                                            if (denyWords.includes(field.value))
+                                                return 'n';
+                                        })
+                                        .join(',')}`
                                 )
                                 .setLabel('Set Embark ID')
                                 .setStyle('Primary')
