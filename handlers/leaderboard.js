@@ -34,10 +34,12 @@ module.exports = {
             let score = user.points || 0;
 
             user.matches?.forEach((match) => {
-                kills += match.resultData?.kills || match.playerData.kills;
-                deaths += match.resultData?.deaths || match.playerData.deaths;
+                kills +=
+                    match.resultData?.kills || match.playerData?.kills || 0;
+                deaths +=
+                    match.resultData?.deaths || match.playerData?.deaths || 0;
                 assists +=
-                    match.resultData?.assists || match.playerData.assists;
+                    match.resultData?.assists || match.playerData?.assists || 0;
                 wins += match.win ? 1 : 0;
             });
 
