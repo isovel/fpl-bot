@@ -24,7 +24,7 @@ module.exports = {
         const oldEmbarkId = interaction.customId
             .split('_')[3]
             .replaceAll('~', '_');
-        const newEmbarkId = interaction.values[0];
+        const newEmbarkId = interaction.fields.getTextInputValue('embark-id');
         const objectivesPlayed = interaction.customId.split('_')[4].split(',');
 
         if (!newEmbarkId.match(/.{2,}#[0-9]{4}$/)) {

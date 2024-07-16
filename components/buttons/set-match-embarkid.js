@@ -36,7 +36,7 @@ module.exports = {
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder()
                             .setLabel('Embark ID')
-                            .setCustomId('embarkid')
+                            .setCustomId('embark-id')
                             .setPlaceholder('unkown#1234')
                             .setRequired(true)
                             .setStyle(TextInputStyle.Short)
