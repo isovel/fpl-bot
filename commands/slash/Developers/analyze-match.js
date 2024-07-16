@@ -5,6 +5,7 @@ const {
     ChatInputCommandInteraction,
     ActionRowBuilder,
     StringSelectMenuBuilder,
+    AttachmentBuilder,
 } = require('discord.js');
 const ExtendedClient = require('../../../class/ExtendedClient');
 const { log } = require('../../../functions');
@@ -168,6 +169,11 @@ module.exports = {
                         })
                     )
                     .setColor('Purple'),
+            ],
+            attachments: [
+                new AttachmentBuilder()
+                    .setName(timestamp + '.png')
+                    .setFile(buffer),
             ],
         });
         interaction.channel.send({
