@@ -207,7 +207,7 @@ module.exports = {
                     'warn'
                 );
                 log(`Seaching for ${embarkId.toLowerCase()}`, 'debug');
-                log(pointData.keys(), 'debug', true);
+                log([...pointData.keys()], 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
