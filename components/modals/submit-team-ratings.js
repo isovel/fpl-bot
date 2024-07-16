@@ -173,15 +173,16 @@ module.exports = {
         log(`Found ${playerDocs.size} players in the database`, 'debug', true);
 
         for await (const embarkId of playerDocs.keys()) {
-            const userDoc = playerDocs.get(embarkId);
-            const playerPointData = pointData.get(embarkId.toLowerCase());
             const playerData = matchData.playerData[embarkId.toLowerCase()];
+            const playerPointData = pointData.get(embarkId.toLowerCase());
+            const userDoc = playerDocs.get(embarkId);
             if (!playerData) {
                 log(
                     `Player data for user with embark ID ${embarkId} not found in match data`,
                     'warn'
                 );
-                log(matchData.playerData, 'debug');
+                log(`Seaching for ${embarkId.toLowerCase()}`, 'debug');
+                log(Object.keys(matchData.playerData), 'debug');
                 return interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
