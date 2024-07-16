@@ -5,7 +5,7 @@ const {
     calculatePoints,
     submitPointData,
 } = require('../../handlers/matchCalculations');
-const { updateLeaderboard } = require('../../handlers/leaderboards');
+const { updateLeaderboard } = require('../../handlers/leaderboard');
 
 module.exports = {
     customId: 'submit-team-ratings',
