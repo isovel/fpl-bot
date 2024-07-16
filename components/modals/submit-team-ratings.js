@@ -161,6 +161,9 @@ module.exports = {
                 });
             }
 
+            matchData.playerData[userDocs[0].embarkId] =
+                matchData.playerData[embarkId.toLowerCase()];
+            delete matchData.playerData[embarkId.toLowerCase()];
             playerDocs.set(userDocs[0].embarkId, userDocs[0]);
         }
 
