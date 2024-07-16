@@ -58,7 +58,7 @@ module.exports = {
         const contentType = imageUrlData.headers.get('content-type');
         const imageBase64 = `data:${contentType};base64,${stringifiedBuffer}`;
 
-        const response = /* await openai.chat.completions.create({
+        const response = await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {
@@ -78,7 +78,7 @@ module.exports = {
                     ],
                 },
             ],
-        }); */ {
+        }); /* {
             id: 'chatcmpl-9lM9zuWc55oCHX6koFeuW6lARgSv7',
             object: 'chat.completion',
             created: 1721073627,
@@ -101,7 +101,7 @@ module.exports = {
                 total_tokens: 2108,
             },
             system_fingerprint: 'fp_298125635f',
-        };
+        };*/
 
         log(response, 'debug');
 
