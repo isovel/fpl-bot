@@ -27,6 +27,9 @@ module.exports = {
         const newEmbarkId = interaction.fields.getTextInputValue('embark-id');
         const objectivesPlayed = interaction.customId.split('_')[4].split(',');
 
+        const confirmWords = ['yes', 'true', '1', 'ok', 'y', 'ye', 'yeah'];
+        const denyWords = ['no', 'false', '0', 'n', 'nah', 'nope'];
+
         if (!newEmbarkId.match(/.{2,}#[0-9]{4}$/)) {
             log(
                 `${interaction.user.displayName} entered an invalid Embark ID! ${embarkId}`,
