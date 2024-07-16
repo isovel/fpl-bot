@@ -239,7 +239,7 @@ module.exports = {
             }
         }
         for await (const embarkId of playerDocs.keys()) {
-            const playerData = matchData.playerData[embarkId];
+            const playerData = matchData.playerData[embarkId.toLowerCase()];
             const playerPointData = pointData.get(embarkId.toLowerCase());
             const userDoc = playerDocs.get(embarkId);
             const result = await submitPointData(
