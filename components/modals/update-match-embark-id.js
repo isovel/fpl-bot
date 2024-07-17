@@ -66,9 +66,8 @@ module.exports = {
                     timestamp: new Date(analysisTimestamp),
                 },
                 {
-                    $set: {
-                        [`playerData.${newEmbarkId.toLowerCase()}`]:
-                            matchData.playerData[oldEmbarkId.toLowerCase()],
+                    $rename: {
+                        [`playerData.${oldEmbarkId.toLowerCase()}`]: `playerData.${newEmbarkId.toLowerCase()}`,
                     },
                 }
             )
