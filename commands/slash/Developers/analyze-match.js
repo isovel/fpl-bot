@@ -132,6 +132,7 @@ module.exports = {
         lines.forEach((line, index) => {
             if (index == 0) return;
             if (line.trim() == '') return;
+            if (line.trim().toLowerCaswe().startsWith('discon#0000')) return;
             playerData.set(line.split(',')[0], line.split(',').slice(1));
         });
 
