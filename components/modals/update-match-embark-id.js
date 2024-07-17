@@ -80,6 +80,7 @@ module.exports = {
         delete matchData.playerData[oldEmbarkId.toLowerCase()];
 
         log(matchData, 'debug', true);
+        interaction.message.delete();
 
         if (!matchData || !matchData.playerData) {
             return interaction.reply({
