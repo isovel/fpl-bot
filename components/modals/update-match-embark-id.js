@@ -60,26 +60,28 @@ module.exports = {
 
         //change key matchData.playerData[oldEmbarkId] to matchData.playerData[newEmbarkId]
 
-        await c_matchAnalysis
-            .updateOne(
-                {
-                    timestamp: new Date(analysisTimestamp),
-                },
-                {
-                    $rename: {
-                        [`playerData.${oldEmbarkId.toLowerCase()}`]: `playerData.${newEmbarkId.toLowerCase()}`,
+        if (oldEmbarkId.toLowerCase() != newEmbarkId.toLowerCase()) {
+            await c_matchAnalysis
+                .updateOne(
+                    {
+                        timestamp: new Date(analysisTimestamp),
                     },
-                }
-            )
-            .then((result) => {
-                log(result, 'debug', true);
-            });
+                    {
+                        $rename: {
+                            [`playerData.${oldEmbarkId.toLowerCase()}`]: `playerData.${newEmbarkId.toLowerCase()}`,
+                        },
+                    }
+                )
+                .then((result) => {
+                    log(result, 'debug', true);
+                });
 
-        matchData.playerData[newEmbarkId.toLowerCase()] =
-            matchData.playerData[oldEmbarkId.toLowerCase()];
-        delete matchData.playerData[oldEmbarkId.toLowerCase()];
+            matchData.playerData[newEmbarkId.toLowerCase()] =
+                matchData.playerData[oldEmbarkId.toLowerCase()];
+            delete matchData.playerData[oldEmbarkId.toLowerCase()];
 
-        log(matchData, 'debug', true);
+            log(matchData, 'debug', true);
+        }
         interaction.message.delete();
 
         if (!matchData || !matchData.playerData) {
