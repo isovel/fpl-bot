@@ -87,6 +87,7 @@ module.exports = {
                     ],
                 },
             ],
+            temperature: 0,
         }); /* {
             id: 'chatcmpl-9lM9zuWc55oCHX6koFeuW6lARgSv7',
             object: 'chat.completion',

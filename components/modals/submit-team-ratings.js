@@ -257,6 +257,7 @@ module.exports = {
                 });
             }
         }
+        return;
         for await (const embarkId of playerDocs.keys()) {
             const playerData = matchData.playerData[embarkId.toLowerCase()];
             const playerPointData = pointData.get(embarkId.toLowerCase());
