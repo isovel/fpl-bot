@@ -91,4 +91,29 @@ module.exports = {
             );
         }
     },
+    getLeaderboard: async (db, division) => {
+        //should return array of users sorted by score(rounded(points/150*1000)) {name, score, rank}
+        const c_users = db.collection('users');
+
+        const users = await c_users
+            .find({
+                division,
+            })
+            .sort({ points: -1 })
+            .toArray();
+
+        let leaderboard = [];
+        for await (const user of users) {
+            if (!user.points) continue;
+            if (leaderboard.length >= 10) break;
+
+            leaderboard.push({
+                rank: leaderboard.length + 1,
+                name: user.embarkId.split('#')[0],
+                score: Math.round((user.points / 150) * 1000),
+            });
+        }
+
+        return leaderboard;
+    },
 };

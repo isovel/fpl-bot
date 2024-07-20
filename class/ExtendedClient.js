@@ -11,7 +11,7 @@ const commands = require('../handlers/commands');
 const events = require('../handlers/events');
 const { setupFunctions, log } = require('../functions');
 const deploy = require('../handlers/deploy');
-const mongodb = require('../handlers/mongodb');
+const { startClient } = require('../handlers/mongodb');
 const components = require('../handlers/components');
 const api = require('../handlers/api');
 log(
@@ -73,7 +73,7 @@ module.exports = class extends Client {
 
         // Set up the mongodb database.
         if (config.handler.mongodb.enabled)
-            this.runtimeVariables.db = (await mongodb()).db(config.db.name);
+            this.runtimeVariables.db = await startClient();
 
         //initialize runtime variables
         this.runtimeVariables.applicationSkips = [];

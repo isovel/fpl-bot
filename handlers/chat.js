@@ -9,7 +9,7 @@ let map;
 let gamemode;
 
 // Recommended
-const ytClient = new LiveChat({ liveId: '0gM5tItZukk' });
+const ytClient = new LiveChat({ liveId: 'msg0bAnoTLk' });
 const ttvClient = new tmi.Client({
     channels: ['THiiXY'],
 });

@@ -4,14 +4,21 @@ const config = process.env.PRODUCTION
     : require('../config');
 const { log } = require('../functions');
 
-module.exports = async () => {
-    log('Started connecting to MongoDB...', 'info');
+let client;
 
-    const client = new MongoClient(
-        process.env.MONGODB_URI || config.handler.mongodb.uri
-    );
+module.exports = {
+    startClient: async () => {
+        log('Started connecting to MongoDB...', 'info');
 
-    log('MongoDB is connected to the atlas!', 'done');
+        client = new MongoClient(
+            process.env.MONGODB_URI || config.handler.mongodb.uri
+        );
 
-    return client;
+        client = client.db(config.db.name);
+
+        log('MongoDB is connected to the atlas!', 'done');
+
+        return client;
+    },
+    getClient: () => client,
 };

@@ -65,7 +65,7 @@ module.exports = {
         const contentType = imageUrlData.headers.get('content-type');
         const imageBase64 = `data:${contentType};base64,${stringifiedBuffer}`;
 
-        const response = await openai.chat.completions.create({
+        const response = /*await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: [
                 {
@@ -75,7 +75,7 @@ module.exports = {
                             type: 'text',
                             text:
                                 prompt ||
-                                `Here is the scoreboard for a video-game, please can you help me break it down into text format. The scoreboard is split into 2-4 teams, and you'll see a number on the left, 1,2,3 and 4. Within each team is three rows matching the players name and their stats to the right. You will also see text to the left of the player name either M, L or H that is the class or role the player played in the match. Then in small text above the team names, you will see E, A, D, R, Combat, Support and Objective. E means Eliminations, A means Assists, D means Deaths and R means Revives. The player has a hastag and 4 numbers after his name, add that to the data as well. Output the full player identification string exactly as written, dont remove any letters or numbers at any point (also do not remove numbers before the hashtag) and dont add anything. The player identification string can include all latin letters at any point. Output cash as only a number. Can you make the output in the following format; player | teamName | teamPosition | teamCash | role | eliminations | assists | deaths | revives | combat | support | objective. Respond with only the table as a csv (seperated by comma).`,
+                                `Here is the scoreboard for a video game. Please break it down into text format.\n\nYou will firstly see text either M, L, or H. This indicates the class or role the player played in the match.\n\nTo the right of the class, you will see the player name. The player names are gamertags, so do not correct them; ensure they are accurate.\n\nAfter the player name, there will be an icon, just ignore that.\n\nAfter the icon, the first number you see displayed is the "Eliminations", the second number is the "Assists", the third number is the "Deaths", the fourth number is "Revives", the fifth number is the "Combat Score", the sixth number is the "Support Score", and the final number is the "Objective Score".\n\nWhen viewing the numbers, it's important that you don't mix up this format, so ensure that all numbers are taken extra care of and reported correctly, accurately and aren't modified or changed around.\n\nIf there is a blank row in the screenshot, simply mark the player as "DISCON#0000" and set all their datapoints to 0.\n\nFormat the output as follows:\n Player | Role | E (Eliminations) | A (Assists) | D (Deaths) | R (Revives) | Combat Score | Support | Objective\n\nFinally, respond with only the table in CSV format, separated by commas.`,
                         },
                         {
                             type: 'image_url',
@@ -87,31 +87,31 @@ module.exports = {
                     ],
                 },
             ],
-            temperature: 0,
-        }); /* {
-            id: 'chatcmpl-9lM9zuWc55oCHX6koFeuW6lARgSv7',
-            object: 'chat.completion',
-            created: 1721073627,
-            model: 'gpt-4o-2024-05-13',
-            choices: [
+            temperature: 0.7,
+        }); */ {
+            'id': 'chatcmpl-9mnDwvTcNDKcCVWNsa1QqTB9OJ2FY',
+            'object': 'chat.completion',
+            'created': 1721415988,
+            'model': 'gpt-4o-2024-05-13',
+            'choices': [
                 {
-                    index: 0,
-                    message: {
-                        role: 'assistant',
-                        content:
-                            'player,teamName,teamPosition,teamCash,role,eliminations,assists,deaths,revives,combat,support,objective\nSTEMON #5456,The Vogues,1,36090,H,8,0,4,0,5575,2933,2900\nOBEMUS #8871,The Vogues,1,36090,H,0,3,6,0,1093,2137,400\nTEEJAY #0768,The Vogues,1,36090,M,0,3,4,4,1929,4077,900\nVOIRI #1076,The Shock & Awe,2,13440,M,4,6,5,1,3805,2627,300\nWITTYTRAP #7545,The Shock & Awe,2,13440,H,6,3,4,0,4436,3885,1200\nIK_RIBSTARTTV #0410,The Shock & Awe,2,13440,L,11,3,2,1,6850,400,1700\nGEORGY #3016,The High Notes,3,11640,M,4,5,2,3,2823,4751,200\nCYNLO #5113,The High Notes,3,11640,H,4,4,5,0,3373,292,1200\nANIMEMIES #6342,The High Notes,3,11640,M,3,5,4,3,3576,3412,1700\nHEJZ #1913,The Mighty,4,1952,H,0,0,1,0,0,0,0\nCOOLJWB #1524,The Mighty,4,1952,L,0,0,5,0,3807,150,1000\nAMARKINE #4523,The Mighty,4,1952,L,0,1,4,1,1358,250,0',
+                    'index': 0,
+                    'message': {
+                        'role': 'assistant',
+                        'content':
+                            '```csv\nRole,Player,E (Eliminations),A (Assists),D (Deaths),R (Revives),Combat Score,Support,Objective\nH,YANNLECUN#8653,8,2,5,2,3,618,917,2,200\nL,FLIPPRR#4688,6,7,3,2,4,416,701,200\nM,EVIL_LAUGHTER#9249,2,8,6,4,2,686,7,583,700\nL,ULTIMATE3VIL619#4817,2,1,7,3,2,945,780,400\nL,BENIS#1599,5,0,7,4,4,310,1,165,1,500\nH,PRM_LOTUS#6328,4,4,2,1,3,744,908,2,500\nL,SKUL#7469,8,1,3,2,4,207,670,2,700\nL,LNK#0602,5,5,4,0,5,859,300,300\nM,LYRASPAWN#0901,3,1,3,1,1,369,541,200\nL,PRM_TOTEM#9875,3,0,4,2,2,642,430,1,500\nM,THIXXYBODYPILLOW#1719,5,1,5,3,3,735,805,0\nL,COOKIE#1600,3,1,8,0,2,732,0,500\n```',
                     },
-                    logprobs: null,
-                    finish_reason: 'stop',
+                    'logprobs': null,
+                    'finish_reason': 'stop',
                 },
             ],
-            usage: {
-                prompt_tokens: 1678,
-                completion_tokens: 430,
-                total_tokens: 2108,
+            'usage': {
+                'prompt_tokens': 1738,
+                'completion_tokens': 360,
+                'total_tokens': 2098,
             },
-            system_fingerprint: 'fp_298125635f',
-        };*/
+            'system_fingerprint': 'fp_5e997b69d8',
+        };
 
         log(response, 'debug');
 
