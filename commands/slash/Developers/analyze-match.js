@@ -5,13 +5,8 @@ import {
   SlashCommandBuilder,
   StringSelectMenuBuilder,
 } from 'discord.js'
-import OpenAI from 'openai'
 import ExtendedClient from '../../../class/ExtendedClient'
 import { log } from '../../../functions'
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
 
 //analyze a screenshot of a match
 export default {
