@@ -1,86 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script src="./js/index.js" defer></script>
-        <link rel="stylesheet" href="./css/style.css" />
-        <script src="https://cdn.tailwindcss.com"></script>
-        <title>Document</title>
-    </head>
-    <body
-        class="text-white h-screen w-screen overflow-hidden bg-[url('/assets/STATIC_BLANK.png')]"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./js/index.js" defer></script>
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+  </head>
+  <body
+    class="text-white h-screen w-screen overflow-hidden bg-[url('/assets/STATIC_BLANK.png')]"
+  >
+    <div
+      id="header"
+      class="absolute top-0 h-40 z-40 w-full p-4 flex justify-center items-center"
     >
-        <div
-            id="header"
-            class="absolute top-0 h-40 z-40 w-full p-4 flex justify-center items-center"
+      <button class="text-xl transition-all" id="nextAction">
+        Open Map Voting
+      </button>
+      <div
+        class="h-16 w-8 ml-32 z-40 absolute left-0 top-10 flex items-center group"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.0"
+          viewBox="0 0 75 75"
+          class="w-8 fill-white stroke-white transition-all duration-300"
         >
-            <button class="text-xl transition-all" id="nextAction">
-                Open Map Voting
-            </button>
-            <div
-                class="h-16 w-8 ml-32 z-40 absolute left-0 top-10 flex items-center group"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    version="1.0"
-                    viewBox="0 0 75 75"
-                    class="w-8 fill-white stroke-white transition-all duration-300"
-                >
-                    <path
-                        d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z"
-                        style="stroke-width: 5; stroke-linejoin: round"
-                    />
-                    <path
-                        d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6"
-                        style="
-                            fill: none;
-                            stroke-width: 5;
-                            stroke-linecap: round;
-                        "
-                    />
-                </svg>
-                <input
-                    type="range"
-                    name="volume"
-                    id="volumeSlider"
-                    min="0"
-                    max="100"
-                    step=".1"
-                    class="h-2 bg-gray-300 hover:bg-white transition-all rounded-lg appearance-none cursor-pointer opacity-0 -translate-x-11 w-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:w-48 duration-300"
-                />
-            </div>
-        </div>
-        <ul
-            id="validContent"
-            class="absolute h-full w-full text-7xl flex flex-col justify-center items-center"
-        >
-            <li class="text-8xl">VALID MAPS:</li>
-            <li>MONACO</li>
-            <li>SEOUL</li>
-            <li>SKYWAY</li>
-            <li>VEGAS</li>
-            <li>HORIZON</li>
-            <li>KYOTO</li>
-        </ul>
-        <video id="bgVideo" controls preload="true" autoplay loop muted>
-            <source src="/assets/vote_bg.webm" type="video/webm" />
-        </video>
+          <path
+            d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z"
+            style="stroke-width: 5; stroke-linejoin: round"
+          />
+          <path
+            d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6"
+            style="fill: none; stroke-width: 5; stroke-linecap: round"
+          />
+        </svg>
+        <input
+          type="range"
+          name="volume"
+          id="volumeSlider"
+          min="0"
+          max="100"
+          step=".1"
+          class="h-2 bg-gray-300 hover:bg-white transition-all rounded-lg appearance-none cursor-pointer opacity-0 -translate-x-11 w-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:w-48 duration-300"
+        />
+      </div>
+    </div>
+    <ul
+      id="validContent"
+      class="absolute h-full w-full text-7xl flex flex-col justify-center items-center"
+    >
+      <li class="text-8xl">VALID MAPS:</li>
+      <li>MONACO</li>
+      <li>SEOUL</li>
+      <li>SKYWAY</li>
+      <li>VEGAS</li>
+      <li>HORIZON</li>
+      <li>KYOTO</li>
+    </ul>
+    <video id="bgVideo" controls preload="true" autoplay loop muted>
+      <source src="/assets/vote_bg.webm" type="video/webm" />
+    </video>
 
-        <div id="userRevealer">
-            <div id="mainContent" class="h-full w-full z-0">
-                <canvas id="textReveal" class="h-full w-full z-10"></canvas>
-                <div
-                    id="transparencyOverlay"
-                    class="absolute top-0 left-0 h-full w-full z-30 bg-gradient-to-b from-[#2e2e2e] via-transparent to-[#2e2e2e]"
-                ></div>
-            </div>
-        </div>
+    <div id="userRevealer">
+      <div id="mainContent" class="h-full w-full z-0">
+        <canvas id="textReveal" class="h-full w-full z-10"></canvas>
         <div
-            id="userListWrapper"
-            class="absolute top-0 w-screen h-screen bg-[url('/assets/STATIC_BLANK.png')] z-30 flex justify-center items-center text-7xl invisible opacity-0 transition-all duration-500"
-        >
-            <ul class="flex flex-col items-center" id="userList"></ul>
-        </div>
-    </body>
+          id="transparencyOverlay"
+          class="absolute top-0 left-0 h-full w-full z-30 bg-gradient-to-b from-[#2e2e2e] via-transparent to-[#2e2e2e]"
+        ></div>
+      </div>
+    </div>
+    <div
+      id="userListWrapper"
+      class="absolute top-0 w-screen h-screen bg-[url('/assets/STATIC_BLANK.png')] z-30 flex justify-center items-center text-7xl invisible opacity-0 transition-all duration-500"
+    >
+      <ul class="flex flex-col items-center" id="userList"></ul>
+    </div>
+  </body>
 </html>

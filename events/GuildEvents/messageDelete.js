@@ -1,60 +1,54 @@
+import { EmbedBuilder } from 'discord.js'
+import { ExtendedClient } from '../../class/ExtendedClient'
+import { log, time } from '../../functions'
+
 const config = process.env.PRODUCTION
-    ? require('../../server-config')
-    : require('../../config');
-const { log } = require('../../functions');
-const ExtendedClient = require('../../class/ExtendedClient');
-const { EmbedBuilder } = require('discord.js');
-const { time } = require('../../functions');
+  ? require('../../server-config')
+  : require('../../config')
 
-module.exports = {
-    event: 'messageDelete',
-    /**
-     *
-     * @param {ExtendedClient} client
-     * @param {import('discord.js').Message} message
-     * @returns
-     */
-    run: async (client, message) => {
-        if (
-            !(
-                config.channels.modLogs.enabled &&
-                config.channels.modLogs.channel
-            )
-        )
-            return;
+export default {
+  event: 'messageDelete',
+  /**
+   *
+   * @param {ExtendedClient} client
+   * @param {import('discord.js').Message} message
+   * @returns
+   */
+  run: async (client, message) => {
+    if (!(config.channels.modLogs.enabled && config.channels.modLogs.channel))
+      return
 
-        const modLogsChannel = client.channels.cache.get(
-            config.channels.modLogs.channel
-        );
+    const modLogsChannel = client.channels.cache.get(
+      config.channels.modLogs.channel
+    )
 
-        log(`modLogsChannel: ${modLogsChannel}`, 'debug');
+    log(`modLogsChannel: ${modLogsChannel}`, 'debug')
 
-        if (!modLogsChannel || modLogsChannel.guildId !== message.guild.id)
-            return;
+    if (!modLogsChannel || modLogsChannel.guildId !== message.guild.id) return
 
-        log(`message ${JSON.stringify(message)}`, 'debug');
+    log(`message ${JSON.stringify(message)}`, 'debug')
 
-        if (!message.author) return;
-        if (message.author.bot) return;
+    if (!message.author) return
+    if (message.author.bot) return
 
-        try {
-            const data = [
-                `**Content**: ${message.content}`,
-                `**Author**: ${message.author.toString()}`,
-                `**Date**: ${time(Date.now(), 'D')} (${time(Date.now(), 'R')})`,
-            ];
+    try {
+      const data = [
+        `**Content**: ${message.content}`,
+        `**Author**: ${message.author.toString()}`,
+        `**Date**: ${time(Date.now(), 'D')} (${time(Date.now(), 'R')})`,
+      ]
 
-            await modLogsChannel.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle('Message Delete')
-                        .setThumbnail(message.author.displayAvatarURL())
-                        .setDescription(data.join('\n'))
-                        .setColor('Yellow'),
-                ],
-            });
-        } catch (err) {
-            console.error(err);
-        }
-    },
-};
+      await modLogsChannel.send({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('Message Delete')
+            .setThumbnail(message.author.displayAvatarURL())
+            .setDescription(data.join('\n'))
+            .setColor('Yellow'),
+        ],
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  },
+}

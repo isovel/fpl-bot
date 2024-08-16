@@ -1,15 +1,15 @@
-require('dotenv').config();
-const ExtendedClient = require('./class/ExtendedClient');
+import 'dotenv/config'
+import ExtendedClient from './class/ExtendedClient'
 
-const client = new ExtendedClient(__dirname);
+const client = new ExtendedClient(__dirname)
 
-process.client = client;
+process.client = client
 
-client.start();
+client.start()
 
 // Handles errors and avoids crashes, better to not remove them.
-process.on('unhandledRejection', console.error);
-process.on('uncaughtException', console.error);
+process.on('unhandledRejection', console.error)
+process.on('uncaughtException', console.error)
 process.on('warning', (warning) => {
-    console.log(warning.stack);
-});
+  console.log(warning.stack)
+})

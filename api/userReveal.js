@@ -1,10 +1,11 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express'
+
+const router = express.Router()
 
 router.get('/userReveal', (req, res) => {
-    res.render('./userReveal/index', {
-        users: process.client.runtimeVariables.users,
-    });
-});
+  res.render('./userReveal/index', {
+    users: process.client.runtimeVariables.users,
+  })
+})
 
-module.exports = router;
+export default router

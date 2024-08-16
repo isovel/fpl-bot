@@ -1,44 +1,40 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { log } = require('../../../functions');
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { log } from '../../../functions'
 
-module.exports = {
-    structure: new SlashCommandBuilder()
-        .setName('send-embed')
-        .setDescription('Send an embed.')
-        .addStringOption((option) =>
-            option
-                .setName('description')
-                .setDescription('The description of the embed.')
-                .setRequired(true)
-        )
-        .addStringOption((option) =>
-            option.setName('title').setDescription('The title of the embed.')
-        )
-        .addStringOption((option) =>
-            option.setName('color').setDescription('The color of the embed.')
-        ),
-    options: {
-        developers: true,
-    },
-    run: async (client, interaction) => {
-        const title = interaction.options.getString('title');
-        const description = interaction.options.getString('description');
-        const color = interaction.options.getString('color') || 'Default';
+export default {
+  structure: new SlashCommandBuilder()
+    .setName('send-embed')
+    .setDescription('Send an embed.')
+    .addStringOption((option) =>
+      option
+        .setName('description')
+        .setDescription('The description of the embed.')
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option.setName('title').setDescription('The title of the embed.')
+    )
+    .addStringOption((option) =>
+      option.setName('color').setDescription('The color of the embed.')
+    ),
+  options: {
+    developers: true,
+  },
+  run: async (client, interaction) => {
+    const title = interaction.options.getString('title')
+    const description = interaction.options.getString('description')
+    const color = interaction.options.getString('color') || 'Default'
 
-        log(color);
+    log(color)
 
-        let embed = new EmbedBuilder()
-            .setDescription(description)
-            .setColor(color);
+    let embed = new EmbedBuilder().setDescription(description).setColor(color)
 
-        if (title) {
-            embed.setTitle(title);
-        }
-        interaction.reply({
-            embeds: [
-                new EmbedBuilder().setDescription(description).setColor(color),
-            ],
-            ephemeral: client.config.development.ephemeral,
-        });
-    },
-};
+    if (title) {
+      embed.setTitle(title)
+    }
+    interaction.reply({
+      embeds: [new EmbedBuilder().setDescription(description).setColor(color)],
+      ephemeral: client.config.development.ephemeral,
+    })
+  },
+}

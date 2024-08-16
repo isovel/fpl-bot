@@ -1,18 +1,16 @@
-const { log } = require("../../functions");
-const ExtendedClient = require('../../class/ExtendedClient');
+import ExtendedClient from '../../class/ExtendedClient'
+import { log } from '../../functions'
 
-module.exports = {
-    event: 'ready',
-    once: true,
-    /**
-     * 
-     * @param {ExtendedClient} _ 
-     * @param {import('discord.js').Client<true>} client 
-     * @returns 
-     */
-    run: (_, client) => {
-
-        log('Logged in as: ' + client.user.tag, 'done');
-
-    }
-};
+export default {
+  event: 'ready',
+  once: true,
+  /**
+   *
+   * @param {ExtendedClient} _
+   * @param {import('discord.js').Client<true>} client
+   * @returns
+   */
+  run: (_, client) => {
+    log('Logged in as: ' + client.user.tag, 'done')
+  },
+}

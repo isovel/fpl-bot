@@ -43,50 +43,50 @@ socket.on('connection_info', (data) => {
 });
 */
 
-const { LiveChat } = require('youtube-chat');
-const tmi = require('tmi.js');
+const { LiveChat } = require('youtube-chat')
+const tmi = require('tmi.js')
 
 // Recommended
-const ytClient = new LiveChat({ liveId: 'BJSwhFbOwOg' });
+const ytClient = new LiveChat({ liveId: 'BJSwhFbOwOg' })
 const ttvClient = new tmi.Client({
-    channels: ['THiiXY'],
-});
+  channels: ['THiiXY'],
+})
 
 // Emit at start of observation chat.
 ytClient.on('start', (liveId) => {
-    /* Your code here! */
-    console.log('start', liveId);
-});
+  /* Your code here! */
+  console.log('start', liveId)
+})
 
 // Emit at end of observation chat.
 // reason: string?
 ytClient.on('end', (reason) => {
-    /* Your code here! */
-    console.log('end', reason);
-});
+  /* Your code here! */
+  console.log('end', reason)
+})
 
 // Emit at receive chat.
 // chat: ChatItem
 ytClient.on('chat', (chatItem) => {
-    /* Your code here! */
-    console.log(`${chatItem.author.name}: ${chatItem.message}`);
-});
+  /* Your code here! */
+  console.log(`${chatItem.author.name}: ${chatItem.message}`)
+})
 
 // Emit when an error occurs
 // err: Error or any
 ytClient.on('error', (err) => {
-    /* Your code here! */
-    console.log('error', err);
-});
+  /* Your code here! */
+  console.log('error', err)
+})
 
 ttvClient.on('message', (channel, tags, message, self) => {
-    console.log(`${tags['display-name']}: ${message}`);
-});
+  console.log(`${tags['display-name']}: ${message}`)
+})
 
 // Start fetch loop
-let ok = ytClient.start();
+let ok = ytClient.start()
 if (!ok) {
-    console.log('Failed to start, check emitted error');
+  console.log('Failed to start, check emitted error')
 }
 
-ttvClient.connect().catch(console.error);
+ttvClient.connect().catch(console.error)

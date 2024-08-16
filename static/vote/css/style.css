@@ -1,57 +1,57 @@
 /*Import Montserrat-ExtraBoldItalic.ttf*/
 @font-face {
-    font-family: 'Montserrat-ExtraBoldItalic';
-    src: url('/assets/Montserrat-ExtraBoldItalic.ttf') format('truetype');
+  font-family: 'Montserrat-ExtraBoldItalic';
+  src: url('/assets/Montserrat-ExtraBoldItalic.ttf') format('truetype');
 }
 @font-face {
-    font-family: 'Montserrat-ExtraBold';
-    src: url('/assets/Montserrat-ExtraBold.ttf') format('truetype');
+  font-family: 'Montserrat-ExtraBold';
+  src: url('/assets/Montserrat-ExtraBold.ttf') format('truetype');
 }
 
 body {
-    font-family: 'Montserrat-ExtraBoldItalic';
-    /*Looped Background video from /assets/bg.mp4*/
+  font-family: 'Montserrat-ExtraBoldItalic';
+  /*Looped Background video from /assets/bg.mp4*/
 }
 
 canvas {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
 }
 
 @keyframes fadeOutIn {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .fadeOutIn {
-    /*fade out*/
-    animation: fadeOutIn 0.5s cubic-bezier(0, 1, 0.5, 1);
+  /*fade out*/
+  animation: fadeOutIn 0.5s cubic-bezier(0, 1, 0.5, 1);
 }
 
 @keyframes fadeOut {
-    0% {
-        opacity: 1;
-        display: block;
-    }
-    100% {
-        opacity: 0;
-        display: none;
-    }
+  0% {
+    opacity: 1;
+    display: block;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
 }
 
 .fadeOut {
-    /*fade out*/
-    animation: fadeOut 0.5s;
-    opacity: 0;
-    display: none;
+  /*fade out*/
+  animation: fadeOut 0.5s;
+  opacity: 0;
+  display: none;
 }
