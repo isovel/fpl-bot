@@ -1,7 +1,7 @@
 //Loop through all db users. If their discordId doesnt have a division or pending role add tagged user to the message.
 //log everything in one discord message
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { log } from '../../../functions'
+import { log } from '../../../functions.js'
 
 export default {
   structure: new SlashCommandBuilder()

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
+import ExtendedClient from '../../class/ExtendedClient.js'
 
 export default {
   customId: 'start-match',

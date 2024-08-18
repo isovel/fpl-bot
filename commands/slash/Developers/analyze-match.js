@@ -5,8 +5,8 @@ import {
   SlashCommandBuilder,
   StringSelectMenuBuilder,
 } from 'discord.js'
-import ExtendedClient from '../../../class/ExtendedClient'
-import { log } from '../../../functions'
+import ExtendedClient from '../../../class/ExtendedClient.js'
+import { log } from '../../../functions.js'
 
 //analyze a screenshot of a match
 export default {

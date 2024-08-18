@@ -1,7 +1,7 @@
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
-import { log } from '../functions'
+import { log } from '../functions.js'
 
 let app
 

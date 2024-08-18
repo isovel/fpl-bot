@@ -1,9 +1,6 @@
 import { MongoClient } from 'mongodb'
-import { log } from '../functions'
-
-const config = process.env.PRODUCTION
-  ? require('../server-config')
-  : require('../config')
+import config from '../configurations.js'
+import { log } from '../functions.js'
 
 let client
 

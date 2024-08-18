@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js'
-import { log } from '../functions'
-import { notifyUser } from './notifications'
+import { log } from '../functions.js'
+import { notifyUser } from './notifications.js'
 
 export default {
   calculatePoints: async (playerData, teamsObjectivePlayed) => {

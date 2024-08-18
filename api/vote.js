@@ -1,10 +1,7 @@
 import express from 'express'
-import {
-  closeVoting,
-  getValidOptions,
-  getVotes,
-  startVoting,
-} from '../handlers/chat'
+import { chat } from '../handlers/index.js'
+
+const { closeVoting, getValidOptions, getVotes, startVoting } = chat
 
 const router = express.Router()
 

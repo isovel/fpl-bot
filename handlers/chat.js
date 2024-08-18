@@ -1,6 +1,6 @@
 import tmi from 'tmi.js'
 import { LiveChat } from 'youtube-chat'
-import { log } from '../functions'
+import { log } from '../functions.js'
 
 let votingStartTime
 let votingActive = false

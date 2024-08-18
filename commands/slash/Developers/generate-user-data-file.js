@@ -1,6 +1,6 @@
 //get all users from db
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { log } from '../../../functions'
+import { log } from '../../../functions.js'
 
 export default {
   structure: new SlashCommandBuilder()

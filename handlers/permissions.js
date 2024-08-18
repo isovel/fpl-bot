@@ -1,5 +1,5 @@
 import { ChannelType } from 'discord.js'
-import { log } from '../functions'
+import { log } from '../functions.js'
 
 let permissionHandlerDivVc = {
   setPulled: async (client, interaction, user, division) => {

@@ -4,12 +4,9 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js'
-import ExtendedClient from '../../../class/ExtendedClient'
-import { log } from '../../../functions'
-
-const config = process.env.PRODUCTION
-  ? require('../../../server-config')
-  : require('../../../config')
+import ExtendedClient from '../../../class/ExtendedClient.js'
+import config from '../../../configurations.js'
+import { log } from '../../../functions.js'
 
 export default {
   structure: new SlashCommandBuilder()

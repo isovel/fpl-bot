@@ -1,6 +1,6 @@
 import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
-import { log } from '../../functions'
+import ExtendedClient from '../../class/ExtendedClient.js'
+import { log } from '../../functions.js'
 
 /*
 What is your Embark ID? (You can check this at https://id.embark.games/id/profile)

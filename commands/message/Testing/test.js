@@ -3,7 +3,7 @@ import {
   MessageContextMenuCommandInteraction,
 } from 'discord.js'
 
-import { ExtendedClient } from 'class/ExtendedClient'
+import { ExtendedClient } from '../../../class/ExtendedClient.js'
 
 module.exports = {
   structure: new ContextMenuCommandBuilder()

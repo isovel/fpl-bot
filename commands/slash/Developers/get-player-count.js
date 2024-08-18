@@ -1,6 +1,6 @@
 //get all players. Then in one mssage log: amount of all players, all assigned players, all unassigned players, all division A Players, all division B Players
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { log } from '../../../functions'
+import { log } from '../../../functions.js'
 
 export default {
   structure: new SlashCommandBuilder()

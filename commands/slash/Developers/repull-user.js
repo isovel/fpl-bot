@@ -4,12 +4,13 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js'
-import { ExtendedClient } from '../../../class/ExtendedClient'
-import { log } from '../../../functions'
+import { ExtendedClient } from '../../../class/ExtendedClient.js'
+import { log } from '../../../functions.js'
 import {
   permHandler as _permHandler,
   notificationHandler,
 } from '../../../handlers'
+js'
 
 const permHandler = _permHandler['div-vc']
 

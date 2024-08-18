@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js'
 import { ObjectId } from 'mongodb'
-import { log } from '../../functions'
+import { log } from '../../functions.js'
 
 export default {
   customId: 'delete-application',

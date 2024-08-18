@@ -1,15 +1,16 @@
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js'
-import setupFunctions from '../functions'
-import api from '../handlers/api'
-import commands from '../handlers/commands'
-import components from '../handlers/components'
-import deploy from '../handlers/deploy'
-import events from '../handlers/events'
-import { startClient } from '../handlers/mongodb'
+import config from '../configurations.js'
+import setupFunctions, { log } from '../functions.js'
+import {
+  api,
+  commands,
+  components,
+  deploy,
+  events,
+  mongodb,
+} from '../handlers/index.js'
 
-const config = process.env.PRODUCTION
-  ? require('../server-config')
-  : require('../config')
+const { startClient } = mongodb
 
 log(
   `Loading ${process.env.PRODUCTION ? 'Production' : 'Development'} Server`,

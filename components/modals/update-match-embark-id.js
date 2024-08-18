@@ -1,11 +1,10 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
-import { log } from '../../functions'
-import { updateLeaderboard } from '../../handlers/leaderboard'
-import {
-  calculatePoints,
-  submitPointData,
-} from '../../handlers/matchCalculations'
+import ExtendedClient from '../../class/ExtendedClient.js'
+import { log } from '../../functions.js'
+import { leaderboard, matchCalculations } from '../../handlers/index.js'
+
+const { updateLeaderboard } = leaderboard
+const { calculatePoints, submitPointData } = matchCalculations
 
 export default {
   customId: 'update-match-embarkid',

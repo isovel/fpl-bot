@@ -1,10 +1,7 @@
 import { REST, Routes } from 'discord.js'
-import { log, isSnowflake } from '../functions'
-import ExtendedClient from '../class/ExtendedClient'
-
-const config = process.env.PRODUCTION
-  ? require('../server-config')
-  : require('../config')
+import ExtendedClient from '../class/ExtendedClient.js'
+import config from '../configurations.js'
+import { isSnowflake, log } from '../functions.js'
 
 /**
  *

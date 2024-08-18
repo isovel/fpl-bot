@@ -1,7 +1,7 @@
 import { StringSelectMenuInteraction } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
-import viewApplications from '../../commands/slash/Developers/view-applications'
-import notificationHandler from '../../handlers/notifications'
+import ExtendedClient from '../../class/ExtendedClient.js'
+import viewApplications from '../../commands/slash/Developers/view-applications.js'
+import { notifications as notificationHandler } from '../../handlers/index.js'
 
 export default {
   customId: 'application-action',

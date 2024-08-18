@@ -1,10 +1,7 @@
 import { EmbedBuilder } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
-import { time } from '../../functions'
-
-const config = process.env.PRODUCTION
-  ? require('../../server-config')
-  : require('../../config')
+import ExtendedClient from '../../class/ExtendedClient.js'
+import config from '../../configurations.js'
+import { time } from '../../functions.js'
 
 export default {
   event: 'guildBanAdd',

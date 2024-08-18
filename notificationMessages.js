@@ -1,8 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-
-const config = process.env.PRODUCTION
-  ? require('./server-config')
-  : require('./config')
+import config from './configurations.js'
 
 export default new Map([
   [

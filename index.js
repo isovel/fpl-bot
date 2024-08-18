@@ -1,7 +1,7 @@
 import 'dotenv/config'
-import ExtendedClient from './class/ExtendedClient'
+import ExtendedClient from './class/ExtendedClient.js'
 
-const client = new ExtendedClient(__dirname)
+const client = new ExtendedClient(process.cwd())
 
 process.client = client
 

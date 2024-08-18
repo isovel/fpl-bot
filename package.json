@@ -1,6 +1,7 @@
 {
   "name": "fpl-bot",
   "version": "1.0.0",
+  "type": "module",
   "description": "THE FINALS PODIUM LEAGUE",
   "scripts": {
     "start": "node index.js",

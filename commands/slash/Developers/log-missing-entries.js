@@ -1,7 +1,7 @@
 //Loop through all users. If they have a division or pending role but are not in the database add it to the message.
 //log everything in one discord message
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { log } from '../../../functions'
+import { log } from '../../../functions.js'
 
 export default {
   structure: new SlashCommandBuilder()

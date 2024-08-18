@@ -4,7 +4,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
+import ExtendedClient from '../../class/ExtendedClient.js'
 
 export default {
   customId: 'supply-match-code',

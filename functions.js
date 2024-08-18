@@ -1,9 +1,6 @@
 import chalk from 'chalk'
 import fs from 'fs'
-
-const config = process.env.PRODUCTION
-  ? require('./server-config')
-  : require('./config')
+import config from './configurations.js'
 
 let client
 
@@ -15,7 +12,7 @@ let logFile = config.development.logFile
  * @param {string} string - The message to log.
  * @param {'info' | 'err' | 'warn' | 'done' | 'debug' | 'interaction' | 'chatbot' | undefined} style - The style of the log.
  */
-const log = (string, style, dirLog) => {
+export const log = (string, style, dirLog) => {
   const styles = {
     info: {
       prefix: chalk.blue('[INFO]'),
@@ -115,7 +112,7 @@ const log = (string, style, dirLog) => {
  * @param {import('discord.js').TimestampStylesString} style - The timestamp style.
  * @returns {string} - The formatted timestamp.
  */
-const time = (time, style) => {
+export const time = (time, style) => {
   return `<t:${Math.floor(time / 1000)}${style ? `:${style}` : ''}>`
 }
 
@@ -125,14 +122,11 @@ const time = (time, style) => {
  * @param {string} id 
  * @returns {boolean}
  */
-const isSnowflake = (id) => {
+export const isSnowflake = (id) => {
   return /^\d+$/.test(id)
 }
 
 export default {
-  log,
-  time,
-  isSnowflake,
   setupFunctions: (clientInstance) => {
     client = clientInstance
   },

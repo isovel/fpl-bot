@@ -43,8 +43,8 @@ socket.on('connection_info', (data) => {
 });
 */
 
-const { LiveChat } = require('youtube-chat')
-const tmi = require('tmi.js')
+import tmi from 'tmi.js'
+import { LiveChat } from 'youtube-chat'
 
 // Recommended
 const ytClient = new LiveChat({ liveId: 'BJSwhFbOwOg' })

@@ -1,6 +1,8 @@
 import express from 'express'
-import { getLeaderboard } from '../handlers/leaderboard'
-import { getClient } from '../handlers/mongodb'
+import { leaderboard, mongodb } from '../handlers/index.js'
+
+const { getLeaderboard } = leaderboard
+const { getClient } = mongodb
 
 const router = express.Router()
 

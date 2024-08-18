@@ -1,8 +1,12 @@
 import { EmbedBuilder } from 'discord.js'
-import ExtendedClient from '../../class/ExtendedClient'
-import { log } from '../../functions'
-import { updateLeaderboard } from '../../handlers/leaderboard'
-import notificationHandler from '../../handlers/notifications'
+import ExtendedClient from '../../class/ExtendedClient.js'
+import { log } from '../../functions.js'
+import {
+  leaderboard,
+  notifications as notificationHandler,
+} from '../../handlers/index.js'
+
+const { updateLeaderboard } = leaderboard
 
 // Do not forget the aggregate function in mongoDB
 // what the fuck does that even mean??? -@isovel

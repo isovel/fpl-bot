@@ -1,6 +1,6 @@
-import ExtendedClient from '../../class/ExtendedClient'
-import { log } from '../../functions'
-import notificationHandler from '../../handlers/notifications'
+import ExtendedClient from '../../class/ExtendedClient.js'
+import { log } from '../../functions.js'
+import { notifications as notificationHandler } from '../../handlers/index.js'
 
 export default {
   customId: 'set-match-code',
