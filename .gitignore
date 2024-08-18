@@ -6,3 +6,6 @@ log.txt
 
 # DO NOT REMOVE THESE FOR SECURITY
 .env
+
+# OS generated files
+**/*.DS_Store
