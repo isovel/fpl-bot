@@ -74,7 +74,7 @@ function revealText(text) {
     charMap[alphabetLetters[i]] = i
   }
 
-  console.log(charMap)
+  console.debug(charMap)
 
   // Calculate initial vertical offset and speed for each letter
   for (let i = 0; i < messageLetters.length; i++) {
@@ -186,7 +186,7 @@ pullUserButton.addEventListener('click', () => {
   if (animationRunning) return
   if (pulledUsers.length == window.users.length) {
     console.log('All users pulled')
-    //set scrool to one page down
+    //set scroll to one page down
     userListWrapper.classList.remove('invisible')
     userListWrapper.classList.remove('opacity-0')
     for (let i = 0; i < window.users.length; i++) {

@@ -3,9 +3,9 @@ import {
   MessageContextMenuCommandInteraction,
 } from 'discord.js'
 
-import { ExtendedClient } from '../../../class/ExtendedClient.js'
+import ExtendedClient from '../../../class/ExtendedClient.js'
 
-module.exports = {
+export default {
   structure: new ContextMenuCommandBuilder()
     .setName('Test Message command')
     .setType(3),

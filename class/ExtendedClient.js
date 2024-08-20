@@ -1,6 +1,6 @@
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js'
 import config from '../configurations.js'
-import setupFunctions, { log } from '../functions.js'
+import { log, setupFunctions } from '../functions.js'
 import {
   api,
   commands,
@@ -17,7 +17,7 @@ log(
   'info'
 )
 
-class ExtendedClient extends Client {
+export default class ExtendedClient extends Client {
   collection = {
     interactioncommands: new Collection(),
     prefixcommands: new Collection(),
@@ -51,12 +51,12 @@ class ExtendedClient extends Client {
       ],
       presence: {
         /*activities: [
-                    {
-                        name: 'something goes here',
-                        type: 4,
-                        state: 'FFL Bot',
-                    },
-                ],*/
+          {
+            name: 'something goes here',
+            type: 4,
+            state: 'FFL Bot',
+          },
+        ],*/
       },
     })
     this.__dirname = dir
@@ -82,5 +82,3 @@ class ExtendedClient extends Client {
     if (config.handler.deploy) deploy(this, config)
   }
 }
-
-export default ExtendedClient

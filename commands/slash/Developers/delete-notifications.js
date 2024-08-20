@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import notificationHandler from '../../../handlers/notifications'
+import { notifications } from '../../../handlers/index.js'
 
 export default {
   structure: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ export default {
         .setDescription('The channel.')
         .setRequired(true)
         .addChoices(
-          notificationHandler.channels.map((channel) => {
+          notifications.channels.map((channel) => {
             return { name: channel, value: channel }
           })
         )

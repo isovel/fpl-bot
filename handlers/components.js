@@ -6,98 +6,110 @@ import { log } from '../functions.js'
  *
  * @param {ExtendedClient} client
  */
-export default (client) => {
+export default async (client) => {
   let loadedComponents = []
-  for (const dir of readdirSync('./components/')) {
+  for (const dir of readdirSync('./components/').filter(
+    (f) => !f.startsWith('.')
+  )) {
     for (const file of readdirSync('./components/' + dir).filter((f) =>
       f.endsWith('.js')
     )) {
-      const module = require('../components/' + dir + '/' + file)
-
-      if (!module) continue
-
-      if (dir === 'buttons') {
-        if (!module.customId || !module.run) {
-          log(
-            'Unable to load the component ' +
-              file +
-              " due to missing 'structure#customId' or/and 'run' properties.",
-            'warn'
-          )
-
-          continue
-        }
-
-        client.collection.components.buttons.set(module.customId, module)
-
-        loadedComponents.push({
-          type: 'button',
-          customId: module.customId,
-          file: file,
-        })
-      } else if (dir === 'selects') {
-        if (!module.customId || !module.run) {
-          log(
-            'Unable to load the select menu ' +
-              file +
-              " due to missing 'structure#customId' or/and 'run' properties.",
-            'warn'
-          )
-
-          continue
-        }
-
-        client.collection.components.selects.set(module.customId, module)
-
-        loadedComponents.push({
-          type: 'select',
-          customId: module.customId,
-          file: file,
-        })
-      } else if (dir === 'modals') {
-        if (!module.customId || !module.run) {
-          log(
-            'Unable to load the modal ' +
-              file +
-              " due to missing 'structure#customId' or/and 'run' properties.",
-            'warn'
-          )
-
-          continue
-        }
-
-        client.collection.components.modals.set(module.customId, module)
-
-        loadedComponents.push({
-          type: 'modal',
-          customId: module.customId,
-          file: file,
-        })
-      } else if (dir === 'autocomplete') {
-        if (!module.commandName || !module.run) {
-          log(
-            `Unable to load the autocomplete component ${file} due to missing 'commandName' or 'run' properties.`,
-            'warn'
-          )
-          continue
-        }
-
-        client.collection.components.autocomplete.set(
-          module.commandName,
-          module
+      const module = await import('../components/' + dir + '/' + file)
+      if (!module) {
+        log(
+          `Failed to load module '${file}' due to an unknown import error.`,
+          'warn'
         )
 
-        loadedComponents.push({
-          type: 'autocomplete',
-          commandName: module.commandName,
-          file: file,
-        })
-      } else {
-        log(`Invalid component type: ${file}`, 'warn')
+        continue
+      }
+
+      const component = module?.default
+      if (!component) {
+        log(
+          `Unable to load component '${file}' due to missing 'default' export.`,
+          'warn'
+        )
+
+        continue
+      } else if (typeof component !== 'object') {
+        log(
+          `Unable to load component '${file}' due to 'default' export not being an object.`,
+          'warn'
+        )
+
+        continue
+      } else if (!component.customId || !component.run) {
+        log(
+          `Unable to load component '${file}' due to missing 'structure#customId' and/or 'run' properties.`,
+          'warn'
+        )
+
+        continue
+      }
+
+      switch (dir) {
+        case 'buttons':
+          client.collection.components.buttons.set(
+            component.customId,
+            component
+          )
+
+          loadedComponents.push({
+            type: 'button',
+            customId: component.customId,
+            file: file,
+          })
+
+          break
+        case 'selects':
+          client.collection.components.selects.set(
+            component.customId,
+            component
+          )
+
+          loadedComponents.push({
+            type: 'select',
+            customId: component.customId,
+            file: file,
+          })
+
+          break
+        case 'modals':
+          client.collection.components.modals.set(component.customId, component)
+
+          loadedComponents.push({
+            type: 'modal',
+            customId: component.customId,
+            file: file,
+          })
+
+          break
+        case 'autocomplete':
+          client.collection.components.autocomplete.set(
+            component.commandName,
+            component
+          )
+
+          loadedComponents.push({
+            type: 'autocomplete',
+            commandName: component.commandName,
+            file: file,
+          })
+
+          break
+        default:
+          log(
+            `Unable to load component '${file}' due to invalid component type.`,
+            'warn'
+          )
+
+          continue
       }
     }
   }
-  //for every unique type of component log all loaded
+
+  // Log each unique type of component that loads
   let uniqueTypes = [...new Set(loadedComponents.map((item) => item.type))]
   for (const type of uniqueTypes) {
     let typeComponents = loadedComponents.filter((item) => item.type === type)

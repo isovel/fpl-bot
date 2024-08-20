@@ -13,17 +13,14 @@ export default async (client) => {
   )
 
   try {
-    log(
-      'Started loading application commands... (this might take minutes!)',
-      'info'
-    )
+    log('Deploying slash commands...', 'info')
 
     const guildId = process.env.GUILD_ID || config.development.guild
 
     if (config.development && config.development.deployToGuild && guildId) {
       if (!isSnowflake(guildId)) {
         log(
-          'Guild ID is missing. Please set it in .env or config file or disable development in the config',
+          'Guild ID is missing. Please set it in .env or the config, or disable development mode in the config',
           'err'
         )
         return
@@ -39,10 +36,7 @@ export default async (client) => {
         }
       )
 
-      log(
-        `Successfully loaded application commands to guild ${guildId}.`,
-        'done'
-      )
+      log(`Deployed slash commands to guild '${guildId}'`, 'done')
     } else {
       await rest.put(
         Routes.applicationCommands(
@@ -53,15 +47,9 @@ export default async (client) => {
         }
       )
 
-      log(
-        'Successfully loaded application commands globally to Discord API.',
-        'done'
-      )
+      log('Deployed slash commands globally to Discord API.', 'done')
     }
   } catch (e) {
-    log(
-      `Unable to load application commands to Discord API: ${e.message}`,
-      'err'
-    )
+    log(`Unable to deploy slash commands to Discord API: ${e.message}`, 'err')
   }
 }

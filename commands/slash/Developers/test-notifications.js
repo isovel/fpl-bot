@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { notificationHandler } from '../../../handlers'
+import { notifications } from '../../../handlers/index.js'
 
 export default {
   structure: new SlashCommandBuilder()
@@ -14,11 +14,9 @@ export default {
         .setDescription('The notification to send.')
         .setRequired(true)
         .addChoices(
-          Array.from(notificationHandler.notificationMessages.keys()).map(
-            (key) => {
-              return { name: key, value: key }
-            }
-          )
+          Array.from(notifications.notificationMessages.keys()).map((key) => {
+            return { name: key, value: key }
+          })
         )
     )
     .addUserOption((opt) =>
@@ -35,7 +33,7 @@ export default {
     }
     const notificationId = interaction.options.getString('notification')
 
-    const success = await notificationHandler.notifyUser(
+    const success = await notifications.notifyUser(
       client,
       userIds,
       notificationId,

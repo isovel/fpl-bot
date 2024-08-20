@@ -1,7 +1,7 @@
 import { StringSelectMenuInteraction } from 'discord.js'
 import ExtendedClient from '../../class/ExtendedClient.js'
 import viewApplications from '../../commands/slash/Developers/view-applications.js'
-import { notifications as notificationHandler } from '../../handlers/index.js'
+import { notifications } from '../../handlers/index.js'
 
 export default {
   customId: 'application-action',
@@ -36,7 +36,7 @@ export default {
             },
           }
         )
-        notificationHandler.notifyUser(client, discordId, 'applicationDeclined')
+        notifications.notifyUser(client, discordId, 'applicationDeclined')
         interaction.guild.members.fetch(discordId).then((member) => {
           member.roles.remove(client.config.roles.pending)
         })
@@ -59,14 +59,9 @@ export default {
             member.roles.remove(client.config.roles.pending)
           })
           //if (!client.config.development.enabled)
-          notificationHandler.notifyUser(
-            client,
-            discordId,
-            'applicationAccepted',
-            {
-              division: value,
-            }
-          )
+          notifications.notifyUser(client, discordId, 'applicationAccepted', {
+            division: value,
+          })
           //give role
           const member =
             (await interaction.guild.members.cache.find(

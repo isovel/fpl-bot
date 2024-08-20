@@ -238,7 +238,7 @@ function revealText(text) {
     charMap[alphabetLetters[i]] = i
   }
 
-  console.log(charMap)
+  console.debug(charMap)
 
   // Calculate initial vertical offset and speed for each letter
   for (let i = 0; i < messageLetters.length; i++) {

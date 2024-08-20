@@ -1,6 +1,6 @@
 import ExtendedClient from '../../class/ExtendedClient.js'
 import { log } from '../../functions.js'
-import { notifications as notificationHandler } from '../../handlers/index.js'
+import { notifications } from '../../handlers/index.js'
 
 export default {
   customId: 'set-match-code',
@@ -45,7 +45,7 @@ export default {
         }
       )
 
-      await notificationHandler.notifyUser(
+      await notifications.notifyUser(
         client,
         match.users.map((u) => u.id),
         'matchCodeUpdated',
@@ -80,9 +80,9 @@ export default {
         status: 0,
       })
       .then((result) => {
-        console.log('result', result)
+        log('result ' + result, 'debug')
 
-        notificationHandler.notifyUser(
+        notifications.notifyUser(
           client,
           users.map((u) => u.id),
           'matchCodeSet',

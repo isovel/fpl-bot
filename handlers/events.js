@@ -6,21 +6,42 @@ import { log } from '../functions.js'
  *
  * @param {ExtendedClient} client
  */
-export default (client) => {
+export default async (client) => {
   let loadedEvents = {}
-  for (const dir of readdirSync('./events/')) {
+  for (const dir of readdirSync('./events/').filter(
+    (f) => !f.startsWith('.')
+  )) {
     for (const file of readdirSync('./events/' + dir).filter((f) =>
       f.endsWith('.js')
     )) {
-      const module = require('../events/' + dir + '/' + file)
-
-      if (!module) continue
-
-      if (!module.event || !module.run) {
+      const module = await import('../events/' + dir + '/' + file)
+      if (!module) {
         log(
-          'Unable to load the event ' +
-            file +
-            " due to missing 'name' or/and 'run' properties.",
+          `Failed to load module '${file}' due to an unknown import error.`,
+          'warn'
+        )
+
+        continue
+      }
+
+      const event = module?.default
+      if (!event) {
+        log(
+          `Unable to load event '${file}' due to missing 'default' export.`,
+          'warn'
+        )
+
+        continue
+      } else if (typeof event !== 'object') {
+        log(
+          `Unable to load event '${file}' due to 'default' export not being an object.`,
+          'warn'
+        )
+
+        continue
+      } else if (!event.event || !event.run) {
+        log(
+          `Unable to load event '${file}' due to missing 'name' and/or 'run' properties.`,
           'warn'
         )
 
@@ -30,13 +51,14 @@ export default (client) => {
       if (!loadedEvents[dir]) loadedEvents[dir] = []
       loadedEvents[dir].push(file)
 
-      if (module.once) {
-        client.once(module.event, (...args) => module.run(client, ...args))
+      if (event.once) {
+        client.once(event.event, (...args) => event.run(client, ...args))
       } else {
-        client.on(module.event, (...args) => module.run(client, ...args))
+        client.on(event.event, (...args) => event.run(client, ...args))
       }
     }
   }
+
   Array.from(Object.keys(loadedEvents)).forEach((dir) => {
     log(
       `Loaded ${loadedEvents[dir].length} event${

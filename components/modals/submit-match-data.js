@@ -1,14 +1,11 @@
 import { EmbedBuilder } from 'discord.js'
 import ExtendedClient from '../../class/ExtendedClient.js'
 import { log } from '../../functions.js'
-import {
-  leaderboard,
-  notifications as notificationHandler,
-} from '../../handlers/index.js'
+import { leaderboard, notifications } from '../../handlers/index.js'
 
 const { updateLeaderboard } = leaderboard
 
-// Do not forget the aggregate function in mongoDB
+// Do not forget the aggregate function in mongoDB -@MysticalEnnio
 // what the fuck does that even mean??? -@isovel
 
 export default {
@@ -418,23 +415,17 @@ export default {
         ]
 
         //if (client.config.development.enabled)
-        notificationHandler.notifyUser(
-          client,
-          id,
-          'matchDataAnalyzed',
-          undefined,
-          {
-            message: {
-              embeds: [
-                new EmbedBuilder()
-                  .setTitle('Match Data Analyzed')
-                  .setDescription(embedData.join('\n'))
-                  .setColor('Purple'),
-              ],
-            },
-            noButton: true,
-          }
-        )
+        notifications.notifyUser(client, id, 'matchDataAnalyzed', undefined, {
+          message: {
+            embeds: [
+              new EmbedBuilder()
+                .setTitle('Match Data Analyzed')
+                .setDescription(embedData.join('\n'))
+                .setColor('Purple'),
+            ],
+          },
+          noButton: true,
+        })
 
         //Remove pulled role from user
         member.roles.remove(client.config.roles.pulled)

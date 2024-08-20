@@ -6,7 +6,7 @@ let client
 
 export default {
   startClient: async () => {
-    log('Started connecting to MongoDB...', 'info')
+    log('Connecting to MongoDB...', 'info')
 
     client = new MongoClient(
       process.env.MONGODB_URI || config.handler.mongodb.uri
@@ -14,7 +14,7 @@ export default {
 
     client = client.db(config.db.name)
 
-    log('MongoDB is connected to the atlas!', 'done')
+    log('Connected to MongoDB!', 'done')
 
     return client
   },

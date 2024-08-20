@@ -1,6 +1,8 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import config from '../../../configurations.js'
-import { updateLeaderboard } from '../../../handlers/leaderboard'
+import { leaderboard } from '../../../handlers/index.js'
+
+const { updateLeaderboard } = leaderboard
 
 export default {
   structure: new SlashCommandBuilder()

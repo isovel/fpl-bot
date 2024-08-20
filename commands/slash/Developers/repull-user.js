@@ -4,13 +4,12 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js'
-import { ExtendedClient } from '../../../class/ExtendedClient.js'
+import ExtendedClient from '../../../class/ExtendedClient.js'
 import { log } from '../../../functions.js'
 import {
-  permHandler as _permHandler,
-  notificationHandler,
-} from '../../../handlers'
-js'
+  permissions as _permHandler,
+  notifications,
+} from '../../../handlers/index.js'
 
 const permHandler = _permHandler['div-vc']
 
@@ -127,7 +126,7 @@ export default {
 
     if (match && match.matchCode) {
       //send dm
-      notificationHandler.notifyUser(client, pulledUser.id, 'matchCodeSet', {
+      notifications.notifyUser(client, pulledUser.id, 'matchCodeSet', {
         division: userData.division,
         matchCode: match.matchCode,
       })

@@ -25,13 +25,13 @@ export const log = (string, style, dirLog) => {
       logFunction: console.error,
     },
     warn: {
-      prefix: chalk.yellow('[WARNING]'),
-      txtPrefix: '[WARNING]',
+      prefix: chalk.yellow('[WARN]'),
+      txtPrefix: '[WARN]',
       logFunction: console.warn,
     },
     done: {
-      prefix: chalk.green('[SUCCESS]'),
-      txtPrefix: '[SUCCESS]',
+      prefix: chalk.green('[DONE]'),
+      txtPrefix: '[DONE]',
       logFunction: console.log,
     },
     debug: {
@@ -126,8 +126,6 @@ export const isSnowflake = (id) => {
   return /^\d+$/.test(id)
 }
 
-export default {
-  setupFunctions: (clientInstance) => {
-    client = clientInstance
-  },
+export const setupFunctions = (clientInstance) => {
+  client = clientInstance
 }

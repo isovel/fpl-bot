@@ -6,56 +6,70 @@ import { log } from '../functions.js'
  *
  * @param {ExtendedClient} client
  */
-export default (client) => {
+export default async (client) => {
   let loadedCommands = {}
-  for (const type of readdirSync('./commands/')) {
-    for (const dir of readdirSync('./commands/' + type)) {
+  for (const type of readdirSync('./commands/').filter(
+    (f) => !f.startsWith('.')
+  )) {
+    for (const dir of readdirSync('./commands/' + type).filter(
+      (f) => !f.startsWith('.')
+    )) {
       for (const file of readdirSync('./commands/' + type + '/' + dir).filter(
         (f) => f.endsWith('.js')
       )) {
-        const module = require('../commands/' + type + '/' + dir + '/' + file)
+        const module = await import(
+          '../commands/' + type + '/' + dir + '/' + file
+        )
+        if (!module) {
+          log(
+            `Failed to load module '${file}' due to an unknown import error.`,
+            'warn'
+          )
 
-        if (!module) continue
+          continue
+        }
+
+        const command = module?.default
+        if (!command) {
+          log(
+            `Unable to load command '${file}' due to missing 'default' export.`,
+            'warn'
+          )
+
+          continue
+        } else if (typeof command !== 'object') {
+          log(
+            `Unable to load command '${file}' due to 'default' export not being an object.`,
+            'warn'
+          )
+
+          continue
+        } else if (!command.structure?.name || !command.run) {
+          log(
+            `Unable to load command '${file}' due to missing 'structure#name' and/or 'run' properties.`,
+            'warn'
+          )
+
+          continue
+        }
 
         if (type === 'prefix') {
-          if (!module.structure?.name || !module.run) {
-            log(
-              'Unable to load the command ' +
-                file +
-                " due to missing 'structure#name' or/and 'run' properties.",
-              'warn'
-            )
-
-            continue
-          }
-
-          client.collection.prefixcommands.set(module.structure.name, module)
+          client.collection.prefixcommands.set(command.structure.name, command)
 
           if (
-            module.structure.aliases &&
-            Array.isArray(module.structure.aliases)
+            command.structure.aliases &&
+            Array.isArray(command.structure.aliases)
           ) {
-            module.structure.aliases.forEach((alias) => {
-              client.collection.aliases.set(alias, module.structure.name)
+            command.structure.aliases.forEach((alias) => {
+              client.collection.aliases.set(alias, command.structure.name)
             })
           }
         } else {
-          if (!module.structure?.name || !module.run) {
-            log(
-              'Unable to load the command ' +
-                file +
-                " due to missing 'structure#name' or/and 'run' properties.",
-              'warn'
-            )
-
-            continue
-          }
-
           client.collection.interactioncommands.set(
-            module.structure.name,
-            module
+            command.structure.name,
+            command
           )
-          client.applicationcommandsArray.push(module.structure)
+          client.applicationcommandsArray.push(command.structure)
         }
 
         if (!loadedCommands[dir]) loadedCommands[dir] = []
@@ -63,10 +77,9 @@ export default (client) => {
       }
     }
   }
+
   //loaded x commands of type y
   Array.from(Object.keys(loadedCommands)).forEach((type) => {
-    if (type == 'slash') {
-    }
     log(
       `Loaded ${loadedCommands[type].length} command${
         loadedCommands[type].length > 1 ? 's' : ''

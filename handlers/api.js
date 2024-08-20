@@ -4,6 +4,7 @@ import path from 'path'
 import { log } from '../functions.js'
 
 let app
+let appServer
 
 export default async (client) => {
   app = express()
@@ -16,11 +17,48 @@ export default async (client) => {
   app.use(express.static('./static'))
 
   for (const file of apiFiles) {
-    const module = require(apiDir + file)
+    const module = await import(apiDir + file)
+    if (!module) {
+      log(
+        `Failed to load module '${file}' due to an unknown import error.`,
+        'warn'
+      )
 
-    if (!module) continue
+      continue
+    }
 
-    app.use('/', module)
+    const middleware = module?.default
+    if (!middleware) {
+      log(
+        "Unable to load middleware '" +
+          file +
+          "' due to missing 'default' export.",
+        'warn'
+      )
+
+      continue
+    } else if (typeof middleware !== 'function') {
+      log(
+        "Unable to load middleware '" +
+          file +
+          "' due to 'default' export not being a function.",
+        'warn'
+      )
+
+      continue
+    }
+
+    try {
+      app.use('/', middleware)
+    } catch (err) {
+      log(
+        "Unable to load middleware '" +
+          file +
+          "' due to an error while loading.",
+        'warn'
+      )
+      log(err, 'error')
+    }
   }
 
   appServer = app.listen(4804, () => {

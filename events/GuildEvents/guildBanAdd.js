@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, GuildBan } from 'discord.js'
 import ExtendedClient from '../../class/ExtendedClient.js'
 import config from '../../configurations.js'
 import { time } from '../../functions.js'
@@ -8,7 +8,7 @@ export default {
   /**
    *
    * @param {ExtendedClient} client
-   * @param {import('discord.js').GuildBan} ban
+   * @param {GuildBan} ban
    * @returns
    */
   run: async (client, ban) => {
