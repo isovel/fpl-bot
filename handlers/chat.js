@@ -1,5 +1,6 @@
 import tmi from 'tmi.js'
 import { LiveChat } from 'youtube-chat'
+import config from '../configurations.js'
 import { log } from '../functions.js'
 
 let votingStartTime
@@ -9,9 +10,9 @@ let map
 let gamemode
 
 // Recommended
-const ytClient = new LiveChat({ liveId: 'msg0bAnoTLk' })
+const ytClient = new LiveChat({ channelId: config.streaming.youtube.channelId })
 const ttvClient = new tmi.Client({
-  channels: ['THiiXY'],
+  channels: [config.streaming.twitch.channelId],
 })
 
 /*
@@ -23,25 +24,21 @@ Power Shift: No Las Vegas
 So it's just Seoul on TA. no vegas on Powershift and solo bank it we wasn't adding anyways 
 */
 
+const modes = [
+  'bank it',
+  'cashout',
+  'quick cash',
+  'power shift',
+  'terminal attack',
+]
+
 const maps = {
-  monaco: [
-    'bank it',
-    'cashout',
-    'quick cash',
-    'terminal attack',
-    'power shift',
-  ],
-  seoul: ['bank it', 'cashout', 'quick cash', 'power shift'],
-  skyway: ['bank it', 'cashout', 'quickcash', 'power shift', 'terminal attack'],
-  vegas: ['cashout', 'quick cash', 'bank it', 'terminal attack'],
-  horizon: [
-    'cashout',
-    'quick cash',
-    'bank it',
-    'terminal attack',
-    'power shift',
-  ],
-  kyoto: ['cashout', 'quick cash', 'bank it', 'terminal attack', 'power shift'],
+  monaco: modes,
+  seoul: modes.filter((m) => m != 'terminal attack'),
+  skyway: modes,
+  vegas: modes.filter((m) => m != 'power shift'),
+  horizon: modes,
+  kyoto: modes,
 }
 
 let mapVotes = new Map()
@@ -74,7 +71,7 @@ function newMessage(message, author, createdAt) {
 }
 
 ytClient.on('start', (liveId) => {
-  log(`Started observing chat for ${liveId}`, 'chatbot')
+  log(`Connected to live chat for ${liveId}`, 'chatbot')
 })
 
 ytClient.on('end', (reason) => {
@@ -96,8 +93,6 @@ ytClient.on('error', (err) => {
 ttvClient.on('message', (channel, tags, message, self) => {
   newMessage(message, tags['display-name'], Date.now())
 })
-
-// Start fetch loop
 
 export default {
   startVoting: (type) => {

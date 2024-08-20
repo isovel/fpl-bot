@@ -22,13 +22,10 @@ export default {
     errors: 'owner', // "owner" or "developers"
   },
   users: {
+    ownerId: '255515821541949440', // isotach
     developers: [
       '255515821541949440', // isotach
-      '457236806853853185', // THiiXY
-      '948229068363530260', // Tiago
-      '290164002997272577', // unknowN
     ],
-    ownerId: '255515821541949440', // isotach
   },
   seasons: [
     {
@@ -143,30 +140,6 @@ export default {
     verified: '1249764674128449567',
     pending: '1256331958041186388',
   },
-  development: {
-    enabled: true,
-    ephemeral: false,
-    deployToGuild: true,
-    logFile: 'bot.log',
-    guild: process.env.GUILD_ID,
-  },
-  messageSettings: {
-    nsfwMessage: 'The current channel is not a NSFW channel.',
-    ownerMessage:
-      'The bot developer has the only permissions to use this command.',
-    developerMessageCommand: 'You are not authorized to use this command.',
-    developerMessageComponent: 'You are not authorized to use this component.',
-    cooldownMessage:
-      "Slow down buddy! You're too fast to use this command ({cooldown}s).", // '{cooldown}' is a variable that shows the time to use the command again (in seconds)
-    globalCooldownMessage:
-      'Slow down buddy! This command is on a global cooldown ({cooldown}s).', // '{cooldown}' is a variable that shows the time to use the command again (in seconds)
-    notHasPermissionMessage:
-      'You do not have the permission to use this command.',
-    notHasPermissionComponent:
-      'You do not have the permission to use this component.',
-    missingDevIDsMessage:
-      'This is a developer only command, but unable to execute due to missing user IDs in configuration file.',
-  },
   divisions: [
     {
       id: 1,
@@ -179,4 +152,35 @@ export default {
       shortName: 'B',
     },
   ],
+  streaming: {
+    youtube: {
+      channelId: 'UCMJy5yBQq-RhcCnh20W9xzQ',
+    },
+    twitch: {
+      channelId: 'THiiXY',
+    },
+  },
+  development: {
+    enabled: true,
+    ephemeral: false,
+    deployToGuild: true,
+    logFile: 'bot.log',
+    guild: process.env.GUILD_ID,
+  },
+  messageSettings: {
+    nsfwMessage: 'The current channel is not set as age-restricted.',
+    ownerMessage: 'You do not have permission to use this command.',
+    developerMessageCommand: 'You do not have permission to use this command.',
+    developerMessageComponent:
+      'You do not have permission to use this component.',
+    cooldownMessage:
+      'Slow down buddy! This command is currently on cooldown ({cooldown}s).', // '{cooldown}' is a variable that shows the time to use the command again (in seconds)
+    globalCooldownMessage:
+      'Slow down buddy! This command is currently on global cooldown ({cooldown}s).', // '{cooldown}' is a variable that shows the time to use the command again (in seconds)
+    notHasPermissionMessage: 'You do not have permission to use this command.',
+    notHasPermissionComponent:
+      'You do not have permission to use this component.',
+    missingDevIDsMessage:
+      'Unable to execute command due to missing user IDs in configuration file.',
+  },
 }

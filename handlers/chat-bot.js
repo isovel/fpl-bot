@@ -1,92 +1,34 @@
-/*import { io } from 'socket.io-client';
-
-const socket = io(
-    'backend.chat.restream.io/ws/embed?token=680b51ba-526a-4315-ab7a-efc4eccec7da',
-    {
-        secure: true,
-        extraHeaders: {
-            'sec-websocket-extensions':
-                'permessage-deflate; client_max_window_bits',
-            'sec-websocket-key': 'PkDqCl1rE4l9Zekf5TY/5A==',
-            'sec-websocket-version': '13',
-        },
-    }
-);
-
-socket.onAny((event, ...args) => {
-    console.log('Got event: ', event, args);
-});
-
-socket.on('connect_error', (error) => {
-    if (socket.active) {
-        // temporary failure, the socket will automatically try to reconnect
-        console.log(error);
-    } else {
-        // the connection was denied by the server
-        // in that case, `socket.connect()` must be manually called in order to reconnect
-        console.log(error.message);
-    }
-});
-
-socket.on('disconnect', (reason) => {
-    if (socket.active) {
-        // temporary disconnection, the socket will automatically try to reconnect
-    } else {
-        // the connection was forcefully closed by the server or the client itself
-        // in that case, `socket.connect()` must be manually called in order to reconnect
-        console.log(reason);
-    }
-});
-
-socket.on('connection_info', (data) => {
-    console.log(data);
-});
-*/
-
 import tmi from 'tmi.js'
 import { LiveChat } from 'youtube-chat'
+import config from '../configurations.js'
+import { log } from '../functions.js'
 
-// Recommended
-const ytClient = new LiveChat({ liveId: 'BJSwhFbOwOg' })
+const ytClient = new LiveChat({ channelId: config.streaming.youtube.channelId })
 const ttvClient = new tmi.Client({
-  channels: ['THiiXY'],
+  channels: [config.streaming.twitch.channelId],
 })
 
-// Emit at start of observation chat.
-ytClient.on('start', (liveId) => {
-  /* Your code here! */
-  console.log('start', liveId)
-})
+ytClient.on('start', (liveId) =>
+  log(`Started watching live chat for ${liveId}`, 'chatbot')
+)
 
-// Emit at end of observation chat.
-// reason: string?
-ytClient.on('end', (reason) => {
-  /* Your code here! */
-  console.log('end', reason)
-})
+ytClient.on('chat', (chatItem) =>
+  log(`${chatItem.author.name}: ${chatItem.message}`, 'chatbot')
+)
 
-// Emit at receive chat.
-// chat: ChatItem
-ytClient.on('chat', (chatItem) => {
-  /* Your code here! */
-  console.log(`${chatItem.author.name}: ${chatItem.message}`)
-})
+ytClient.on('error', (err) => log(err, 'err'))
 
-// Emit when an error occurs
-// err: Error or any
-ytClient.on('error', (err) => {
-  /* Your code here! */
-  console.log('error', err)
-})
+ytClient.on('end', (reason) => log(reason, 'warning'))
 
-ttvClient.on('message', (channel, tags, message, self) => {
-  console.log(`${tags['display-name']}: ${message}`)
-})
+ttvClient.on('connected', () =>
+  log(`Connected to ${config.streaming.twitch.channelId}'s chat.`, 'chatbot')
+)
 
-// Start fetch loop
-let ok = ytClient.start()
-if (!ok) {
-  console.log('Failed to start, check emitted error')
-}
+ttvClient.on('message', (channel, tags, message, self) =>
+  log(`${tags['display-name']}: ${message}`, 'chatbot')
+)
 
-ttvClient.connect().catch(console.error)
+if (!ytClient.start())
+  log('Failed to start ytClient, check emitted error', 'err')
+
+ttvClient.connect().catch((err) => log(err, 'err'))
