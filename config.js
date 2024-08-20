@@ -147,7 +147,7 @@ export default {
     enabled: true,
     ephemeral: false,
     deployToGuild: true,
-    logFile: 'log.txt',
+    logFile: 'bot.log',
     guild: process.env.GUILD_ID,
   },
   messageSettings: {
