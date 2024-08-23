@@ -9,7 +9,7 @@ import * as leaderboard from './leaderboard.js'
 import * as matchCalculations from './matchCalculations.js'
 import mongodb from './mongodb.js'
 import * as notifications from './notifications.js'
-import * as permissions from './permissions.js'
+import permissions from './permissions.js'
 
 // Re-export all handlers
 export {

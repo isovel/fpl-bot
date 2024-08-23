@@ -6,12 +6,9 @@ import {
 } from 'discord.js'
 import ExtendedClient from '../../../class/ExtendedClient.js'
 import { log } from '../../../functions.js'
-import {
-  permissions as _permHandler,
-  notifications,
-} from '../../../handlers/index.js'
+import { notifications, permissions } from '../../../handlers/index.js'
 
-const permHandler = _permHandler['div-vc']
+const permHandler = permissions['div-vc']
 
 export default {
   structure: new SlashCommandBuilder()
