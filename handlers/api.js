@@ -12,7 +12,7 @@ let appServer
 export default async (client) => {
   app = express()
 
-  const apiDir = path.join(process.cwd(), '/api')
+  const apiDir = path.join(process.cwd(), '/api/')
   const staticDir = path.join(process.cwd(), '/static')
 
   log('Loading API routes...', 'info')
