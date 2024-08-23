@@ -12,12 +12,18 @@ let appServer
 export default async (client) => {
   app = express()
 
-  const apiDir = client.__dirname + '/api/'
+  const apiDir = path.join(process.cwd(), '/api')
+  const staticDir = path.join(process.cwd(), '/static')
+
+  log('Loading API routes...', 'info')
+  log(`API directory: ${chalk.grey(apiDir)}`, 'debug')
+  log(`Static directory: ${chalk.grey(staticDir)}`, 'debug')
+
   const apiFiles = fs.readdirSync(apiDir).filter((f) => f.endsWith('.js'))
 
-  app.set('views', path.join(client.__dirname, '/static'))
+  app.set('views', staticDir)
   app.set('view engine', 'ejs')
-  app.use(express.static('./static'))
+  app.use(express.static(staticDir))
 
   for (const file of apiFiles) {
     const module = await import(apiDir + file)
@@ -65,6 +71,8 @@ export default async (client) => {
       log(err, 'error')
     }
   }
+
+  log('API routes loaded!', 'done')
 
   appServer = app.listen(appPort, () => {
     log(`Listening on ${chalk.blue('http://localhost:' + appPort)}`, 'info')
