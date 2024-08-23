@@ -251,7 +251,7 @@ export default {
         ephemeral: client.config.development.ephemeral,
       })
       .then((msg) => {
-        interaction.reply({
+        interaction.editReply({
           embeds: [
             new EmbedBuilder()
               .setTitle('Success')
