@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { readdirSync } from 'fs'
 import ExtendedClient from '../class/ExtendedClient.js'
 import { log } from '../functions.js'
@@ -22,7 +23,9 @@ export default async (client) => {
         )
         if (!module) {
           log(
-            `Failed to load module '${file}' due to an unknown import error.`,
+            `Unable to load module ${chalk.grey(
+              file
+            )} due to an unknown import error.`,
             'warn'
           )
 
@@ -32,21 +35,29 @@ export default async (client) => {
         const command = module?.default
         if (!command) {
           log(
-            `Unable to load command '${file}' due to missing 'default' export.`,
+            `Unable to load command ${chalk.grey(
+              file
+            )} due to missing ${chalk.grey('default')} export.`,
             'warn'
           )
 
           continue
         } else if (typeof command !== 'object') {
           log(
-            `Unable to load command '${file}' due to 'default' export not being an object.`,
+            `Unable to load command ${chalk.grey(file)} due to ${chalk.grey(
+              'default'
+            )} export not being an object.`,
             'warn'
           )
 
           continue
         } else if (!command.structure?.name || !command.run) {
           log(
-            `Unable to load command '${file}' due to missing 'structure#name' and/or 'run' properties.`,
+            `Unable to load command ${chalk.grey(
+              file
+            )} due to missing ${chalk.grey(
+              'structure#name'
+            )} and/or ${chalk.grey('run')} properties.`,
             'warn'
           )
 
@@ -81,9 +92,9 @@ export default async (client) => {
   //loaded x commands of type y
   Array.from(Object.keys(loadedCommands)).forEach((type) => {
     log(
-      `Loaded ${loadedCommands[type].length} command${
-        loadedCommands[type].length > 1 ? 's' : ''
-      } of type ${type}`,
+      `Loaded ${chalk.greenBright(loadedCommands[type].length)} ${chalk.grey(
+        type.toLowerCase()
+      )} command${loadedCommands[type].length > 1 ? 's' : ''}.`,
       'info'
     )
   })

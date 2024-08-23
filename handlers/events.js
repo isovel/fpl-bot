@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { readdirSync } from 'fs'
 import ExtendedClient from '../class/ExtendedClient.js'
 import { log } from '../functions.js'
@@ -17,7 +18,9 @@ export default async (client) => {
       const module = await import('../events/' + dir + '/' + file)
       if (!module) {
         log(
-          `Failed to load module '${file}' due to an unknown import error.`,
+          `Failed to load module ${chalk.grey(
+            file
+          )} due to an unknown import error.`,
           'warn'
         )
 
@@ -27,21 +30,27 @@ export default async (client) => {
       const event = module?.default
       if (!event) {
         log(
-          `Unable to load event '${file}' due to missing 'default' export.`,
+          `Unable to load event ${chalk.grey(file)} due to missing ${chalk.grey(
+            'default'
+          )} export.`,
           'warn'
         )
 
         continue
       } else if (typeof event !== 'object') {
         log(
-          `Unable to load event '${file}' due to 'default' export not being an object.`,
+          `Unable to load event ${chalk.grey(file)} due to ${chalk.grey(
+            'default'
+          )} export not being an object.`,
           'warn'
         )
 
         continue
       } else if (!event.event || !event.run) {
         log(
-          `Unable to load event '${file}' due to missing 'name' and/or 'run' properties.`,
+          `Unable to load event ${chalk.grey(file)} due to missing ${chalk.grey(
+            'name'
+          )} and/or ${chalk.grey('run')} properties.`,
           'warn'
         )
 
@@ -61,9 +70,9 @@ export default async (client) => {
 
   Array.from(Object.keys(loadedEvents)).forEach((dir) => {
     log(
-      `Loaded ${loadedEvents[dir].length} event${
-        loadedEvents[dir].length > 1 ? 's' : ''
-      } for ${dir}.`,
+      `Loaded ${chalk.greenBright(loadedEvents[dir].length)} ${chalk.grey(
+        dir.toLowerCase()
+      )} event handler${loadedEvents[dir].length > 1 ? 's' : ''}.`,
       'info'
     )
   })

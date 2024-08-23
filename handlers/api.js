@@ -1,7 +1,10 @@
+import chalk from 'chalk'
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import { log } from '../functions.js'
+
+const appPort = 4804
 
 let app
 let appServer
@@ -20,7 +23,9 @@ export default async (client) => {
     const module = await import(apiDir + file)
     if (!module) {
       log(
-        `Failed to load module '${file}' due to an unknown import error.`,
+        `Unable to load module ${chalk.grey(
+          file
+        )} due to an unknown import error.`,
         'warn'
       )
 
@@ -30,18 +35,18 @@ export default async (client) => {
     const middleware = module?.default
     if (!middleware) {
       log(
-        "Unable to load middleware '" +
-          file +
-          "' due to missing 'default' export.",
+        `Unable to load middleware ${chalk.grey(
+          file
+        )} due to 'default' export not being found.`,
         'warn'
       )
 
       continue
     } else if (typeof middleware !== 'function') {
       log(
-        "Unable to load middleware '" +
-          file +
-          "' due to 'default' export not being a function.",
+        `Unable to load middleware ${chalk.grey(
+          file
+        )} due to 'default' export not being a function.`,
         'warn'
       )
 
@@ -52,16 +57,16 @@ export default async (client) => {
       app.use('/', middleware)
     } catch (err) {
       log(
-        "Unable to load middleware '" +
-          file +
-          "' due to an error while loading.",
+        `Unable to load middleware ${chalk.grey(file)} due to an error: ${
+          err.message
+        }`,
         'warn'
       )
       log(err, 'error')
     }
   }
 
-  appServer = app.listen(4804, () => {
-    log('Server started: Listening on port 4804', 'info')
+  appServer = app.listen(appPort, () => {
+    log(`Listening on ${chalk.blue('http://localhost:' + appPort)}`, 'info')
   })
 }

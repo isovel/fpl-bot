@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { Client, Collection, GatewayIntentBits, Partials } from 'discord.js'
 import config from '../configurations.js'
 import { log, setupFunctions } from '../functions.js'
@@ -13,7 +14,9 @@ import {
 const { startClient } = mongodb
 
 log(
-  `Loading ${process.env.PRODUCTION ? 'Production' : 'Development'} Server`,
+  `Running in ${
+    process.env.PRODUCTION ? chalk.blue('PRODUCTION') : chalk.red('DEVELOPMENT')
+  } mode.`,
   'info'
 )
 

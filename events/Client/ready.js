@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import ExtendedClient from '../../class/ExtendedClient.js'
 import { log } from '../../functions.js'
 
@@ -11,6 +12,6 @@ export default {
    * @returns
    */
   run: (_, client) => {
-    log('Logged in as: ' + client.user.tag, 'done')
+    log(`Logged in as ${chalk.blue(client.user.tag)}`, 'done')
   },
 }

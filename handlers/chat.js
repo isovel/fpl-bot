@@ -87,7 +87,7 @@ ytClient.on('chat', (chatItem) => {
 })
 
 ytClient.on('error', (err) => {
-  console.error(err)
+  log(err, 'error')
 })
 
 ttvClient.on('message', (channel, tags, message, self) => {

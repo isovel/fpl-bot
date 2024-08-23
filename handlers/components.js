@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { readdirSync } from 'fs'
 import ExtendedClient from '../class/ExtendedClient.js'
 import { log } from '../functions.js'
@@ -17,7 +18,9 @@ export default async (client) => {
       const module = await import('../components/' + dir + '/' + file)
       if (!module) {
         log(
-          `Failed to load module '${file}' due to an unknown import error.`,
+          `Unable to load module ${chalk.grey(
+            file
+          )} due to an unknown import error.`,
           'warn'
         )
 
@@ -27,21 +30,29 @@ export default async (client) => {
       const component = module?.default
       if (!component) {
         log(
-          `Unable to load component '${file}' due to missing 'default' export.`,
+          `Unable to load component ${chalk.grey(
+            file
+          )} due to missing ${chalk.grey('default')} export.`,
           'warn'
         )
 
         continue
       } else if (typeof component !== 'object') {
         log(
-          `Unable to load component '${file}' due to 'default' export not being an object.`,
+          `Unable to load component ${chalk.grey(file)} due to ${chalk.grey(
+            'default'
+          )} export not being an object.`,
           'warn'
         )
 
         continue
       } else if (!component.customId || !component.run) {
         log(
-          `Unable to load component '${file}' due to missing 'structure#customId' and/or 'run' properties.`,
+          `Unable to load component ${chalk.grey(
+            file
+          )} due to missing ${chalk.grey(
+            'structure#customid'
+          )} and/or ${chalk.grey('run')} properties.`,
           'warn'
         )
 
@@ -100,7 +111,9 @@ export default async (client) => {
           break
         default:
           log(
-            `Unable to load component '${file}' due to invalid component type.`,
+            `Unable to load component ${chalk.grey(
+              file
+            )} due to invalid component type.`,
             'warn'
           )
 
@@ -114,9 +127,9 @@ export default async (client) => {
   for (const type of uniqueTypes) {
     let typeComponents = loadedComponents.filter((item) => item.type === type)
     log(
-      `Loaded ${typeComponents.length} ${type} component${
-        typeComponents.length > 1 ? 's' : ''
-      }`,
+      `Loaded ${chalk.greenBright(typeComponents.length)} ${chalk.grey(
+        type
+      )} component${typeComponents.length > 1 ? 's' : ''}`,
       'info'
     )
   }
