@@ -16,8 +16,8 @@ export default async (client) => {
   const staticDir = path.join(process.cwd(), '/static')
 
   log('Loading API routes...', 'info')
-  log(`API directory: ${chalk.grey(apiDir)}`, 'debug')
-  log(`Static directory: ${chalk.grey(staticDir)}`, 'debug')
+  // log(`API directory: ${chalk.grey(apiDir)}`, 'debug')
+  // log(`Static directory: ${chalk.grey(staticDir)}`, 'debug')
 
   const apiFiles = fs.readdirSync(apiDir).filter((f) => f.endsWith('.js'))
 
