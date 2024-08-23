@@ -12,8 +12,8 @@ let appServer
 export default async (client) => {
   app = express()
 
-  const apiDir = 'file://' + path.join(process.cwd(), '/api')
-  const staticDir = 'file://' + path.join(process.cwd(), '/static')
+  const apiDir = path.join(process.cwd(), '/api')
+  const staticDir = path.join(process.cwd(), '/static')
 
   log('Loading API routes...', 'info')
   log(`API directory: ${chalk.grey(apiDir)}`, 'debug')
@@ -26,7 +26,7 @@ export default async (client) => {
   app.use(express.static(staticDir))
 
   for (const file of apiFiles) {
-    const module = await import(apiDir + file)
+    const module = await import('file://' + apiDir + file)
     if (!module) {
       log(
         `Unable to load module ${chalk.grey(
