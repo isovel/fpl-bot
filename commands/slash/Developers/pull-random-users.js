@@ -195,7 +195,7 @@ export default {
     //give all users the pulled role
     const pulledRole = client.config.roles.pulled
 
-    for (user of samples) {
+    for (const user of samples) {
       let discordUser = await interaction.guild.members.fetch(user.id)
 
       await discordUser.roles.add(pulledRole).catch((err) => {
