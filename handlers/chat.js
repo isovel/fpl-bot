@@ -94,97 +94,97 @@ ttvClient.on('message', (channel, tags, message, self) => {
   newMessage(message, tags['display-name'], Date.now())
 })
 
-export default {
-  startVoting: (type) => {
-    return new Promise((resolve, reject) => {
-      log(`Starting voting for ${type == 1 ? 'map' : 'gamemode'}`, 'chatbot')
-      let ok = ytClient.start()
-      if (!ok) {
-        log('Failed to start ytClient, check emitted error', 'error')
-      }
-      ttvClient.connect().catch((err) => log(err, 'error'))
-      votingStartTime = Date.now()
-      votingActive = true
-      votingType = type
-      //reset votes
-      switch (type) {
-        case 1:
-          mapVotes = new Map()
-          mapVotesArray = []
-          map = null
-          break
-        case 2:
-          gamemodeVotes = new Map()
-          gamemodeVotesArray = []
-          gamemode = null
-          break
-      }
-      resolve()
-    })
-  },
-  closeVoting: () => {
-    return new Promise((resolve, reject) => {
-      log('Closing voting', 'chatbot')
-      ytClient.stop()
-      ttvClient.disconnect()
-      votingActive = false
-      if (votingType == 1) {
-        mapVotesArray = Array.from(mapVotes.values())
-      } else {
-        gamemodeVotesArray = Array.from(gamemodeVotes.values())
-      }
-      resolve()
-    })
-  },
-  getVotes: () => {
-    return new Promise((resolve, reject) => {
-      log('Getting votes', 'chatbot')
-      let votesRanking
-      if (votingType == 1) {
-        if (mapVotesArray.length == 0) return reject()
-        votesRanking = [
-          ...new Set(
-            mapVotesArray
-              .sort(
-                (a, b) =>
-                  mapVotesArray.filter((v) => v === a).length -
-                  mapVotesArray.filter((v) => v === b).length
-              )
-              .reverse()
-          ),
-        ]
-        log(votesRanking, 'chatbot')
-        map = votesRanking[0]
-        resolve({
-          map: votesRanking[0],
-          ranking: votesRanking,
-        })
-      } else {
-        if (gamemodeVotesArray.length == 0) return reject()
-        votesRanking = [
-          ...new Set(
-            gamemodeVotesArray
-              .sort(
-                (a, b) =>
-                  gamemodeVotesArray.filter((v) => v === a).length -
-                  gamemodeVotesArray.filter((v) => v === b).length
-              )
-              .reverse()
-          ),
-        ]
-        log(votesRanking, 'chatbot')
-        gamemode = votesRanking[0]
-        resolve({
-          gamemode: votesRanking[0],
-          ranking: votesRanking,
-        })
-      }
-    })
-  },
-  getValidOptions: (map) => {
-    return new Promise((resolve, reject) => {
-      log(`Getting valid options for ${map}`, 'chatbot')
-      resolve(maps[map.toLowerCase()])
-    })
-  },
+const startVoting = (type) => {
+  return new Promise((resolve, reject) => {
+    log(`Starting voting for ${type == 1 ? 'map' : 'gamemode'}`, 'chatbot')
+    let ok = ytClient.start()
+    if (!ok) {
+      log('Failed to start ytClient, check emitted error', 'error')
+    }
+    ttvClient.connect().catch((err) => log(err, 'error'))
+    votingStartTime = Date.now()
+    votingActive = true
+    votingType = type
+    //reset votes
+    switch (type) {
+      case 1:
+        mapVotes = new Map()
+        mapVotesArray = []
+        map = null
+        break
+      case 2:
+        gamemodeVotes = new Map()
+        gamemodeVotesArray = []
+        gamemode = null
+        break
+    }
+    resolve()
+  })
 }
+const closeVoting = () => {
+  return new Promise((resolve, reject) => {
+    log('Closing voting', 'chatbot')
+    ytClient.stop()
+    ttvClient.disconnect()
+    votingActive = false
+    if (votingType == 1) {
+      mapVotesArray = Array.from(mapVotes.values())
+    } else {
+      gamemodeVotesArray = Array.from(gamemodeVotes.values())
+    }
+    resolve()
+  })
+}
+const getVotes = () => {
+  return new Promise((resolve, reject) => {
+    log('Getting votes', 'chatbot')
+    let votesRanking
+    if (votingType == 1) {
+      if (mapVotesArray.length == 0) return reject()
+      votesRanking = [
+        ...new Set(
+          mapVotesArray
+            .sort(
+              (a, b) =>
+                mapVotesArray.filter((v) => v === a).length -
+                mapVotesArray.filter((v) => v === b).length
+            )
+            .reverse()
+        ),
+      ]
+      log(votesRanking, 'chatbot')
+      map = votesRanking[0]
+      resolve({
+        map: votesRanking[0],
+        ranking: votesRanking,
+      })
+    } else {
+      if (gamemodeVotesArray.length == 0) return reject()
+      votesRanking = [
+        ...new Set(
+          gamemodeVotesArray
+            .sort(
+              (a, b) =>
+                gamemodeVotesArray.filter((v) => v === a).length -
+                gamemodeVotesArray.filter((v) => v === b).length
+            )
+            .reverse()
+        ),
+      ]
+      log(votesRanking, 'chatbot')
+      gamemode = votesRanking[0]
+      resolve({
+        gamemode: votesRanking[0],
+        ranking: votesRanking,
+      })
+    }
+  })
+}
+const getValidOptions = (map) => {
+  return new Promise((resolve, reject) => {
+    log(`Getting valid options for ${map}`, 'chatbot')
+    resolve(maps[map.toLowerCase()])
+  })
+}
+
+export { closeVoting, getValidOptions, getVotes, startVoting }
