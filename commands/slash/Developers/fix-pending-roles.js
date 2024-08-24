@@ -13,7 +13,7 @@ export default {
     const roles = client.config.roles
     const divisionRoleA = roles.divisions['A']
     const divisionRoleB = roles.divisions['B']
-    const pendingRole = pending
+    const pendingRole = roles.pending
 
     const guild = await client.guilds.fetch(interaction.guildId)
     const members = await guild.members.fetch()

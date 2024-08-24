@@ -17,7 +17,7 @@ export default {
     const roles = client.config.roles
     const divisionRoleA = roles.divisions['A']
     const divisionRoleB = roles.divisions['B']
-    const pendingRole = pending
+    const pendingRole = roles.pending
     const users = await interaction.guild.members.fetch()
 
     let usersFound = 0
