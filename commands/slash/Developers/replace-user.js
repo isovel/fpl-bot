@@ -134,7 +134,7 @@ export default {
                 }
             )*/
     //remove old user and add new user
-    c_queues
+    await c_queues
       .bulkWrite([
         {
           updateOne: {
@@ -173,26 +173,48 @@ export default {
           ephemeral: client.config.development.ephemeral,
         })
       })
-      .then((result) => {
-        interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setTitle('Success')
-              .setDescription(
-                `User ${oldUser.displayName} has been repulled to ${newUser.displayName}.`
-              )
-              .setColor('Green'),
-          ],
-          components: [
-            new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                .setCustomId('configure-web-server_' + newUserData.division)
-                .setLabel('Configure Web Server')
-                .setStyle('Primary')
-            ),
-          ],
-          ephemeral: client.config.development.ephemeral,
-        })
-      })
+
+    //update original message
+
+    queueData = await c_queues.findOne({
+      division: oldUserData.division,
+    })
+
+    const channel = await interaction.guild.channels.fetch(
+      queueData.pulledMsgChannelId
+    )
+    const msg = await channel.messages.fetch(queueData.pulledMsgId)
+
+    msg.edit({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle(msg.embeds[0].data.title)
+          .setDescription(
+            queueData.randomUsers.map((u) => `<@${u.id}>`).join('\n')
+          )
+          .setColor('Purple'),
+      ],
+      components: msg.components,
+    })
+
+    interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('Success')
+          .setDescription(
+            `User ${oldUser.displayName} has been repulled to ${newUser.displayName}.`
+          )
+          .setColor('Green'),
+      ],
+      components: [
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('configure-web-server_' + newUserData.division)
+            .setLabel('Configure Web Server')
+            .setStyle('Primary')
+        ),
+      ],
+      ephemeral: client.config.development.ephemeral,
+    })
   },
 }
